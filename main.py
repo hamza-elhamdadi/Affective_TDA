@@ -7,8 +7,11 @@ import numpy as np
 data = []
 mat = []
 
-csv_file = open('Data/000.csv', 'r')
-json_file = open('Data/000matrix.json', 'w')
+filename = raw_input('Please enter the name of the file:')
+
+csv_file = open('Data/' + filename + '.csv', 'r')
+json_file = open('Data/' + filename + 'matrix.json', 'w')
+persistence_file = open('Data/persistence_diagram_' + filename + '.txt', 'w')
 
 next(iter(csv_file))
 
@@ -24,8 +27,14 @@ for i in range(len(data)):
 
 dissimilarity_string = json.dumps(mat)
 
-json_file.write(dissimilarity_string)
+json_file.write('{\n\t"dissimilarities": ' + dissimilarity_string + '\n}')
 
 diagrams = ripser(np.asarray(mat), distance_matrix = True)['dgms']
 
-plot_diagrams(diagrams, show = True)
+for i in list(diagrams[0]):
+    persistence_file.write(str(i[0]) + ' ' + str(i[1]) + '\n')
+for i in list(diagrams[1]):
+    persistence_file.write(str(i[0]) + ' ' + str(i[1]) + '\n')
+
+
+# plot_diagrams(diagrams, show = True)
