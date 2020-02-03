@@ -7,7 +7,7 @@ import numpy as np
 data = []
 mat = []
 
-filename = raw_input('Please enter the name of the file:')
+filename = input('Please enter the name of the file:')
 
 csv_file = open('Data/' + filename + '.csv', 'r')
 json_file = open('Data/' + filename + 'matrix.json', 'w')
@@ -37,4 +37,4 @@ for i in list(diagrams[1]):
     persistence_file.write(str(i[0]) + ' ' + str(i[1]) + '\n')
 
 
-# plot_diagrams(diagrams, show = True)
+plot_diagrams(diagrams, show = True)
