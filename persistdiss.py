@@ -43,14 +43,18 @@ with open('Data/wasserstein_values.csv','r') as file:
             writefile.write(','.join(row))
             writefile.write('\n')
 
-embedding = MDS(n_components=2,dissimilarity='precomputed')
+embedding = MDS(n_components=1,dissimilarity='precomputed')
+
+x_vals = [1,2,3]
 
 data_1 = embedding.fit_transform(np.asmatrix(bottleneck_dissimilarity))
 data_2 = embedding.fit_transform(np.asmatrix(wasserstein_dissimilarity))
 
-plt.scatter(map(op.itemgetter(0),data_1),map(op.itemgetter(1),data_1))
+# plt.scatter(list(map(op.itemgetter(0),data_1)),list(map(op.itemgetter(1),data_1)))
+plt.plot(x_vals,data_1)
 plt.savefig('Pictures/bottleneck_embedding.png')
 plt.clf()
-plt.scatter(map(op.itemgetter(0),data_2),map(op.itemgetter(1),data_2))
+# plt.scatter(list(map(op.itemgetter(0),data_2)),list(map(op.itemgetter(1),data_2)))
+plt.plot(x_vals,data_2)
 plt.savefig('Pictures/wasserstein_embedding.png')
 plt.clf()
