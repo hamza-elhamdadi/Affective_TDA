@@ -1,60 +1,75 @@
-from sklearn.manifold import MDS
+from sklearn.manifold import MDS, TSNE, Isomap
 import operator as op
 import matplotlib.pyplot as plt
 import numpy as np
 import nmf
 
-bottleneck_dissimilarity = []
-wasserstein_dissimilarity = []
-
-length_of_file = 3
+length_of_file = 112
 
 with open('Data/bottleneck_values.csv','r') as file:
     next(iter(file))
-    for i in range(length_of_file):
-        row = []
-        for j in range(length_of_file):
-            row.append(0)
-        bottleneck_dissimilarity.append(row)
+    bottleneck_dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
     for line in file:
         vals = line.split(',')
         bottleneck_dissimilarity[int(vals[0])][int(vals[1])] = float(vals[2])
         bottleneck_dissimilarity[int(vals[1])][int(vals[0])] = float(vals[2])
-    with open('Data/bottleneck_dissimilarities.txt', 'w') as writefile:
+    """with open('Data/bottleneck_dissimilarities.txt', 'w') as writefile:
         for row in bottleneck_dissimilarity:
             row = map(lambda val: str(val), row)
             writefile.write(','.join(row))
-            writefile.write('\n')
+            writefile.write('\n')"""
 
 with open('Data/wasserstein_values.csv','r') as file:
     next(iter(file))
-    for i in range(length_of_file):
-        row = []
-        for j in range(length_of_file):
-            row.append(0)
-        wasserstein_dissimilarity.append(row)
+    wasserstein_dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
     for line in file:
         vals = line.split(',')
         wasserstein_dissimilarity[int(vals[0])][int(vals[1])] = float(vals[2])
         wasserstein_dissimilarity[int(vals[1])][int(vals[0])] = float(vals[2])
-    with open('Data/wasserstein_dissimilarities.txt', 'w') as writefile:
+    """with open('Data/wasserstein_dissimilarities.txt', 'w') as writefile:
         for row in wasserstein_dissimilarity:
             row = map(lambda val: str(val), row)
             writefile.write(','.join(row))
-            writefile.write('\n')
+            writefile.write('\n')"""
 
-embedding = MDS(n_components=1,dissimilarity='precomputed')
+x_vals = list(range(length_of_file))
 
-x_vals = [1,2,3]
+embedding_MDS = MDS(n_components=1,dissimilarity='precomputed')
+embedding_TSNE = TSNE(n_components=1,metric='precomputed')
+embedding_Isomap = Isomap(n_components=1,metric='precomputed')
 
-data_1 = embedding.fit_transform(np.asmatrix(bottleneck_dissimilarity))
-data_2 = embedding.fit_transform(np.asmatrix(wasserstein_dissimilarity))
+MDS_data_1 = embedding_MDS.fit_transform(np.asmatrix(bottleneck_dissimilarity))
+MDS_data_2 = embedding_MDS.fit_transform(np.asmatrix(wasserstein_dissimilarity))
 
-# plt.scatter(list(map(op.itemgetter(0),data_1)),list(map(op.itemgetter(1),data_1)))
-plt.plot(x_vals,data_1)
-plt.savefig('Pictures/bottleneck_embedding.png')
+TSNE_data_1 = embedding_TSNE.fit_transform(np.asmatrix(bottleneck_dissimilarity))
+TSNE_data_2 = embedding_TSNE.fit_transform(np.asmatrix(wasserstein_dissimilarity))
+
+Isomap_data_1 = embedding_Isomap.fit_transform(np.asmatrix(bottleneck_dissimilarity))
+Isomap_data_2 = embedding_Isomap.fit_transform(np.asmatrix(wasserstein_dissimilarity))
+
+# Bottleneck MDS
+plt.plot(x_vals,MDS_data_1)
+plt.savefig('Pictures/bottleneck_embedding_MDS.png')
 plt.clf()
-# plt.scatter(list(map(op.itemgetter(0),data_2)),list(map(op.itemgetter(1),data_2)))
-plt.plot(x_vals,data_2)
-plt.savefig('Pictures/wasserstein_embedding.png')
+# Wasserstein MDS
+plt.plot(x_vals,MDS_data_2)
+plt.savefig('Pictures/wasserstein_embedding_MDS.png')
+plt.clf()
+
+# Bottleneck TSNE
+plt.plot(x_vals,TSNE_data_1)
+plt.savefig('Pictures/bottleneck_embedding_TSNE.png')
+plt.clf()
+# Wasserstein TSNE
+plt.plot(x_vals,TSNE_data_2)
+plt.savefig('Pictures/wasserstein_embedding_TSNE.png')
+plt.clf()
+
+# Bottleneck Isomap
+plt.plot(x_vals,Isomap_data_1)
+plt.savefig('Pictures/bottleneck_embedding_Isomap.png')
+plt.clf()
+# Wasserstein Isomap
+plt.plot(x_vals,Isomap_data_2)
+plt.savefig('Pictures/wasserstein_embedding_Isomap.png')
 plt.clf()

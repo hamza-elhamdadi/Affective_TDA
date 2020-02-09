@@ -1,12 +1,8 @@
-bottleneck_diss = []
-wasserstein_diss = []
+import os
 
-with open('Data/bottleneck_values.csv', 'r') as file:
-    next(iter(file))
-    # x = len(list(file))
-    for i in range(3):
-        row = []
-        for j in range(3):
-            row.append(0)
-        bottleneck_diss.append(row)
-    print(list(file))
+filesindir = os.listdir('../Data')
+
+for i in range(len(filesindir)):
+    for j in range(i+1,len(filesindir)):
+        if filesindir[j][0:3] == '111' and filesindir[i][0:3] == '065':
+            print(filesindir[i][0:3]+','+filesindir[j][0:3])
