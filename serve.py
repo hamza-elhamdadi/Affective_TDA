@@ -14,3 +14,8 @@ def return_index():
 @app.route('/hello')
 def hello():
     return 'hello, World!'
+
+@app.errorhandler(404)
+def page_notfound(error):
+    print('Error: ' + str(error))
+    return 'This page does not exist', 404
