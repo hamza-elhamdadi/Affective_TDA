@@ -119,7 +119,7 @@ def getFileNames(d):
             filesindir.append(elem)
     return filesindir
 
-def persistenceDistance(filesindir, bORw):
+def persistenceDistance(filesindir, bORw, start, step):
     count = len(filesindir)**2
     if bORw == 'bottleneck':
         hera = './hera/geom_bottleneck/build/bottleneck_dist '
@@ -127,7 +127,7 @@ def persistenceDistance(filesindir, bORw):
         hera = './hera/geom_matching/wasserstein/wasserstein_dist '
     with open('Data/' + bORw + '_values.csv', 'w') as file:
         file.write('file1,file2,'+ bORw + '_distance\n')
-        for i in range(len(filesindir)):
+        for i in range(start,len(filesindir),step):
             for j in range(i+1,len(filesindir)):
                 #print(str(count) + ' ' + bORw + ' iterations left')
                 count -= 1

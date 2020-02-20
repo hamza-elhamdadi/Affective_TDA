@@ -3,14 +3,18 @@ import nmf
 
 filesindir = nmf.getFileNames('Data/persistence')
 
-process1 = multiprocessing.Process(target=nmf.persistenceDistance, args=(filesindir, 'bottleneck', ))
-process2 = multiprocessing.Process(target=nmf.persistenceDistance, args=(filesindir, 'wasserstein', ))
+p_count = 2
+process = []
 
-process1.start()
-process2.start()
+for i in range( p_count ):
+    process.append( multiprocessing.Process(target=nmf.persistenceDistance, args=(filesindir, 'bottleneck', i, p_count ) ) )
+    process.append( multiprocessing.Process(target=nmf.persistenceDistance, args=(filesindir, 'wasserstein', i, p_count ) ) )
 
-process1.join()
-process2.join()
+for p in process:
+    p.start()
 
-print(process1.is_alive())
-print(process2.is_alive())
+for p in process:
+    p.join()
+
+for p in process:
+    print(p.is_alive())
