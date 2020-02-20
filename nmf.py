@@ -120,6 +120,7 @@ def getFileNames(d):
     return filesindir
 
 def persistenceDistance(filesindir, bORw):
+    count = len(filesindir)**2
     if bORw == 'bottleneck':
         hera = './hera/geom_bottleneck/build/bottleneck_dist '
     else:
@@ -128,8 +129,10 @@ def persistenceDistance(filesindir, bORw):
         file.write('file1,file2,'+ bORw + '_distance\n')
         for i in range(len(filesindir)):
             for j in range(i+1,len(filesindir)):
-                command_1 = 'echo ' + filesindir[i][0:3] + ',' + filesindir[j][0:3]
-                command_2 = hera + './Data/persistence/persistence_diagram_' + filesindir[i][0:3] + '.txt ./Data/persistence/persistence_diagram_' + filesindir[j][0:3] + '.txt'
+                #print(str(count) + ' ' + bORw + ' iterations left')
+                count -= 1
+                command_1 = 'echo ' + filesindir[i][20:-4] + ',' + filesindir[j][20:-4]
+                command_2 = hera + './Data/persistence/persistence_diagram_' + filesindir[i][20:-4] + '.txt ./Data/persistence/persistence_diagram_' + filesindir[j][20:-4] + '.txt'
                 echostream = os.popen(command_1)
                 herastream = os.popen(command_2)
                 file.write(echostream.read()[:-1] + ',' + herastream.read()[:-1] + '\n')
