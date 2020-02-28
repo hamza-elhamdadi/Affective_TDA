@@ -16,34 +16,21 @@ pi = np.pi
 # Euclidean distance between two points (supports two and three dimensions)
 
 def distance(p0, p1, dimension):
-    if dimension == 2:
-        temp_1 = p1[0]-p0[0]
-        temp_2 = p1[1]-p0[1]
-        temp_1 = temp_1*temp_1
-        temp_2 = temp_2*temp_2
-        return math.sqrt(temp_1 + temp_2)
-    else:
-        temp_1 = p1[0]-p0[0]
-        temp_2 = p1[1]-p0[1]
-        temp_3 = p1[2]-p0[2]
-        temp_1 = temp_1*temp_1
-        temp_2 = temp_2*temp_2
-        temp_3 = temp_3*temp_3
-        return math.sqrt(temp_1 + temp_2 + temp_3)
+    temps = []
+    for i in range(dimension):
+        temp = (p1[i]-p0[i])**2
+        temps.append(temp)
+    return math.sqrt(sum(temps))
 
 # create the metric dissimilarity matrix
 
 def dissim_matrix(data):
     dissimilarities = []
-
     for i in range(0,len(data)):
         current_line = []
-
         for j in range(0,len(data)):
             current_line.append(distance(data[i],data[j]))
-        
         dissimilarities.append(current_line)
-
     return np.asanyarray(dissimilarities)
 
 # generate randomness values
@@ -75,15 +62,12 @@ def calculateDissimilaritiesFromCSV(filename):
 
 # dissimilarity matrix from hera output
 
-def dissMatFromHeraOut(filename, length_of_file):
-    with open(filename,'r') as file:
-        next(iter(file))
-        dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
-        for line in file:
-            vals = line.split(',')
-            dissimilarity[int(vals[0])][int(vals[1])] = float(vals[2])
-            dissimilarity[int(vals[1])][int(vals[0])] = float(vals[2])
-        return dissimilarity
+def dissMatFromHeraOut(file_lines, length_of_file):
+    dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
+    for vals in file_lines:
+        dissimilarity[vals[0]][vals[1]] = vals[2]
+        dissimilarity[vals[1]][vals[0]] = vals[2]
+    return dissimilarity
 
 def writeDissimilarityMatrix(filename, dissimilarity):
     with open(filename, 'w') as writefile:
@@ -96,10 +80,77 @@ def writeDissimilarityMatrix(filename, dissimilarity):
 
 def saveSignal(bORw, embeddingType, numLines, data):
     plt.plot(list(range(numLines)),data)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '.png')
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/Lined/' + bORw + '_embedding_' + embeddingType + '.png')
+    plt.clf()
+
+    plt.plot(list(range(numLines))[:112],data[:112], color='b')                                 # Blue = Angry
+    plt.plot(list(range(numLines))[:108],data[112:220], color='g')                              # Green = Disgust
+    plt.plot(list(range(numLines))[:111],data[220:331], color='r')                              # Red = Fear
+    plt.plot(list(range(numLines))[:111],data[331:442], color='c')                              # Cyan = Happy
+    plt.plot(list(range(numLines))[:114],data[442:556], color='m')                              # Magenta = Sad
+    plt.plot(list(range(numLines))[:110],data[556:], color='k')                                 # Black = Surprised
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/Stacked/' + bORw + '_embedding_' + embeddingType + '_Stacked.png')
+    plt.clf()
+
+    plt.plot(list(range(numLines))[:112],data[:112])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Angry.png')
+    plt.clf()
+    plt.plot(list(range(numLines))[:108],data[112:220])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Disgust.png')
+    plt.clf()
+    plt.plot(list(range(numLines))[:111],data[220:331])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Fear.png')
+    plt.clf()
+    plt.plot(list(range(numLines))[:111],data[331:442])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Happy.png')
+    plt.clf()
+    plt.plot(list(range(numLines))[:114],data[442:556])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Sad.png')
+    plt.clf()
+    plt.plot(list(range(numLines))[:110],data[556:])
+    if embeddingType == 'MDS':
+        plt.ylim(-1,1)
+    elif embeddingType == 'Isomap':
+        plt.ylim(-0.00000001,0.00000001)
+    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Surprise.png')
     plt.clf()
 
 # list all ements in directory
+
+###############################
+#            TODO             #
+###############################
+
+# Make this recursive
+# Check file extensions
 
 def getFileNames(d):
     filesindir = []
@@ -119,23 +170,21 @@ def getFileNames(d):
             filesindir.append(elem)
     return filesindir
 
-def persistenceDistance(filesindir, bORw, start, step):
-    count = len(filesindir)**2
+def persistenceDistance(colorFlag, data, filesindir, bORw, start, step):
+    print(colorFlag)
     if bORw == 'bottleneck':
         hera = './hera/geom_bottleneck/build/bottleneck_dist '
     else:
         hera = './hera/geom_matching/wasserstein/wasserstein_dist '
-    with open('Data/' + bORw + '_values.csv', 'w') as file:
-        file.write('file1,file2,'+ bORw + '_distance\n')
-        for i in range(start,len(filesindir),step):
-            for j in range(i+1,len(filesindir)):
-                #print(str(count) + ' ' + bORw + ' iterations left')
-                count -= 1
-                command_1 = 'echo ' + filesindir[i][20:-4] + ',' + filesindir[j][20:-4]
+    for i in range(start,len(filesindir),step):
+        for j in range(i+1,len(filesindir)):
+            if filesindir[i][20:-4] != '' and filesindir[j][20:-4] != '':
+                row = [filesindir[i][20:-4], filesindir[j][20:-4]]
                 command_2 = hera + './Data/persistence/persistence_diagram_' + filesindir[i][20:-4] + '.txt ./Data/persistence/persistence_diagram_' + filesindir[j][20:-4] + '.txt'
-                echostream = os.popen(command_1)
                 herastream = os.popen(command_2)
-                file.write(echostream.read()[:-1] + ',' + herastream.read()[:-1] + '\n')
+                row.append(herastream.read()[:-1])
+                data.append(row)
+    
 
 ####################################################################################################
 #                                                                                                  #

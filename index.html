@@ -2,24 +2,58 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css">
+    <link rel="stylesheet" href="/static/normalize.css">
     <link rel="stylesheet" href="/static/styles.css">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    
 
     <script src="https://d3js.org/d3.v4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div>
-        <label for="settings">Settings</label>
-        <form id="settings">
-            <label for="manifoldType">Manifold Type </label><input id="manifoldType" name="manifoldType"><br>
-            <label for="emotionID">Emotion ID </label><input id="emotionID" name="emotionID"><br>
-            <input type="submit" value="Submit">
-        </form>
+    <div class = "container-fluid">
+        <div class="container" style="background-color: #03DAC6; float: left; width: 30%;" id="settings">
+            <form id="settings" >
+                <h1 style="text-align: center;">Settings</h1>
+                <div class="container">
+                    <label for="manifoldType" style="float: left; padding-left: 1em; font-size: 125%;">Embedding Type </label>
+                    <select id="manifoldType" name="manifoldType" style="position: relative; right: -31; height: 30px; width: 200px;">
+                        <option value="mds">MDS</option>
+                        <option value="isomap">Isomap</option>
+                        <option value="tsne">TSNE</option>
+                    </select>
+                </div>
+                <br>
+                <div class="container">
+                    <label for="emotionID" style="float: left; padding-left: 1em; font-size: 125%;">Emotion</label>
+                    <select id="emotionID" name="emotionID" style="position: relative; right: -65; height: 30px; width: 200px;">
+                        <option value="angry">Angry</option>
+                        <option value="disgust">Disgust</option>
+                        <option value="fear">Fear</option>
+                        <option value="happy">Happy</option>
+                        <option value="sad">Sad</option>
+                        <option value="surprise">Surprise</option>
+                    </select>
+                </div>
+                <br>
+                <input type="submit" value="Submit" style="font-size: large; align-self: center; width: 90%">
+            </form>
+        </div>
+        <div class="container" style="background-color: #fff; float: right; width: 70%;" id="settings">
+            <h1 style="text-align: center;">Embedding Graph</h1>
+            <br><br><br><br><br><br><br><br><br><br><br><br>
+        </div>
+        
+    </div>
+    <div class="container-fluid">
+        <div class="container" style="background-color: #03DAC6; float: left; width: 30%">
+            <h1 style="text-align: center;">Picture</h1>
+            <br><br>
+        </div>
+        <div class="container" style="background-color: #fff; float: right; width: 70%">
+            <h1 style="text-align: center;">Action Units</h1>
+            <br><br>
+        </div>
     </div>
 </body>
 <script>
+
 </script>
