@@ -1,24 +1,27 @@
 import os, fnmatch
 import json
+import webbrowser
 
 from flask import Flask, request, render_template, send_from_directory, send_file
 
 app = Flask(__name__)
 
-datasets = {}
+datasets = []
 
-data_dir = '../Data'
-current_ds = []
-for dataset in os.listdir(data_dir):
-    if fnmatch.fnmatch(dataset, '*.bnd'):
-        current_ds.append(dataset[:-4])
-datasets["first"] = current_ds
+with open('Data/bottleneck_dissimilarities.csv', 'r') as file:
+    next(iter(file))
+    for line in file:
+        datasets.append(line.split(','))
+
+webbrowser.open_new_tab('http://127.0.0.1:5000/')
 
 def error(err):
     print(err)
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def return_index():
+    print(str(request.form.get('embeddingType'))) 
+    print(str(request.form.get('emotionID')))
     return send_file('index.html')
 
 @app.route('/hello')
