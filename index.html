@@ -1,8 +1,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css">
+
     <link rel="stylesheet" href="/static/normalize.css">
     <link rel="stylesheet" href="/static/styles.css">
 
@@ -24,7 +23,7 @@
                 <br>
                 <div class="container">
                     <label for="emotionID" style="float: left; padding-left: 1em; font-size: 125%;">Emotion</label>
-                    <select id="emotionID" name="emotionID" style="position: relative; right: -65; height: 30px; width: 200px;">
+                    <select id="emotionID" name="emotionID" style="position: relative; right: -65; height: 30px; width: 200px;" onchange="">
                         <option value="angry">Angry</option>
                         <option value="disgust">Disgust</option>
                         <option value="fear">Fear</option>
@@ -55,5 +54,7 @@
     </div>
 </body>
 <script>
-
+    let changeFilter = () => {
+        
+    }
 </script>
