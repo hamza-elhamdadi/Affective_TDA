@@ -104,7 +104,7 @@ def saveSignal(bORw, embeddingType, numLines, data):
     if embeddingType == 'MDS':
         plt.ylim(-1,1)
     elif embeddingType == 'Isomap':
-        plt.ylim(-0.00000001,0.00000001)
+        plt.ylim(-0.1,0.1)
     plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Angry.png')
     plt.clf()
     plt.plot(list(range(numLines))[:108],data[112:220])
@@ -143,31 +143,18 @@ def saveSignal(bORw, embeddingType, numLines, data):
     plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Surprise.png')
     plt.clf()
 
-# list all ements in directory
+# list all elements in directory
 
-###############################
-#            TODO             #
-###############################
-
-# Make this recursive
-# Check file extensions
-
-def getFileNames(d):
+def getFileNames(d, extension):
     filesindir = []
+    print(d)
     for elem in os.listdir(d):
-        if os.path.isdir(elem):
-            directory = []
-            for el in os.listdir(elem):
-                if os.path.isdir(el):
-                    subdir = []
-                    for e in os.listdir(el):
-                        subdir.append(e)
-                    directory.append(subdir)
-                else:
-                    directory.append(el)
-            filesindir.append(directory)
+        print(elem)
+        if os.path.isdir(d + '/' + elem):
+            filesindir.append(getFileNames(d + '/' + elem, extension))
         else:
-            filesindir.append(elem)
+            if elem[elem.find('.'):] == extension:
+                filesindir.append(d + '/' + elem)
     return filesindir
 
 def persistenceDistance(colorFlag, data, filesindir, bORw, start, step):
