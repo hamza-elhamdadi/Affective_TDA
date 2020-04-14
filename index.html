@@ -2,71 +2,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="/static/normalize.css">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="static/normalize.css">
+    <link rel="stylesheet" href="static/styles.css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <script src="https://d3js.org/d3.v4.js" crossorigin="anonymous"></script>
     <style>
-        input[text=text], select {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0px;
-            display: inline-block;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type=submit]{
-            width: 100%;
-            background-color: rgb(10, 132, 255);
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        input[type=submit]:hover {
-            background-color: rgb(54, 83, 179);
-        }
-
-        form {
-            text-align: center;
-            font: Courier;
-        }
         
-        div input.slider {
-            -webkit-appearance: none; 
-            width: 100%; 
-            background: grey;
-            border-radius: 5px; 
-            height: 15px;
-            outline: none;
-            opacity: 0.7;
-            -webkit-transition: .2s;
-            transition: opacity .2s;
-        }
-
-        div input.slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%; 
-            background: #03DAC6;
-            cursor: pointer;
-        }
-
-        div input.slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #03DAC6;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -87,38 +31,91 @@
         <div class="sidebar">
             <form id = "settings">
                 <div class="row">
-                    <div class = "col" style="background-color: #03DAC6;">
-                        <h1 style="text-align: center;">Settings</h1>
-                        <h1 style="float: left; padding-bottom: 30px; padding-left: 30px; font-size: 125%; ">Embedding Type </h1>
-                        <select id="embeddingType" name="embeddingType" style="float: right; height: 30px; width: 40%;" onchange="reload()">
-                            <option value="mds">MDS</option>
-                            <option value="isomap">Isomap</option>
-                            <option value="tsne">TSNE</option>
-                        </select>
-                        <h1 style="float: left; padding-left: 30px; font-size: 125%;">Emotion</h1>
-                        <select id="emotionID" name="emotionID" style="float: right; height: 30px; width: 40%;" onchange="reload()">
-                            <option value="angry">Angry</option>
-                            <option value="disgust">Disgust</option>
-                            <option value="fear">Fear</option>
-                            <option value="happy">Happy</option>
-                            <option value="sad">Sad</option>
-                            <option value="surprise">Surprise</option>
-                        </select>
-                        <h1 style="float: left; padding-left: 30px; font-size: 125%; ">Topological Distance </h1>
-                        <select id="differenceMetric" name="differenceMetric" style="float: right; height: 30px; width: 40%;" onchange="reload()">
-                            <option value="bottleneck">Bottleneck</option>
-                            <option value="wasserstein">Wasserstein</option>
-                        </select>
-                        <div id="slide" class='container'>
-                            <input type="range" min="1" max="111" value="56" class="slider" >
+                    <div id="options" class = "col" style="background-color: rgb(186, 236, 207);">
+                        <div><h1 style="text-align: center;">Settings</h1></div>
+                        <div class="row">
+                            <div class="col"><h1 class="title">Embedding Type </h1></div>
+                            <div class="col">
+                                <select id="embeddingType" name="embeddingType" onchange="reload()">
+                                    <option value="mds">MDS</option>
+                                    <option value="isomap">Isomap</option>
+                                    <option value="tsne">TSNE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><h1 class="title">Topological Distance </h1></div>
+                            <div class="col">
+                                <select id="differenceMetric" name="differenceMetric" onchange="reload()">
+                                    <option value="bottleneck">Bottleneck</option>
+                                    <option value="wasserstein">Wasserstein</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><h1 class="title">Emotions </h1></div>
+                            <div class="col">
+                                <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()">
+                                <input type="hidden" name="Angry" id="AngryHidden" value=0>
+                                <label for="Angry">Angry</label>
+                                <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()">
+                                <input type="hidden" name="Disgust" id="DisgustHidden" value=0>
+                                <label for="Disgust">Disgust</label>
+                                <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()">
+                                <input type="hidden" name="Fear" id="FearHidden" value=0>
+                                <label for="Fear">Fear</label>
+                                <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()">
+                                <input type="hidden" name="Happy" id="HappyHidden" value=0>
+                                <label for="Happy">Happy</label>
+                                <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()">
+                                <input type="hidden" name="Sad" id="SadHidden" value=0>
+                                <label for="Sad">Sad</label>
+                                <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()">
+                                <input type="hidden" name="Surprise" id="SurpriseHidden" value=0>
+                                <label for="Surprise">Surprise</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><h1 class="title">Face Subsections </h1></div>
+                            <div class="col">
+                                <input type="radio" name="leftEye" id="leftEye" value=1 onchange="reload()">
+                                <input type="hidden" name="leftEye" id="leftEyeHidden" value=0>
+                                <label for="leftEye">Left Eye</label>
+                                <input type="radio" name="rightEye" id="rightEye" value=1 onchange="reload()">
+                                <input type="hidden" name="rightEye" id="rightEyeHidden" value=0>
+                                <label for="rightEye">Right Eye</label>
+                                <input type="radio" name="leftEyebrow" id="leftEyebrow" value=1 onchange="reload()">
+                                <input type="hidden" name="leftEyebrow" id="leftEyebrowHidden" value=0>
+                                <label for="leftEyebrow">Left Eyebrow</label>
+                                <input type="radio" name="rightEyebrow" id="rightEyebrow" value=1 onchange="reload()">
+                                <input type="hidden" name="rightEyebrow" id="rightEyebrowHidden" value=0>
+                                <label for="rightEyebrow">Right Eyebrow</label>
+                                <input type="radio" name="nose" id="nose" value=1 onchange="reload()">
+                                <input type="hidden" name="nose" id="noseHidden" value=0>
+                                <label for="nose">Nose</label>
+                                <input type="radio" name="mouth" id="mouth" value=1 onchange="reload()">
+                                <input type="hidden" name="mouth" id="mouthHidden" value=0>
+                                <label for="leftEye">Mouth</label>
+                                <input type="radio" name="jawline" id="jawline" value=1 onchange="reload()">
+                                <input type="hidden" name="jawline" id="jawlineHidden" value=0>
+                                <label for="jawline">Jawline</label>
+                                
+                            </div>
+                        </div>
+                        <div id="slide" class='row'>
+                            <input name="slideValue" id="frameSlider" type="range" min="0" max="111" value="0" class="slider" onchange="slide()">
                         </div>
                     </div>
                     <div class = "col">
                         <h1 style="text-align: center;">Embedding Graph</h1>
-                        <svg width="1000" height="375" style="border: none;" id="chart">
-                            <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-                        </svg>
+                        <svg width="1000" height="375" style="border: none;" id="chart"></svg>
                         <h1 style="text-align: center;">Action Units</h1>
+                        <svg width="200" height="200" style="border: none;" id="face1"></svg>
+                        <svg width="200" height="200" style="border: none;" id="face2"></svg>
+                        <svg width="200" height="200" style="border: none;" id="face3"></svg>
+                        <svg width="200" height="200" style="border: none;" id="face4"></svg>
+                        <svg width="200" height="200" style="border: none;" id="face5"></svg>
+                        <svg width="200" height="200" style="border: none;" id="face6"></svg>
                     </div>
                 </div>
             </form>
@@ -129,41 +126,4 @@
     </div>
 </body>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-<script>
-    let stringize = value => {
-        return value.toFixed(4)
-    }
-
-    let update_linechart = (chartName, jsonData) => {
-        $(chartName).empty()
-
-        let chartSvg = d3.select(chartName)
-        let svgWidth = +chartSvg.attr('width')
-        let svgHeight = +chartSvg.attr('height')
-
-        let svgMargin = {left: 10, right: 15, top: 10, bottom: 15},
-            chartWidth = svgWidth - (svgMargin.left + svgMargin.right),
-            chartHeight = svgHeight - (svgMargin.top + svgMargin.bottom)
-        
-        let xExtent = [0,jsonData.length-1]
-        let yExtent = d3.extent(jsonData)
-
-        let xAxis = d3.scaleLinear().domain(xExtent).range([0,chartWidth])
-        let yAxis = d3.scaleLinear().domain(yExtent).range([chartHeight,0])
-
-        chartSvg.append('path')
-                .attr('transform', 'translate(' + svgMargin.left + ',' + svgMargin.top + ')')
-                .datum(jsonData)
-                .attr('class', 'input_line')
-                .attr('d', d3.line().x(d=>xAxis(d[0])).y(d=>yAxis(d[1])))
-    }
-
-    let reload = () => {
-        console.log('data?' + $('#settings').serialize())
-        d3.json('data?' + $('#settings').serialize(), jsonData => {
-            console.log(jsonData)
-
-            update_linechart('#chart', jsonData)
-        })
-    }
-</script>
+<script type="text/javascript" src="static/index.js"></script>

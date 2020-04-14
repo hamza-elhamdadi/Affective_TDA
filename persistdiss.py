@@ -29,7 +29,7 @@ embeddings = ['MDS', 'TSNE', 'Isomap']
 bottleneck_values = []
 wasserstein_values = []
 
-with open('Data/bottleneck_values.csv', 'r') as file:
+with open('Data/F001/bottleneck_values.csv', 'r') as file:
     csv_file = csv.reader(file, delimiter=',')
     next(csv_file)
     csv_formatted = map(lambda elem : mapping_lambda(elem), csv_file)
@@ -39,7 +39,7 @@ with open('Data/bottleneck_values.csv', 'r') as file:
         bottleneck_values.append([map_names(row[0]),map_names(row[1]),float(row[2])])
     
 
-with open('Data/wasserstein_values.csv', 'r') as file:
+with open('Data/F001/wasserstein_values.csv', 'r') as file:
     csv_file = csv.reader(file, delimiter=',')
     next(csv_file)
     csv_formatted = map(lambda elem : mapping_lambda(elem), csv_file)
@@ -79,9 +79,9 @@ for i in range(3):
     arr_1 = list(map(lambda e : float(e), filter(lambda e : e != '', arr_1)))
     arr_2 = np.array2string(data_2[i]).replace('\n', '').replace('[','').replace(']','').split(' ')
     arr_2 = list(map(lambda e : float(e), filter(lambda e : e != '', arr_2)))
-    with open('Data/json/signalData/bottleneck_' + embeddings[i] + '_data.json', 'w') as file:
+    with open('Data/F001/json/signalData/bottleneck_' + embeddings[i] + '_data.json', 'w') as file:
         file.write(json.dumps(arr_1))
         file.close()
-    with open('Data/json/signalData/wasserstein_' + embeddings[i] + '_data.json', 'w') as file:
+    with open('Data/F001/json/signalData/wasserstein_' + embeddings[i] + '_data.json', 'w') as file:
         file.write(json.dumps(arr_2))
         file.close()

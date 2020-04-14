@@ -1,6 +1,5 @@
 import getData
-
-import os, fnmatch
+from os import path
 import json
 import webbrowser
 import csv
@@ -9,16 +8,8 @@ from flask import Flask, request, render_template, send_from_directory, send_fil
 
 app = Flask(__name__)
 
-datasets = []
-
-with open('Data/bottleneck_dissimilarities.csv', 'r') as file:
-    csv_file = csv.reader(file, delimiter=',')
-    next(csv_file)
-    csv_formatted = map(lambda elem : [elem[0], elem[1], float(elem[2])], csv_file)
-    for row in csv_formatted:
-        datasets.append(list(row))
-
-webbrowser.open_new_tab('http://127.0.0.1:5000/')
+emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise']
+subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']
 
 def error(err):
     print(err)
@@ -38,15 +29,72 @@ def page_notfound(error):
     print('Error: ' + str(error))
     return 'This page does not exist', 404
 
-@app.route('/datasets', methods=['GET', 'POST'])
-def get_datasets():
-    return json.dumps(datasets)
+@app.route('/preprocessing', methods=['GET'])
+def preprocess():
+    return []
 
-@app.route('/data', methods=['GET'])
-def get_data():
+@app.route('/embedding', methods=['GET'])
+def get_embedding_data():
     emType = request.args.get('embeddingType')
-    emID = request.args.get('emotionID')
     dMetric = request.args.get('differenceMetric')
 
-    return getData.get_data(dMetric, emType, emID)
+    fileNameStart = 'cache/F001/' + str(dMetric) + '_' + str(emType) + '_'
+
+    data = []
+    requests = [int(request.args.get(x)) for x in emotions]
+    sectionVals = [int(request.args.get(x)) for x in subsections]
+    section_list = []
+    sections = ''
+    for i in range(len(sectionVals)):
+        if sectionVals[i] == 1:
+            section_list.append(subsections[i])
+    for subsection in section_list:
+        sections += subsection + '_'
+        
     
+    for i in range(len(requests)):
+        if requests[i] == 1:
+            emotionFile = fileNameStart + sections + emotions[i] + '.json'
+            if path.exists(emotionFile):
+                with open(emotionFile, 'r') as file:
+                    data.append(json.load(file))
+            else:
+                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i]))
+                with open(emotionFile, 'w') as file:
+                    file.write(json.dumps(data[-1]))
+        else:
+            data.append(None)
+    
+    return json.dumps(data)
+    
+@app.route('/face', methods=['GET'])
+def get_face_data():
+    frameNumber = request.args.get('slideValue')
+
+    fileNameStart = 'cache/F001/FaceData/' + str(frameNumber)
+
+    data = []
+    requests = [int(request.args.get(x)) for x in emotions]
+    sectionVals = [int(request.args.get(x)) for x in subsections]
+    section_list = []
+    sections = ''
+    for i in range(len(sectionVals)):
+        if sectionVals[i] == 1:
+            section_list.append(subsections[i])
+    for subsection in section_list:
+        sections += subsection + '_'
+
+    for i in range(len(requests)):
+        if requests[i] == 1:
+            emotionFile = fileNameStart + sections + emotions[i] + '.json'
+            if path.exists(emotionFile):
+                with open(emotionFile, 'r') as file:
+                    data.append(json.load(file))
+            else:
+                data.append(getData.get_face_data(section_list, 'F001', emotions[i], frameNumber))
+                with open(emotionFile, 'w') as file:
+                    file.write(json.dumps(data[-1]))
+        else:
+            data.append(None)
+
+    return json.dumps(data)
