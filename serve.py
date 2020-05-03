@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise']
 subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']
+slidevalues = ['slideValue1', 'slideValue2', 'slideValue3', 'slideValue4', 'slideValue5', 'slideValue6']
 
 def error(err):
     print(err)
@@ -37,24 +38,24 @@ def preprocess():
 def get_embedding_data():
     emType = request.args.get('embeddingType')
     dMetric = request.args.get('differenceMetric')
+    sec = request.args.get('section')
 
     fileNameStart = 'cache/F001/' + str(dMetric) + '_' + str(emType) + '_'
 
+    if sec != 'null':
+        fileNameStart += sec + '_'
+        section_list = [sec]
+    else:
+        section_list = []
+
+
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
-    sectionVals = [int(request.args.get(x)) for x in subsections]
-    section_list = []
-    sections = ''
-    for i in range(len(sectionVals)):
-        if sectionVals[i] == 1:
-            section_list.append(subsections[i])
-    for subsection in section_list:
-        sections += subsection + '_'
         
     
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = fileNameStart + sections + emotions[i] + '.json'
+            emotionFile = fileNameStart + emotions[i] + '.json'
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
@@ -69,24 +70,27 @@ def get_embedding_data():
     
 @app.route('/face', methods=['GET'])
 def get_face_data():
-    frameNumber = request.args.get('slideValue')
+    index = request.args.get('emotion')
+    frameNumbers = [request.args.get(slidevalues[i]) for i in range(len(slidevalues))]
+    frameNumber = frameNumbers[int(index)]
+    sec = request.args.get('section')
 
     fileNameStart = 'cache/F001/FaceData/' + str(frameNumber)
 
+    print(fileNameStart)
+
+    if sec != 'null':
+        fileNameStart += sec + '_'
+        section_list = [sec]
+    else:
+        section_list = []
+
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
-    sectionVals = [int(request.args.get(x)) for x in subsections]
-    section_list = []
-    sections = ''
-    for i in range(len(sectionVals)):
-        if sectionVals[i] == 1:
-            section_list.append(subsections[i])
-    for subsection in section_list:
-        sections += subsection + '_'
 
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = fileNameStart + sections + emotions[i] + '.json'
+            emotionFile = fileNameStart + emotions[i] + '.json'
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))

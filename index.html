@@ -2,13 +2,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="static/normalize.css">
     <link rel="stylesheet" href="static/styles.css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+      
     <script src="https://d3js.org/d3.v4.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.25.0/ramda.min.js"></script>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="static/index.js"></script>
+    
     <style>
         
     </style>
@@ -32,10 +36,11 @@
             <form id = "settings">
                 <div class="row">
                     <div id="options" class = "col" style="background-color: rgb(186, 236, 207);">
+                        <br>
                         <div><h1 style="text-align: center;">Settings</h1></div>
                         <div class="row">
-                            <div class="col"><h1 class="title">Embedding Type </h1></div>
-                            <div class="col">
+                            <div class="col-8"><h1 class="title">Embedding Type </h1></div>
+                            <div class="col-4">
                                 <select id="embeddingType" name="embeddingType" onchange="reload()">
                                     <option value="mds">MDS</option>
                                     <option value="isomap">Isomap</option>
@@ -43,72 +48,159 @@
                                 </select>
                             </div>
                         </div>
+                        <br>
                         <div class="row">
-                            <div class="col"><h1 class="title">Topological Distance </h1></div>
-                            <div class="col">
+                            <div class="col-8"><h1 class="title">Topological Distance </h1></div>
+                            <div class="col-4">
                                 <select id="differenceMetric" name="differenceMetric" onchange="reload()">
                                     <option value="bottleneck">Bottleneck</option>
                                     <option value="wasserstein">Wasserstein</option>
                                 </select>
                             </div>
                         </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-8"><h1 class="title">What kind of graph would you like to display?</h1></div>
+                            <div class="col-4">
+                                <select id="graphType" name="graphType" onchange="reload()">
+                                    <option value="linechart">Line Graph</option>
+                                    <option value="boxplot">Box and Whisker Plot</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="row">
                             <div class="col"><h1 class="title">Emotions </h1></div>
                             <div class="col">
-                                <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()">
-                                <input type="hidden" name="Angry" id="AngryHidden" value=0>
-                                <label for="Angry">Angry</label>
-                                <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()">
-                                <input type="hidden" name="Disgust" id="DisgustHidden" value=0>
-                                <label for="Disgust">Disgust</label>
-                                <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()">
-                                <input type="hidden" name="Fear" id="FearHidden" value=0>
-                                <label for="Fear">Fear</label>
-                                <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()">
-                                <input type="hidden" name="Happy" id="HappyHidden" value=0>
-                                <label for="Happy">Happy</label>
-                                <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()">
-                                <input type="hidden" name="Sad" id="SadHidden" value=0>
-                                <label for="Sad">Sad</label>
-                                <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()">
-                                <input type="hidden" name="Surprise" id="SurpriseHidden" value=0>
-                                <label for="Surprise">Surprise</label>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()">
+                                                <input type="hidden" name="Angry" id="AngryHidden" value=0>
+                                                <label for="Angry">Angry</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()">
+                                                <input type="hidden" name="Disgust" id="DisgustHidden" value=0>
+                                                <label for="Disgust">Disgust</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()">
+                                                <input type="hidden" name="Fear" id="FearHidden" value=0>
+                                                <label for="Fear">Fear</label>      
+                                            </div>
+                                        </div>
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()">
+                                                <input type="hidden" name="Happy" id="HappyHidden" value=0>
+                                                <label for="Happy">Happy</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()">
+                                                <input type="hidden" name="Sad" id="SadHidden" value=0>
+                                                <label for="Sad">Sad</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="check">
+                                            <div class="checkbox">
+                                                <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()">
+                                                <input type="hidden" name="Surprise" id="SurpriseHidden" value=0>
+                                                <label for="Surprise">Surprise</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1">
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(0)">&#9658;</button>
+                                        </div>
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(1)">&#9658;</button>
+                                        </div>
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(2)">&#9658;</button>
+                                        </div>
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(3)">&#9658;</button>
+                                        </div>
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(4)">&#9658;</button>
+                                        </div>
+                                        <div id="button" class="row">
+                                            <button type="button" class="btn btn-secondary" onclick="play(5)">&#9658;</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue1" id="frameSlider1" type="range" min="0" max="111" value="0" class="slider" onchange="slide(0)">
+                                        </div>
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue2" id="frameSlider2" type="range" min="0" max="107" value="0" class="slider" onchange="slide(1)">
+                                        </div>
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue3" id="frameSlider3" type="range" min="0" max="110" value="0" class="slider" onchange="slide(2)">
+                                        </div>
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue4" id="frameSlider4" type="range" min="0" max="110" value="0" class="slider" onchange="slide(3)">
+                                        </div>
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue5" id="frameSlider5" type="range" min="0" max="113" value="0" class="slider" onchange="slide(4)">
+                                        </div>
+                                        <div id="slide" class='row'>
+                                            <input name="slideValue6" id="frameSlider6" type="range" min="0" max="109" value="0" class="slider" onchange="slide(5)">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <hr>
                         <div class="row">
                             <div class="col"><h1 class="title">Face Subsections </h1></div>
                             <div class="col">
-                                <input type="radio" name="leftEye" id="leftEye" value=1 onchange="reload()">
-                                <input type="hidden" name="leftEye" id="leftEyeHidden" value=0>
-                                <label for="leftEye">Left Eye</label>
-                                <input type="radio" name="rightEye" id="rightEye" value=1 onchange="reload()">
-                                <input type="hidden" name="rightEye" id="rightEyeHidden" value=0>
-                                <label for="rightEye">Right Eye</label>
-                                <input type="radio" name="leftEyebrow" id="leftEyebrow" value=1 onchange="reload()">
-                                <input type="hidden" name="leftEyebrow" id="leftEyebrowHidden" value=0>
-                                <label for="leftEyebrow">Left Eyebrow</label>
-                                <input type="radio" name="rightEyebrow" id="rightEyebrow" value=1 onchange="reload()">
-                                <input type="hidden" name="rightEyebrow" id="rightEyebrowHidden" value=0>
-                                <label for="rightEyebrow">Right Eyebrow</label>
-                                <input type="radio" name="nose" id="nose" value=1 onchange="reload()">
-                                <input type="hidden" name="nose" id="noseHidden" value=0>
-                                <label for="nose">Nose</label>
-                                <input type="radio" name="mouth" id="mouth" value=1 onchange="reload()">
-                                <input type="hidden" name="mouth" id="mouthHidden" value=0>
-                                <label for="leftEye">Mouth</label>
-                                <input type="radio" name="jawline" id="jawline" value=1 onchange="reload()">
-                                <input type="hidden" name="jawline" id="jawlineHidden" value=0>
-                                <label for="jawline">Jawline</label>
-                                
+                                <div class="radio">
+                                    <input type="radio" name="section" id="leftEye" value="leftEye" onchange="reload()">
+                                    <label for="section">Left Eye</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="rightEye" value="rightEye" onchange="reload()">
+                                    <label for="section">Right Eye</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="leftEyebrow" value="leftEyebrow" onchange="reload()">
+                                    <label for="section">Left Eyebrow</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="rightEyebrow" value="rightEyebrow" onchange="reload()">
+                                    <label for="section">Right Eyebrow</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="nose" value="nose" onchange="reload()">
+                                    <label for="section">Nose</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="mouth" value="mouth" onchange="reload()">
+                                    <label for="section">Mouth</label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="section" id="jawline" value="jawline" onchange="reload()">
+                                    <label for="section">Jawline</label>
+                                </div>
+                                <input type="hidden" name="section" id="jawlineHidden" value="null">
                             </div>
                         </div>
-                        <div id="slide" class='row'>
-                            <input name="slideValue" id="frameSlider" type="range" min="0" max="111" value="0" class="slider" onchange="slide()">
-                        </div>
+                        
                     </div>
-                    <div class = "col">
+                    <div class = "col-7">
+                        <br>
                         <h1 style="text-align: center;">Embedding Graph</h1>
-                        <svg width="1000" height="375" style="border: none;" id="chart"></svg>
+                        <svg width="2000" height="500" style="border: none;" id="chart"></svg>
                         <h1 style="text-align: center;">Action Units</h1>
                         <svg width="200" height="200" style="border: none;" id="face1"></svg>
                         <svg width="200" height="200" style="border: none;" id="face2"></svg>
@@ -125,5 +217,3 @@
     
     </div>
 </body>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="static/index.js"></script>

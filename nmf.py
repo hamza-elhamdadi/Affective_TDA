@@ -7,8 +7,10 @@ import matplotlib.pyplot as plt
 import os
 
 pi = np.pi
-pattern1 = re.compile(r"_\w{3,8}_\d{3}\.")
-pattern2 = re.compile(r"\d{3}\.")
+
+pattern3 = re.compile(r"[a-zA-Z0-9]{4,12}_[a-zA-Z0-9]{3,8}_\d{3}\.")
+
+extensionPattern = re.compile(r"\.[a-z]{3,5}$")
 
 ####################################################################################################
 #                                                                                                  #
@@ -19,11 +21,7 @@ pattern2 = re.compile(r"\d{3}\.")
 # Euclidean distance between two points (supports two and three dimensions)
 
 def distance(p0, p1, dimension):
-    temps = []
-    for i in range(dimension):
-        temp = (p1[i]-p0[i])**2
-        temps.append(temp)
-    return math.sqrt(sum(temps))
+    return math.sqrt(sum([(p1[i]-p0[i])**2 for i in range(dimension)]))      # return the Euclidean distance between the two points
 
 # create the metric dissimilarity matrix
 
@@ -43,83 +41,16 @@ def rand_vals(start, end, num_dp):
 
 # get frame number from file path string
 
-def get_frame_number(string, pat1):
+def get_frame_number(string):
     if pat1:
-        val = pattern1.search(string)
+        val = pattern3.search(string)
+        if val == None:
+            return None
         start = val.start()
         end = val.end()
         substring = string[start+1:end-1]
-    else:
-        val = pattern2.search(string)
-        start = val.start()
-        end = val.end()
-        substring = string[start:end-1]
 
     return substring.split('_')
-
-# convert list name to min,max pair
-
-# left eye:            0-7
-# right eye:           8-15
-# left eyebrow:        16-25
-# right eyebrow:       26-35
-# nose:                36-47
-# mouth:               48-67
-# jawline:             68-82
-
-def min_max(subsection):
-    if subsection == 'leftEye':
-        return (0,7)
-    elif subsection == 'rightEye':
-        return (8,15)
-    elif subsection == 'leftEyebrow':
-        return (16,25)
-    elif subsection == 'rightEyebrow':
-        return (26,35)
-    elif subsection == 'nose':
-        return (36,47)
-    elif subsection == 'mouth':
-        return (48,67)
-    elif subsection == 'jawline':
-        return (68,82)
-    else:
-        return None
-
-
-# read dissimilarities from csv
-
-def calculateDissimilaritiesFromCSV(filename, section_list, header):
-    data = []
-    mat = []
-
-    csv_file = open(filename, 'r')
-
-    if header:
-        next(iter(csv_file))
-
-    lines = csv_file.readlines()
-
-    print(lines)
-
-    if len(section_list) == 0:
-        for line in lines:
-            line_arr = line.split(' ')
-            data.append([float(line_arr[1]),float(line_arr[2]),float(line_arr[3])])
-
-    for subsection in section_list:
-        extent = min_max(subsection)
-        for i in range(extent[0], extent[1]+1):
-            line = lines[i]
-            line_arr = line.split(' ')
-            data.append([float(line_arr[1]),float(line_arr[2]),float(line_arr[3])])
-
-    for i in range(len(data)):
-        row = []
-        for j in range(len(data)):
-            row.append(distance(data[i],data[j],3))
-        mat.append(row)
-
-    return mat
 
 # dissimilarity matrix from hera output
 
@@ -206,39 +137,17 @@ def saveSignal(bORw, embeddingType, numLines, data):
 
 # list all elements in directory
 
-def getFileNames(d, extension):
-    filesindir = []
-    for elem in os.listdir(d):
-        if os.path.isdir(d + '/' + elem):
-            filesindir += getFileNames(d + '/' + elem, extension)
-        else:
-            if elem[elem.find('.'):] == extension:
-                filesindir.append(d + '/' + elem)
-    return filesindir
+def getFileNames(d, extension):                                     
+    filesindir = []                                                     # empty list to add elements to
+    for elem in os.listdir(d):                                          # for every element in the current path
+        if os.path.isdir(d + '/' + elem):                               # check if the current path element is a directory
+            filesindir += getFileNames(d + '/' + elem, extension)       # recursively call getFileNames on the current directory 
+                                                                        # and add the results to the filesindir variable
 
-def persistenceDistance(section_list, addition, colorFlag, data, filesindir, bORw, start, step):
-    print(colorFlag)
-    if bORw == 'bottleneck':
-        hera = './hera/geom_bottleneck/build/bottleneck_dist '
-    else:
-        hera = './hera/geom_matching/wasserstein/wasserstein_dist '
-    for i in range(start,len(filesindir),step):
-        row = [get_frame_number(filesindir[i])]
-        for j in range(i+1,len(filesindir)):
-            row.append(get_frame_number(filesindir[j]))
-            if row[0] != '' and row[1] != '':
-                file1 = './Data/F001/persistence/' + addition + 'persistence_diagram_' + row[0][0] + '_' + row[0][1] + 'txt '
-                file2 = './Data/F001/persistence/' + addition + 'persistence_diagram_' + row[1][0] + '_' + row[1][1] + 'txt'
-                if not os.path.exists(file1):
-                    if 'subsections/' in addition:
-                        emotion = addition[len('subsections/')-1:]
-                    else:
-                        emotion = addition
-                    makeMatrix(row[0], emotion, section_list)
-                command_2 = hera + file1 + file2
-                herastream = os.popen(command_2)
-                row.append(herastream.read()[:-1])
-                data.append(row)
+        else:                                                           # otherwise the current path element is a file
+            if elem[elem.find('.'):] == extension:                      # check if the file has the correct extension
+                filesindir.append(d + '/' + elem)                       # append the current element with the filepath to the list
+    return filesindir                                                   # return the list containing all filenames in current dir
     
 
 ####################################################################################################

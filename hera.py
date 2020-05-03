@@ -1,59 +1,32 @@
-import multiprocessing
 from os import path
-import nmf
+import re, os, nmf, time
 
-def hera(section_list):
-    filesindir = nmf.getFileNames('Data/persistence')
+emotionFramePattern = re.compile(r"[a-zA-Z0-9]{4,12}_[a-zA-Z0-9]{3,8}_\d{3}\.")
 
-    colors = ['cyan', 'yellow', 'red', 'green']
+def hera(file1, file2, personID, path, subsection):
+    filepaths = ['Data/' + personID + '/' + path + subsection + 'bottleneck_dissimilarities.csv', 'Data/' + personID + '/' + path + subsection + 'wasserstein_dissimilarities.csv']
 
-    p_count = 2
+    dists = ['./hera/geom_bottleneck/build/bottleneck_dist ', './hera/geom_matching/wasserstein/wasserstein_dist ']
+    heras = [dist + file1 + ' ' + file2 for dist in dists]
+
+    lineparts = [emotionFramePattern.search(filename).group()[:-1] for filename in [file1, file2]]
+    indices = ','.join(lineparts)
+    streams = [os.popen(h) for h in heras]
+
+    for i in range(2):
+        csv_file = open(filepaths[i], 'a')
+        csv_file.write(indices + ',' + streams[i].read()[:-1] + '\n')
     
-    addition = ''
 
-    if len(section_list) == 0:
-        section = ''
-    else:
-        section = 'subsections/'
+subsections = ['leftEyebrow_','rightEyebrow_', 'nose_', 'mouth_']
 
-    for subsection in section_list:
-        addition += subsection + '_'
+dataSource = './Data/F001/subsections/persistence'
 
-    addition = section + addition
-
-    bottleneck_filepath = 'Data/F001/' + addition + 'bottleneck_dissimilarities.csv'
-    wasserstein_filepath = 'Data/F001/' + addition + 'wasserstein_dissimilarities.csv'
-
-    bexists = path.exists(bottleneck_filepath)
-    wexists = path.exists(wasserstein_filepath)
-
-    process = []
-    bottleneck_data = multiprocessing.Manager().list()
-    wasserstein_data = multiprocessing.Manager().list()
-
-    for i in range( p_count ):
-        if not bexists:
-            process.append(multiprocessing.Process(target=nmf.persistenceDistance, args=(addition, colors[i], bottleneck_data, filesindir, 'bottleneck', i, p_count)))
-        if not wexists:
-            process.append(multiprocessing.Process(target=nmf.persistenceDistance, args=(addition, colors[i+2], wasserstein_data, filesindir, 'wasserstein', i, p_count ) ) )
-
-    for p in process:
-        p.start()
-
-    for p in process:
-        p.join()
-
-    if not bexists:
-        with open(bottleneck_filepath, 'w') as file:
-            file.write('file1,file2,bottleneck_distance\n')
-            for row in bottleneck_data:
-                file.write(row[0]+ ',' + row[1] + ',' + row[2] + '\n')
-
-    if not wexists:                         
-        with open(wasserstein_filepath, 'w') as file:
-            file.write('file1,file2,wasserstein_distance\n')
-            for row in wasserstein_data:
-                file.write(row[0]+ ',' + row[1] + ',' + row[2] + '\n')
+filesindir = nmf.getFileNames(dataSource, '.txt')
 
 if __name__ == '__main__':
-    hera()
+    for i in range(len(filesindir)):
+        for j in range(i+1, len(filesindir)):
+            for subsection in subsections:
+                if subsection in filesindir[i] and subsection in filesindir[j]:
+                    hera(filesindir[i],filesindir[j], 'F001', 'subsections/', subsection)
