@@ -409,6 +409,7 @@ chartSvg =>
                         chartSvg,
                         i
                     )
+
         
                     printDot
                         (
@@ -448,7 +449,7 @@ chartSvg =>
                                         currentData[i]
                                     )
                             )
-
+                    
                     console.log(data)
                     
                     let upperQuartile = data.mean + 2*data.std_dev,

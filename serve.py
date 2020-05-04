@@ -65,7 +65,7 @@ def get_embedding_data():
                     file.write(json.dumps(data[-1]))
         else:
             data.append(None)
-    
+
     return json.dumps(data)
     
 @app.route('/face', methods=['GET'])

@@ -17,6 +17,28 @@ input[type=submit]{
     cursor: pointer;
 }
 
+nav {
+    align-self: left;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.95);
+    -moz-transform: scale(0.95);
+    -ms-transform: scale(0.95);
+    transform: scale(0.95);
+    -webkit-transform-origin: 90% 0 0;
+    -moz-transform-origin: 90% 0 0;
+    -ms-transform-origin: 90% 0 0;
+    transform-origin: 90% 0 0;
+    transform-origin: top left;
+}
+
+div {
+    -webkit-transform: scale(0.95);
+    -moz-transform: scale(0.95);
+    -ms-transform: scale(0.95);
+    transform: scale(0.95);
+    transform-origin: top left;
+}
+
 input[type=submit]:hover {
     background-color: rgb(54, 83, 179);
 }
@@ -28,6 +50,7 @@ form {
 
 #check {
     padding: 5px;
+    padding-top: 8px;
 }
 
 #button {
@@ -36,6 +59,8 @@ form {
 
 #slide {
     padding: 13px;
+    padding-top: 15px;
+    padding-right: 0px;
 }
 
 div input.slider {
@@ -84,4 +109,9 @@ div input.slider::-moz-range-thumb {
     float: right; 
     height: 30px; 
     width: 100%;
+}
+
+#chart {
+    display: block;
+    margin: auto;
 }

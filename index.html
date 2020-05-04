@@ -37,9 +37,9 @@
                 <div class="row">
                     <div id="options" class = "col" style="background-color: rgb(186, 236, 207);">
                         <br>
-                        <div><h1 style="text-align: center;">Settings</h1></div>
+                        <div><h2 style="text-align: center;">Settings</h2></div>
                         <div class="row">
-                            <div class="col-8"><h1 class="title">Embedding Type </h1></div>
+                            <div class="col-8"><h2 class="title">Embedding Type </h2></div>
                             <div class="col-4">
                                 <select id="embeddingType" name="embeddingType" onchange="reload()">
                                     <option value="mds">MDS</option>
@@ -50,7 +50,7 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-8"><h1 class="title">Topological Distance </h1></div>
+                            <div class="col-8"><h1 class="title">Topological Distance</h1></div>
                             <div class="col-4">
                                 <select id="differenceMetric" name="differenceMetric" onchange="reload()">
                                     <option value="bottleneck">Bottleneck</option>
@@ -70,10 +70,10 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col"><h1 class="title">Emotions </h1></div>
-                            <div class="col">
+                            <div class="col-7"><h2 class="title">Emotions </h2></div>
+                            <div class="col-5">
                                 <div class="row">
-                                    <div class="col-2">
+                                    <div class="col-5">
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()">
@@ -117,27 +117,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-1">
+                                    <div class="col-2">
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(0)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(0)">Play</button>
                                         </div>
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(1)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(1)">Play</button>
                                         </div>
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(2)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(2)">Play</button>
                                         </div>
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(3)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(3)">Play</button>
                                         </div>
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(4)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(4)">Play</button>
                                         </div>
                                         <div id="button" class="row">
-                                            <button type="button" class="btn btn-secondary" onclick="play(5)">&#9658;</button>
+                                            <button type="button" class="btn btn-secondary" onclick="play(5)">Play</button>
                                         </div>
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-5">
                                         <div id="slide" class='row'>
                                             <input name="slideValue1" id="frameSlider1" type="range" min="0" max="111" value="0" class="slider" onchange="slide(0)">
                                         </div>
@@ -162,7 +162,7 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col"><h1 class="title">Face Subsections </h1></div>
+                            <div class="col"><h2 class="title">Face Subsections </h2></div>
                             <div class="col">
                                 <div class="radio">
                                     <input type="radio" name="section" id="leftEye" value="leftEye" onchange="reload()">
@@ -197,17 +197,23 @@
                         </div>
                         
                     </div>
-                    <div class = "col-7">
+                    <div class = "col-6">
                         <br>
-                        <h1 style="text-align: center;">Embedding Graph</h1>
-                        <svg width="2000" height="500" style="border: none;" id="chart"></svg>
-                        <h1 style="text-align: center;">Action Units</h1>
-                        <svg width="200" height="200" style="border: none;" id="face1"></svg>
-                        <svg width="200" height="200" style="border: none;" id="face2"></svg>
-                        <svg width="200" height="200" style="border: none;" id="face3"></svg>
-                        <svg width="200" height="200" style="border: none;" id="face4"></svg>
-                        <svg width="200" height="200" style="border: none;" id="face5"></svg>
-                        <svg width="200" height="200" style="border: none;" id="face6"></svg>
+                        <div><h2 style="text-align: center;">Embedding Graph</h2></div>
+                        <div class = "row">
+                            <svg width="800" height="400" style="border: none;" id="chart"></svg>
+                        </div>
+                        <div><h2 style="text-align: center;">Action Units</h2></div>
+                        <div class = "row">
+                            <svg width="200" height="200" style="border: none;" id="face1"></svg>
+                            <svg width="200" height="200" style="border: none;" id="face2"></svg>
+                            <svg width="200" height="200" style="border: none;" id="face3"></svg>
+                            <svg width="200" height="200" style="border: none;" id="face4"></svg>
+                            <svg width="200" height="200" style="border: none;" id="face5"></svg>
+                            <svg width="200" height="200" style="border: none;" id="face6"></svg>
+                        </div>
+                        
+                        
                     </div>
                 </div>
             </form>
