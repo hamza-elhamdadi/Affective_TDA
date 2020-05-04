@@ -1,8 +1,5 @@
-import getData
+import getData, json, webbrowser, csv
 from os import path
-import json
-import webbrowser
-import csv
 
 from flask import Flask, request, render_template, send_from_directory, send_file
 
