@@ -1,10 +1,6 @@
 # functions for the nonmetric_data_sets project
 
-import math
-import re
-import numpy as np
-import matplotlib.pyplot as plt
-import os
+import math, re, numpy as np, matplotlib.pyplot as plt, os
 
 pi = np.pi
 
@@ -51,89 +47,6 @@ def get_frame_number(string):
         substring = string[start+1:end-1]
 
     return substring.split('_')
-
-# dissimilarity matrix from hera output
-
-def dissMatFromHeraOut(file_lines, length_of_file):
-    dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
-    for vals in file_lines:
-        dissimilarity[vals[0]][vals[1]] = vals[2]
-        dissimilarity[vals[1]][vals[0]] = vals[2]
-    return dissimilarity
-
-def writeDissimilarityMatrix(filename, dissimilarity):
-    with open(filename, 'w') as writefile:
-        for row in dissimilarity:
-            row = map(lambda val: str(val), row)
-            writefile.write(','.join(row))
-            writefile.write('\n')
-
-# Save an image of the embedding
-
-def saveSignal(bORw, embeddingType, numLines, data):
-    plt.plot(list(range(numLines)),data)
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/Lined/' + bORw + '_embedding_' + embeddingType + '.png')
-    plt.clf()
-
-    plt.plot(list(range(numLines))[:112],data[:112], color='b')                                 # Blue = Angry
-    plt.plot(list(range(numLines))[:108],data[112:220], color='g')                              # Green = Disgust
-    plt.plot(list(range(numLines))[:111],data[220:331], color='r')                              # Red = Fear
-    plt.plot(list(range(numLines))[:111],data[331:442], color='c')                              # Cyan = Happy
-    plt.plot(list(range(numLines))[:114],data[442:556], color='m')                              # Magenta = Sad
-    plt.plot(list(range(numLines))[:110],data[556:], color='k')                                 # Black = Surprised
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/Stacked/' + bORw + '_embedding_' + embeddingType + '_Stacked.png')
-    plt.clf()
-
-    plt.plot(list(range(numLines))[:112],data[:112])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.1,0.1)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Angry.png')
-    plt.clf()
-    plt.plot(list(range(numLines))[:108],data[112:220])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Disgust.png')
-    plt.clf()
-    plt.plot(list(range(numLines))[:111],data[220:331])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Fear.png')
-    plt.clf()
-    plt.plot(list(range(numLines))[:111],data[331:442])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Happy.png')
-    plt.clf()
-    plt.plot(list(range(numLines))[:114],data[442:556])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Sad.png')
-    plt.clf()
-    plt.plot(list(range(numLines))[:110],data[556:])
-    if embeddingType == 'MDS':
-        plt.ylim(-1,1)
-    elif embeddingType == 'Isomap':
-        plt.ylim(-0.01,0.01)
-    plt.savefig('Pictures/' + bORw + '_embedding_' + embeddingType + '_Surprise.png')
-    plt.clf()
 
 # list all elements in directory
 

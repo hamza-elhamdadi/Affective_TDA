@@ -1,5 +1,5 @@
 from ripser import ripser
-import nmf, math, numpy as np, os, re
+import nmf, math, numpy as np, os, re, itertools
 
 actionUnitsKey = {                                                                                                                                              # dictionary mapping parts of face
     "leftEye": (0,7),                                                                                                                                           # to a subset of the Action Units list
@@ -63,12 +63,20 @@ dataSource = '../Data'                                                          
 dataDestination = 'Data'                                                                                                                                        # directory where we will save data 
 person = 'F001'                                                                                                                                                 # id for the person
 
+ret = []
 files = nmf.getFileNames(dataSource, '.bnd')                                                                                                                    # strings containing the filenames in Data/F001
 subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']                                                                # all of the useful subsections of the face
 emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise']                                                                                             # emotions in dataset
 
+for i in range(1,len(subsections)+1):
+    ret += itertools.combinations(subsections, i)
+
+ret = map(lambda l : list(l),ret)
+
 if __name__ == '__main__':
     for filename in files:
-        for subsection in subsections:
+        print(filename)
+        for section_list in ret:
+            print(section_list)
             for emotion in emotions:
-                build(filename, [subsection], emotion, person, dataDestination)
+                build(filename, section_list, emotion, person, dataDestination)

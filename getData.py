@@ -1,10 +1,6 @@
 from sklearn.manifold import MDS, TSNE, Isomap
 from os import path
-import numpy as np
-import nmf
-import hera
-import csv
-import json
+import hera, csv, json, numpy as np
 
 length_of_file = 684
 
@@ -41,6 +37,12 @@ def min_max(subsection):
     else:                                                                                                                                                       # if it's invalid
         return None                                                                                                                                             # return None
 
+def dissMatFromHeraOut(file_lines, length_of_file):
+    dissimilarity = np.zeros(shape=(length_of_file,length_of_file))
+    for vals in file_lines:
+        dissimilarity[vals[0]][vals[1]] = vals[2]
+        dissimilarity[vals[1]][vals[0]] = vals[2]
+    return dissimilarity
 
 def map_names(string, isWholeFace):
     vals = string.split('_')
@@ -75,7 +77,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID)
         csv_formatted = map(lambda elem : mapping_lambda(elem), csv_file)
         values = [[map_names(row[0], isWholeFace),map_names(row[1], isWholeFace),float(row[2])] for row in csv_formatted]
 
-    dissimilarities = nmf.dissMatFromHeraOut(values, length_of_file)
+    dissimilarities = dissMatFromHeraOut(values, length_of_file)
     embedding = embeddings[embeddingType]
 
     data = embedding.fit_transform(np.asmatrix(dissimilarities))
