@@ -626,3 +626,7 @@ async i =>
 
     return false
 }
+
+window.onload = function(){
+    reload()
+}

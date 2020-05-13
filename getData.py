@@ -44,12 +44,9 @@ def dissMatFromHeraOut(file_lines, length_of_file):
         dissimilarity[vals[1]][vals[0]] = vals[2]
     return dissimilarity
 
-def map_names(string, isWholeFace):
+def map_names(string):
     vals = string.split('_')
-    if isWholeFace:
-        return key[vals[0]][0] + int(vals[1])
-    else:
-        return key[vals[1]][0] + int(vals[2])
+    return key[vals[-2]][0] + int(vals[-1])
 
 def mapping_lambda(row):
     if row[2] == '' or row[2] == 'inf':
@@ -59,13 +56,8 @@ def mapping_lambda(row):
 
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
-    if len(section_list) == 0:
-        filepath = 'Data/F001/' + differenceMetric + '_dissimilarities.csv'
-        isWholeFace = True
-    else:
-        sections = '_'.join(section_list)
-        filepath = 'Data/F001/subsections/' + sections + '_' + differenceMetric + '_dissimilarities.csv'
-        isWholeFace = False
+    sections = '_'.join(section_list)
+    filepath = f'Data/F001/subsections/{sections}_{differenceMetric}_dissimilarities.csv'
 
     if not path.exists(filepath):
         print(filepath)
@@ -75,7 +67,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID)
         csv_file = csv.reader(file, delimiter=',')
         next(csv_file)
         csv_formatted = map(lambda elem : mapping_lambda(elem), csv_file)
-        values = [[map_names(row[0], isWholeFace),map_names(row[1], isWholeFace),float(row[2])] for row in csv_formatted]
+        values = [[map_names(row[0]),map_names(row[1]),float(row[2])] for row in csv_formatted]
 
     dissimilarities = dissMatFromHeraOut(values, length_of_file)
     embedding = embeddings[embeddingType]
@@ -95,7 +87,7 @@ def get_face_data(section_list, personData, emotion, frameNumber):
         frame = '00' + frame
     elif len(frame) == 2:
         frame = '0' + frame
-    file_path = '../Data/' + str(personData) + '/' + str(emotion) + '/' + frame + '.bnd'
+    file_path = f'../Data/{personData}/{emotion}/{frame}.bnd'
 
     with open(file_path, 'r') as file:
         data = file.readlines()
@@ -110,5 +102,5 @@ def get_face_data(section_list, personData, emotion, frameNumber):
         pointRange = min_max(subsection)
         ret += data[pointRange[0]:pointRange[1]]
 
-        return ret
+    return ret
 

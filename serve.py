@@ -35,24 +35,19 @@ def preprocess():
 def get_embedding_data():
     emType = request.args.get('embeddingType')
     dMetric = request.args.get('differenceMetric')
-    sec = request.args.get('section')
+    sections = [request.args.get(sec) for sec in subsections]
 
-    fileNameStart = 'cache/F001/' + str(dMetric) + '_' + str(emType) + '_'
+    section_list = list(filter(lambda elem : True if elem != 'null' else False, sections))
+    secs = '_'.join(section_list)
 
-    if sec != 'null':
-        fileNameStart += sec + '_'
-        section_list = [sec]
-    else:
-        section_list = []
-
+    fileNameStart = f'cache/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
         
-    
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = fileNameStart + emotions[i] + '.json'
+            emotionFile = f'{fileNameStart}{emotions[i]}.json'
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
@@ -70,24 +65,19 @@ def get_face_data():
     index = request.args.get('emotion')
     frameNumbers = [request.args.get(slidevalues[i]) for i in range(len(slidevalues))]
     frameNumber = frameNumbers[int(index)]
-    sec = request.args.get('section')
 
-    fileNameStart = 'cache/F001/FaceData/' + str(frameNumber)
+    sections = [request.args.get(sec) for sec in subsections]
+    section_list = list(filter(lambda elem : True if elem != 'null' else False, sections))
+    secs = '_'.join(section_list)
 
-    print(fileNameStart)
-
-    if sec != 'null':
-        fileNameStart += sec + '_'
-        section_list = [sec]
-    else:
-        section_list = []
+    fileNameStart = f'cache/F001/FaceData/{frameNumber}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
 
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = fileNameStart + emotions[i] + '.json'
+            emotionFile = f'{fileNameStart}{emotions[i]}.json'
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))

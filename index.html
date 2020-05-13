@@ -76,42 +76,42 @@
                                     <div class="col-5">
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Angry" id="AngryHidden" value=0>
                                                 <label for="Angry">Angry</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Disgust" id="DisgustHidden" value=0>
                                                 <label for="Disgust">Disgust</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Fear" id="FearHidden" value=0>
                                                 <label for="Fear">Fear</label>      
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Happy" id="HappyHidden" value=0>
                                                 <label for="Happy">Happy</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Sad" id="SadHidden" value=0>
                                                 <label for="Sad">Sad</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
-                                                <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()">
+                                                <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Surprise" id="SurpriseHidden" value=0>
                                                 <label for="Surprise">Surprise</label>
                                             </div>
@@ -164,35 +164,41 @@
                         <div class="row">
                             <div class="col"><h2 class="title">Face Subsections </h2></div>
                             <div class="col">
-                                <div class="radio">
-                                    <input type="radio" name="section" id="leftEye" value="leftEye" onchange="reload()">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="leftEye" id="leftEye" value="leftEye" onchange="reload()" checked>
                                     <label for="section">Left Eye</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="rightEye" value="rightEye" onchange="reload()">
+                                <input type="hidden" name="leftEyeHidden" id="leftEyeHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="rightEye" id="rightEye" value="rightEye" onchange="reload()" checked>
                                     <label for="section">Right Eye</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="leftEyebrow" value="leftEyebrow" onchange="reload()">
+                                <input type="hidden" name="rightEyeHidden" id="rightEyeHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="leftEyebrow" id="leftEyebrow" value="leftEyebrow" onchange="reload()" checked>
                                     <label for="section">Left Eyebrow</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="rightEyebrow" value="rightEyebrow" onchange="reload()">
+                                <input type="hidden" name="leftEyebrowHidden" id="leftEyebrowHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="rightEyebrow" id="rightEyebrow" value="rightEyebrow" onchange="reload()" checked>
                                     <label for="section">Right Eyebrow</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="nose" value="nose" onchange="reload()">
+                                <input type="hidden" name="rightEyebrowHidden" id="rightEyebrowHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="nose" id="nose" value="nose" onchange="reload()" checked>
                                     <label for="section">Nose</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="mouth" value="mouth" onchange="reload()">
+                                <input type="hidden" name="noseHidden" id="noseHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="mouth" id="mouth" value="mouth" onchange="reload()" checked>
                                     <label for="section">Mouth</label>
                                 </div>
-                                <div class="radio">
-                                    <input type="radio" name="section" id="jawline" value="jawline" onchange="reload()">
+                                <input type="hidden" name="mouthHidden" id="mouthHidden" value="null">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="jawline" id="jawline" value="jawline" onchange="reload()" checked>
                                     <label for="section">Jawline</label>
                                 </div>
-                                <input type="hidden" name="section" id="jawlineHidden" value="null">
+                                <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
                             </div>
                         </div>
                         
