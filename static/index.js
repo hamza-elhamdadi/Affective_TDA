@@ -1,6 +1,7 @@
 /********* variables *********/
 
 var 
+    svg,
     currentData, currentFaceData,
 
     cWidth, cWidth,
@@ -216,6 +217,9 @@ const d3Setup =
             fWidth = chartWidth
             fHeight = chartHeight
         }
+
+        setMinimumYVal(yExtent[0])
+        setMaximumYVal(yExtent[1])
         
         let xAxis = 
                 findAxis
@@ -317,6 +321,29 @@ const printHorizLine = null
 
 /** getters and setters **/
 
+//gets the minimum value for the y axis
+const getMinimumYVal = 
+() =>
+    $('#yMin')
+        .val()
+
+//gets the maximum value for the y axis
+const getMaximumYVal = 
+() =>
+    $('#yMax')
+        .val()
+
+//sets the minimum value for the y axis
+const setMinimumYVal =
+value =>
+    $('#yMin')
+        .val(value)
+
+//sets the maximum value for the y axis
+const setMaximumYVal =
+value =>
+    $('#yMax')
+        .val(value)
 
 //gets the value of the chart type (can be linechart or boxplot)
 const getChartType = 
@@ -391,46 +418,48 @@ data =>
     
 
 
+
 /**
  * updates the linechart svg for the current
  * specifications and data
  */
 const update_linechart = 
-chartSvg => 
-    {
-        
-        R.forEach
-        (
-            i=>{
-                if(!isNull(currentData[i]))
-                {
-                    printPath
+() =>
+{
+    emptyChart('#chart')
+
+    R.forEach
+    (
+        i=>{
+            if(!isNull(currentData[i]))
+            {
+                printPath
+                (
+                    svg,
+                    i
+                )
+
+    
+                printDot
                     (
-                        chartSvg,
-                        i
+                        svg,
+                        currentChartXAxis,
+                        currentChartYAxis,
+                        [calcDotCoordinates(i)],
+                        5
                     )
-
-        
-                    printDot
-                        (
-                            chartSvg,
-                            currentChartXAxis,
-                            currentChartYAxis,
-                            [calcDotCoordinates(i)],
-                            5
-                        )
-                }
-            },
-            R.range(0,currentData.length)
-        )
+            }
+        },
+        R.range(0,currentData.length)
+    )
+}
+    
                 
-    }
-
 /**
  * TODO: finish printing the box plots (replace the dots that are currently on the page)
  */
 const update_boxplot = 
-chartSvg => 
+() => 
     {
         console.clear()
         console.log('Data for Box_Plots')
@@ -457,7 +486,7 @@ chartSvg =>
                     
                     printDot
                         (
-                            chartSvg,
+                            svg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [{x:i,y:data.mean}],
@@ -466,7 +495,7 @@ chartSvg =>
 
                     printDot
                         (
-                            chartSvg,
+                            svg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [{x:i,y:data.min}],
@@ -475,7 +504,7 @@ chartSvg =>
                     
                     printDot
                         (
-                            chartSvg,
+                            svg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [{x:i,y:data.max}],
@@ -484,7 +513,7 @@ chartSvg =>
 
                     printDot
                         (
-                            chartSvg,
+                            svg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [{x:i,y:upperQuartile}],
@@ -493,7 +522,7 @@ chartSvg =>
 
                     printDot
                         (
-                            chartSvg,
+                            svg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [{x:i,y:lowerQuartile}],
@@ -529,17 +558,37 @@ const update_chart =
 chartName => 
     {
         emptyChart(chartName)
-    
-        let d3SVG = d3Setup(chartName)
 
-        if(R.equals(getChartType(), 'linechart'))
-        (
-            update_linechart(d3SVG)
-        )
-        else
-        {
-            update_boxplot(d3SVG)
-        }
+        console.log('dude, it got here')
+
+        svg = d3Setup(chartName)
+
+        console.log('but also it got here')
+
+        if(R.equals(getChartType(), 'linechart')) update_linechart()
+        else update_boxplot()
+    }
+
+//update linechart axes
+const changeChartAxes =
+() =>
+    {
+        console.log('here')
+
+        let yExtent = [getMinimumYVal(),getMaximumYVal()]
+
+        console.log('then here')
+
+        currentChartYAxis = 
+            findAxis
+                (
+                    yExtent,
+                    [cHeight,0]
+                )
+
+        console.log('and here')
+
+        update_linechart()
     }
 
 /**
@@ -579,6 +628,8 @@ i =>
 const reload = 
 () => 
 {
+    console.log('this is the first check')
+
     checks(emotions)
     checks(subsections)
 
@@ -628,5 +679,6 @@ async i =>
 }
 
 window.onload = function(){
+    console.log('did it even get here?')
     reload()
 }
