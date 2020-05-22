@@ -37,7 +37,7 @@ def get_embedding_data():
     dMetric = request.args.get('differenceMetric')
     sections = [request.args.get(sec) for sec in subsections]
 
-    section_list = list(filter(lambda elem : True if elem != 'null' else False, sections))
+    section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
     fileNameStart = f'cache/F001/{dMetric}_{emType}_{secs}_'
@@ -67,7 +67,7 @@ def get_face_data():
     frameNumber = frameNumbers[int(index)]
 
     sections = [request.args.get(sec) for sec in subsections]
-    section_list = list(filter(lambda elem : True if elem != 'null' else False, sections))
+    section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
     fileNameStart = f'cache/F001/FaceData/{frameNumber}_{secs}_'

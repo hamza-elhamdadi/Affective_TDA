@@ -253,7 +253,7 @@ const d3Setup =
  * 
  */
 const printDot =
-(svg, xAxis, yAxis, data, radius) =>{
+(svg, xAxis, yAxis, data, radius, color='black') =>{
     svg.append('g')
         .attr('transform', translation)
         .selectAll('dot')
@@ -263,6 +263,7 @@ const printDot =
             .attr('cx', d=>xAxis(d.x))
             .attr('cy', d=>yAxis(d.y))
             .attr('r', radius)
+            .style('fill', color)
 }
     
 /**
@@ -336,7 +337,7 @@ const printHorizLine =
 //gets the percent confidence interval 
 const getConfidenceInterval = 
 () =>
-    $('confInterval')
+    $('#confInterval')
         .val()
 
 //gets the value of the chart type (can be linechart or boxplot)
@@ -448,7 +449,8 @@ const update_linechart =
                         currentChartXAxis,
                         currentChartYAxis,
                         [calcDotCoordinates(i)],
-                        5
+                        5,
+                        dotColors[i]
                     )
             }
         },
@@ -458,7 +460,7 @@ const update_linechart =
     
                 
 /**
- * TODO: finish printing the box plots (replace the dots that are currently on the page)
+ * Shows the boxplots for the selected emotions. 
  */
 const update_boxplot = 
 () => 
@@ -578,11 +580,13 @@ const update_boxplot =
     }
 
 const update_faceData = 
-(jsonData, emotion, chartName) => 
+(jsonData, emotion, chartName, color) => 
     {
         $(chartName).empty()
 
         let chartSvg = d3Setup(chartName, jsonData)
+
+        console.log(color)
 
         printDot
             (
@@ -590,7 +594,8 @@ const update_faceData =
                 currentFaceXAxis,
                 currentFaceYAxis,
                 jsonData,
-                2
+                2,
+                color
             )
     }
 
@@ -605,19 +610,19 @@ chartName =>
         if(R.equals(getChartType(), 'linechart')) 
         {
             update_linechart()
+            confidence_interval()
         }
         else 
         {
             update_boxplot()
+            confidence_interval()
         }
     }
 
 //update linechart axes
 const changeChartAxes =
-(minYVal, maxYVal) =>
+yExtent =>
     {
-        let yExtent = [minYVal,maxYVal]
-
         currentChartYAxis = 
             findAxis
                 (
@@ -639,7 +644,54 @@ const changeChartAxes =
 const confidence_interval = 
 () =>
     {
-        let confInterval = getConfidenceInterval()
+        console.log('confidence interval toggled')
+        console.log(`Confidence Interval: ${getConfidenceInterval()}`)
+
+        let confText = `${getConfidenceInterval()}% of data`
+
+        $('#percentage').text(confText)
+
+        let min, max
+
+        let toRemove = (1.0 - (getConfidenceInterval()/100))/2
+
+        let minExtent = 0, maxExtent = 0
+
+        let data = []
+
+        for(a of currentData)
+            {
+                if(a != null)
+                    {
+                        data = data.concat(a)
+                    }
+            } 
+        
+        if(getConfidenceInterval() == 100)
+        {
+            min = 0,
+            max = data.length-1
+        }
+        else
+        {
+            min = Math.ceil(data.length * toRemove),
+            max = data.length-min
+        }
+
+        if(data != null)
+            {
+                let sortedData = 
+                    R.sort
+                        (
+                            (a,b) => a.y-b.y,
+                            data
+                        )
+                
+                changeChartAxes([sortedData[min].y, sortedData[max].y])
+                
+            }
+
+        
     }
     
 /**
@@ -666,7 +718,8 @@ i =>
                     ( 
                         jsonData[i], 
                         emotions[i],
-                        `#${faces[i]}`
+                        `#${faces[i]}`,
+                        dotColors[i]
                     )
                 
                 update_chart('#chart')
