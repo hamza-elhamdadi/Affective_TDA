@@ -1,7 +1,7 @@
 /********* variables *********/
 
 var 
-    svg,
+    svg, toggle = false,
     currentData, currentFaceData,
 
     cWidth, cWidth,
@@ -291,33 +291,48 @@ const printPath =
         .style('stroke', strokeColors[i])
 
 /**
- * TODO
+ * prints a vertical line
  */
 const printVertLine = 
-(svg, data, i) =>
+(svg, xAxis, yAxis, y, i) =>
     svg
-    .append('g')
-        .selectAll('vertlines')
-        .data(data)
-        .enter()
-        .append('line')
-            .attr('x1',i)
-            .attr('x2',i)
-            .attr('y1',d=>d.min)
-            .attr('y2',d=>d.max)
-            .attr('stroke', 'black')
-            .style('width', 40)
-
+    .append('line')
+        .attr('transform', translation)
+        .attr('stroke', 'black')
+        .attr('x1',xAxis(i))
+        .attr('x2',xAxis(i))
+        .attr('y1',yAxis(y[0]))
+        .attr('y2',yAxis(y[1]))
 
 /**
- * TODO
+ * prints a rectangle
+ * TODO: fix
  */
-const printRect = null
+const printRect = 
+(svg, xAxis, yAxis, xVal, yVal1, yVal2) =>
+    svg
+    .append('rect')
+        .attr('transform', translation)
+        .attr('x', xAxis(xVal))
+        .attr('y', yAxis(yVal1))
+        .attr('width', xAxis(0.1))
+        .attr('height', yAxis(yVal2)-yAxis(yVal1))
+        .attr('stroke', 'black')
+        .attr('fill', 'rgb(186, 236, 207)');
 
 /**
- * TODO
+ * prints a horizontal line
  */
-const printHorizLine = null
+const printHorizLine = 
+(svg, xAxis, yAxis, x, i) =>
+    svg
+    .append('line')
+        .attr('transform', translation)
+        .attr('stroke', 'black')
+        .attr('x1',xAxis(x[0]))
+        .attr('x2',xAxis(x[1]))
+        .attr('y1',yAxis(i))
+        .attr('y2',yAxis(i))
 
 /** getters and setters **/
 
@@ -375,6 +390,14 @@ button =>
                 'disabled', 
                 disable
             )
+
+//toggles Box Plot Data Points
+const toggleData =
+() =>
+    {
+        toggle = !toggle
+        update_boxplot()
+    }
 
 /**
  * empties the svg for the chart 
@@ -464,6 +487,8 @@ const update_boxplot =
         console.clear()
         console.log('Data for Box_Plots')
 
+        emptyChart('#chart')
+
         R.forEach
         (
             i=>{
@@ -478,56 +503,93 @@ const update_boxplot =
                                         currentData[i]
                                     )
                             )
-                    
+
                     console.log(data)
                     
                     let upperQuartile = data.mean + 2*data.std_dev,
                         lowerQuartile = data.mean - 2*data.std_dev
                     
-                    printDot
+                    if(upperQuartile > data.max) upperQuartile = data.max
+                    if(lowerQuartile < data.min) lowerQuartile = data.min
+
+                    printVertLine
                         (
                             svg,
                             currentChartXAxis,
                             currentChartYAxis,
-                            [{x:i,y:data.mean}],
-                            3
+                            [data.min, data.max],
+                            i
                         )
 
-                    printDot
+                    console.log(`${i}: ${upperQuartile-2*lowerQuartile}`)
+
+                    printRect
                         (
                             svg,
                             currentChartXAxis,
                             currentChartYAxis,
-                            [{x:i,y:data.min}],
-                            3
+                            i-0.05,
+                            upperQuartile,
+                            lowerQuartile,
                         )
                     
-                    printDot
+                    printHorizLine
                         (
                             svg,
                             currentChartXAxis,
                             currentChartYAxis,
-                            [{x:i,y:data.max}],
-                            3
+                            [i-0.05,i+0.05],
+                            data.mean
+                            
                         )
 
-                    printDot
-                        (
-                            svg,
-                            currentChartXAxis,
-                            currentChartYAxis,
-                            [{x:i,y:upperQuartile}],
-                            3
-                        )
+                    if(toggle)
+                    {
+                        printDot
+                            (
+                                svg,
+                                currentChartXAxis,
+                                currentChartYAxis,
+                                [{x:i,y:data.mean}],
+                                3
+                            )
 
-                    printDot
-                        (
-                            svg,
-                            currentChartXAxis,
-                            currentChartYAxis,
-                            [{x:i,y:lowerQuartile}],
-                            3
-                        )
+                        printDot
+                            (
+                                svg,
+                                currentChartXAxis,
+                                currentChartYAxis,
+                                [{x:i,y:data.min}],
+                                3
+                            )
+                        
+                        printDot
+                            (
+                                svg,
+                                currentChartXAxis,
+                                currentChartYAxis,
+                                [{x:i,y:data.max}],
+                                3
+                            )
+
+                        printDot
+                            (
+                                svg,
+                                currentChartXAxis,
+                                currentChartYAxis,
+                                [{x:i,y:upperQuartile}],
+                                3
+                            )
+
+                        printDot
+                            (
+                                svg,
+                                currentChartXAxis,
+                                currentChartYAxis,
+                                [{x:i,y:lowerQuartile}],
+                                3
+                            )
+                    }
                     
                 }
             },
@@ -565,8 +627,14 @@ chartName =>
 
         console.log('but also it got here')
 
-        if(R.equals(getChartType(), 'linechart')) update_linechart()
-        else update_boxplot()
+        if(R.equals(getChartType(), 'linechart')) 
+        {
+            update_linechart()
+        }
+        else 
+        {
+            update_boxplot()
+        }
     }
 
 //update linechart axes
@@ -588,7 +656,14 @@ const changeChartAxes =
 
         console.log('and here')
 
-        update_linechart()
+        if(R.equals(getChartType(), 'linechart')) 
+        {
+            update_linechart()
+        }
+        else 
+        {
+            update_boxplot()
+        }
     }
 
 /**

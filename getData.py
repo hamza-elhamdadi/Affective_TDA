@@ -57,7 +57,7 @@ def mapping_lambda(row):
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
     sections = '_'.join(section_list)
-    filepath = f'Data/F001/subsections/{sections}_{differenceMetric}_dissimilarities.csv'
+    filepath = f'/Data/F001/subsections/{sections}_{differenceMetric}_dissimilarities.csv'
 
     if not path.exists(filepath):
         print(filepath)

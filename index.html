@@ -73,10 +73,16 @@
                         <div class="row">
                             <div class="col-8"><h1 class="title">What kind of graph would you like to display?</h1></div>
                             <div class="col-4">
-                                <select id="graphType" name="graphType" onchange="reload()">
-                                    <option value="linechart">Line Graph</option>
-                                    <option value="boxplot">Box and Whisker Plot</option>
-                                </select>
+                                <div class="row">
+                                    <select id="graphType" name="graphType" onchange="reload()">
+                                        <option value="linechart">Line Graph</option>
+                                        <option value="boxplot">Box and Whisker Plot</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <div class="row" style="justify-content: center;">
+                                    <button type="button" class="btn btn-primary" onclick="toggleData()">Show Box Plot Data</button>
+                                </div>
                             </div>
                         </div>
                         <hr>
