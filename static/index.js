@@ -1,7 +1,7 @@
 /********* variables *********/
 
 var 
-    svg,
+    svg, toggle = false,
     currentData, currentFaceData,
 
     cWidth, cWidth,
@@ -602,8 +602,14 @@ chartName =>
 
         svg = d3Setup(chartName)
 
-        if(R.equals(getChartType(), 'linechart')) update_linechart()
-        else update_boxplot()
+        if(R.equals(getChartType(), 'linechart')) 
+        {
+            update_linechart()
+        }
+        else 
+        {
+            update_boxplot()
+        }
     }
 
 //update linechart axes
@@ -619,7 +625,14 @@ const changeChartAxes =
                     [cHeight,0]
                 )
 
-        update_linechart()
+        if(R.equals(getChartType(), 'linechart')) 
+        {
+            update_linechart()
+        }
+        else 
+        {
+            update_boxplot()
+        }
     }
 
 // updates axes based on confidence interval
