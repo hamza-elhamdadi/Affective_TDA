@@ -57,7 +57,7 @@ def mapping_lambda(row):
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
     sections = '_'.join(section_list)
-    filepath = f'Data/F001/subsections/{sections}_{differenceMetric}_dissimilarities.csv'
+    filepath = f'Data/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
 
     if not path.exists(filepath):
         print(filepath)
@@ -100,7 +100,7 @@ def get_face_data(section_list, personData, emotion, frameNumber):
 
     for subsection in section_list:
         pointRange = min_max(subsection)
-        ret += data[pointRange[0]:pointRange[1]]
+        ret += data[pointRange[0]:pointRange[1]+1]
 
     return ret
 

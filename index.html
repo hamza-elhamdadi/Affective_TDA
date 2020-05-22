@@ -34,32 +34,43 @@
     <div class = "page">
         <div class="sidebar">
             <form id = "settings">
-                <div class="row">
-                    <div id="options" class = "col" style="background-color: rgb(186, 236, 207);">
+                <div class="row d-inline-flex justify-content-center text-center">
+                    <div id="options" class = "col-3 text-center" style="background-color: rgb(186, 236, 207);">
                         <br>
-                        <div><h2 style="text-align: center;">Settings</h2></div>
-                        <div class="row">
-                            <div class="col-8"><h2 class="title">Embedding Type </h2></div>
-                            <div class="col-4">
-                                <select id="embeddingType" name="embeddingType" onchange="reload()">
+                        <div class="row d-inline-flex justify-content-center text-center"><h2 >Settings</h2></div>
+                        <div class="row d-flex justify-content-center text-center">
+                            <h2 class="title">Embedding Type </h2>
+                        </div>
+                        <div class="row d-inline justify-content-center text-center">
+                                <select class = "form-control" id="embeddingType" name="embeddingType" onchange="reload()">
                                     <option value="mds">MDS</option>
                                     <option value="isomap">Isomap</option>
                                     <option value="tsne">TSNE</option>
                                 </select>
-                            </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="col-8"><h1 class="title">Topological Distance</h1></div>
-                            <div class="col-4">
-                                <select id="differenceMetric" name="differenceMetric" onchange="reload()">
+                        <div class="row d-flex justify-content-center text-center">
+                            <h1 class="title">Topological Distance</h1>
+                        </div>
+                        <div class="row d-inline justify-content-center text-center">
+                                <select class="form-control" id="differenceMetric" name="differenceMetric" onchange="reload()">
                                     <option value="bottleneck">Bottleneck</option>
                                     <option value="wasserstein">Wasserstein</option>
                                 </select>
-                            </div>
                         </div>
                         <br>
+                        <div class="row d-flex justify-content-center text-center">
+                            <h1 class="title">Confidence Interval</h1>
+                        </div>
                         <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col">
+                                <span style="display: flex">
+                                    <input type="range" min="0" max="100" value="95" class="slider" id="confInterval" name="confInterval" >
+                                </span>
+                            </div>
+                        </div>
+                        <!--<div class="row">
                             <div class="col-8"><h1 class="title">Y Axis</h1></div>
                             <div class="col-4">
                                 <span style="display: flex">
@@ -68,21 +79,24 @@
                                     <button type="button" class="btn btn-primary" style="height: 50%" onclick="changeChartAxes()">Update</button>
                                 </span>
                             </div>
+                        </div>-->
+                        <hr>
+                        <div class="row d-flex justify-content-center text-center">
+                            <h1 class="title">What kind of graph would you like to display?</h1>
+                        </div>
+                        <div class="row d-inline justify-content-center text-center">
+                            <select class="form-control" id="graphType" name="graphType" onchange="reload()">
+                                <option value="linechart">Line Graph</option>
+                                <option value="boxplot">Box and Whisker Plot</option>
+                            </select>
                         </div>
                         <hr>
-                        <div class="row">
-                            <div class="col-8"><h1 class="title">What kind of graph would you like to display?</h1></div>
-                            <div class="col-4">
-                                <select id="graphType" name="graphType" onchange="reload()">
-                                    <option value="linechart">Line Graph</option>
-                                    <option value="boxplot">Box and Whisker Plot</option>
-                                </select>
-                            </div>
+                        <div class="row d-flex justify-content-center text-center">
+                            <h2 class="title">Emotions </h2>
+                            
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-7"><h2 class="title">Emotions </h2></div>
-                            <div class="col-5">
+                        <div class="row d-inline justify-content-center text-center">
+                            <div class="col">
                                 <div class="row">
                                     <div class="col-5">
                                         <div class="row" id="check">
@@ -128,7 +142,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <div id="button" class="row">
                                             <button type="button" class="btn btn-secondary" onclick="play(0)">Play</button>
                                         </div>
@@ -148,7 +162,7 @@
                                             <button type="button" class="btn btn-secondary" onclick="play(5)">Play</button>
                                         </div>
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-4">
                                         <div id="slide" class='row'>
                                             <input name="slideValue1" id="frameSlider1" type="range" min="0" max="111" value="0" class="slider" onchange="slide(0)">
                                         </div>
@@ -172,49 +186,40 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
-                            <div class="col"><h2 class="title">Face Subsections </h2></div>
-                            <div class="col">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="leftEye" id="leftEye" value="leftEye" onchange="reload()" checked>
-                                    <label for="section">Left Eye</label>
-                                </div>
-                                <input type="hidden" name="leftEyeHidden" id="leftEyeHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="rightEye" id="rightEye" value="rightEye" onchange="reload()" checked>
-                                    <label for="section">Right Eye</label>
-                                </div>
-                                <input type="hidden" name="rightEyeHidden" id="rightEyeHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="leftEyebrow" id="leftEyebrow" value="leftEyebrow" onchange="reload()" checked>
-                                    <label for="section">Left Eyebrow</label>
-                                </div>
-                                <input type="hidden" name="leftEyebrowHidden" id="leftEyebrowHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="rightEyebrow" id="rightEyebrow" value="rightEyebrow" onchange="reload()" checked>
-                                    <label for="section">Right Eyebrow</label>
-                                </div>
-                                <input type="hidden" name="rightEyebrowHidden" id="rightEyebrowHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="nose" id="nose" value="nose" onchange="reload()" checked>
-                                    <label for="section">Nose</label>
-                                </div>
-                                <input type="hidden" name="noseHidden" id="noseHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="mouth" id="mouth" value="mouth" onchange="reload()" checked>
-                                    <label for="section">Mouth</label>
-                                </div>
-                                <input type="hidden" name="mouthHidden" id="mouthHidden" value="null">
-                                <div class="checkbox">
-                                    <input type="checkbox" name="jawline" id="jawline" value="jawline" onchange="reload()" checked>
-                                    <label for="section">Jawline</label>
-                                </div>
-                                <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
-                            </div>
+                        <div class="row d-flex justify-content-center text-center">
+                            <h2 class="title">Face Subsections </h2>
                         </div>
-                        
+                        <div class="row  d-inline justify-content-center text-center">
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEye" id="leftEye" value="leftEye" onchange="reload()" checked>
+                                <label for="leftEye">Left Eye</label>
+                                <input type="hidden" name="leftEyeHidden" id="leftEyeHidden" value="null">
+                                <input type="checkbox" name="rightEye" id="rightEye" value="rightEye" onchange="reload()" checked>
+                                <label for="rightEye">Right Eye</label>
+                                <input type="hidden" name="rightEyeHidden" id="rightEyeHidden" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEyebrow" id="leftEyebrow" value="leftEyebrow" onchange="reload()" checked>
+                                <label for="leftEyebrow">Left Eyebrow</label>
+                                <input type="hidden" name="leftEyebrowHidden" id="leftEyebrowHidden" value="null">
+                                <input type="checkbox" name="rightEyebrow" id="rightEyebrow" value="rightEyebrow" onchange="reload()" checked>
+                                <label for="rightEyebrow">Right Eyebrow</label>
+                                <input type="hidden" name="rightEyebrowHidden" id="rightEyebrowHidden" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="nose" id="nose" value="nose" onchange="reload()" checked>
+                                <label for="nose">Nose</label>
+                                <input type="hidden" name="noseHidden" id="noseHidden" value="null">
+                                <input type="checkbox" name="mouth" id="mouth" value="mouth" onchange="reload()" checked>
+                                <label for="mouth">Mouth</label>
+                                <input type="hidden" name="mouthHidden" id="mouthHidden" value="null">
+                                <input type="checkbox" name="jawline" id="jawline" value="jawline" onchange="reload()" checked>
+                                <label for="jawline">Jawline</label>
+                            </div>
+                            <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
+                        </div>
                     </div>
-                    <div class = "col-6">
+                    <div class = "col-9">
                         <br>
                         <div><h2 style="text-align: center;">Embedding Graph</h2></div>
                         <div class = "row">
