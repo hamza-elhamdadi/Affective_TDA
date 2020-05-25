@@ -2,7 +2,17 @@
 
 var 
     svg, toggle = false,
-    currentData, currentFaceData,
+    currentData, 
+    
+    currentFaceData = 
+        {
+            'Angry': null,
+            'Disgust': null,
+            'Fear': null,
+            'Happy': null,
+            'Sad': null,
+            'Surprise': null
+        },
 
     cWidth, cWidth,
     fWidth, fHeight,
@@ -38,16 +48,6 @@ const
         'mouth', 
         'jawline'
     ],
-    //all valid face svg ids
-    faces = 
-    [
-        'face1', 
-        'face2', 
-        'face3', 
-        'face4', 
-        'face5', 
-        'face6'
-    ],
     //all valid slider ids
     sliders = 
     [
@@ -60,14 +60,7 @@ const
     ],
     //all dot colors used in linegraph
     dotColors = 
-    [
-        'blue', 
-        'green', 
-        'red', 
-        'black', 
-        'grey', 
-        'purple'
-    ],
+    ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b"],
     //all line stroke colors used in linegraph
     strokeColors = dotColors.reverse(),
     //margins for SVGs
@@ -164,7 +157,8 @@ const checks =
             toggleHidden(true), //then
             toggleHidden(false) //else
         )
-    )     
+    )    
+         
 
 /**
  * perform setup calculations for d3 svg
@@ -375,8 +369,11 @@ button =>
 const toggleData =
 () =>
     {
-        toggle = !toggle
-        update_boxplot()
+        if(getChartType() == 'boxplot')
+            {
+                toggle = !toggle
+                update_boxplot()
+            }
     }
 
 /**
@@ -586,8 +583,6 @@ const update_faceData =
 
         let chartSvg = d3Setup(chartName, jsonData)
 
-        console.log(color)
-
         printDot
             (
                 chartSvg,
@@ -618,6 +613,38 @@ chartName =>
             confidence_interval()
         }
     }
+
+/**
+ * performs the slide functionality of the webapp
+ * 1. Gets the data by requesting from /face for the respective slider (i)
+ * 2. Handles the response
+ *      a. checks if the face data was returned for the respective slider
+ *      b. if it was not, it empties the corresponding SVG
+ *      c. else it calls update_faceData
+ */
+const slide = 
+i => 
+    getRequest
+        (i)
+        ('face')
+        (
+            jsonData => {
+                currentFaceData = jsonData
+
+                if(isNull(jsonData[i]))
+                    $(`#face${i+1}`).empty()
+                else
+                    update_faceData         
+                    ( 
+                        jsonData[i], 
+                        emotions[i],
+                        `#face${i+1}`,
+                        dotColors[i]
+                    )
+                
+                update_chart('#chart')
+            }
+        )
 
 //update linechart axes
 const changeChartAxes =
@@ -694,37 +721,6 @@ const confidence_interval =
         
     }
     
-/**
- * performs the slide functionality of the webapp
- * 1. Gets the data by requesting from /face for the respective slider (i)
- * 2. Handles the response
- *      a. checks if the face data was returned for the respective slider
- *      b. if it was not, it empties the corresponding SVG
- *      c. else it calls update_faceData
- */
-const slide = 
-i => 
-    getRequest
-        (i)
-        ('face')
-        (
-            jsonData => {
-                currentFaceData = jsonData
-
-                if(isNull(jsonData[i]))
-                    $(`#${faces[i]}`).empty()
-                else
-                    update_faceData         
-                    ( 
-                        jsonData[i], 
-                        emotions[i],
-                        `#${faces[i]}`,
-                        dotColors[i]
-                    )
-                
-                update_chart('#chart')
-            }
-        )
 
 /**
  * Reloads the graph and each of the faces
@@ -745,10 +741,10 @@ const reload =
                 update_chart('#chart')
 
                 R.forEach
-                (
-                    slide,
-                    R.range(0,6)
-                )
+                    (
+                        slide,
+                        R.range(0,6)
+                    )
             }
         )
     

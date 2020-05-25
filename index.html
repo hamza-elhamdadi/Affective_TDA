@@ -31,11 +31,10 @@
             </ul>
           </div>
     </nav>
-    <div class = "page">
-        <div class="sidebar">
+    <div class = "page d-flex" style="padding-left: 15px;">
             <form id = "settings">
                 <div class="row d-inline-flex justify-content-center text-center">
-                    <div id="options" class = "col-3 text-center" style="background-color: rgb(186, 236, 207);">
+                    <div id="options" class = "col-3 text-center" style="background-color: rgb(224, 224, 224);">
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center"><h2 >Settings</h2></div>
                         <div class="row d-flex justify-content-center text-center">
@@ -93,7 +92,7 @@
                                 <option value="linechart">Line Graph</option>
                                 <option value="boxplot">Box and Whisker Plot</option>
                             </select>
-                            <button type="button" class="btn btn-primary" onclick="toggleData()">Show Box Plot Data</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleData()">Show Box Plot Data</button>
                         </div>
                         <hr>
                         <div class="row d-flex justify-content-center text-center">
@@ -226,26 +225,33 @@
                     </div>
                     <div class = "col-9">
                         <br>
-                        <div><h2 style="text-align: center;">Embedding Graph</h2></div>
-                        <div class = "row">
-                            <svg width="800" height="400" style="border: none;" id="chart"></svg>
+                        <div class = 'row d-flex justify-content-center text-center'><h2 style="text-align: center;">Embedding Graph</h2></div>
+                        <div class = "row d-inline justify-content-center text-center">
+                            <svg width="1000" height="400" style="border: none;" id="chart"></svg>
                         </div>
-                        <div><h2 style="text-align: center;">Action Units</h2></div>
-                        <div class = "row">
-                            <svg width="200" height="200" style="border: none;" id="face1"></svg>
-                            <svg width="200" height="200" style="border: none;" id="face2"></svg>
-                            <svg width="200" height="200" style="border: none;" id="face3"></svg>
-                            <svg width="200" height="200" style="border: none;" id="face4"></svg>
-                            <svg width="200" height="200" style="border: none;" id="face5"></svg>
-                            <svg width="200" height="200" style="border: none;" id="face6"></svg>
+                        <div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">Action Units</h2></div>
+                        <div class = "row d-inline justify-content-center text-center">
+                            <svg width="150" height="150" style="border: none; background-color: #fbb4ae;" id="face1"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #b3cde3;" id="face2"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #ccebc5;" id="face3"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #decbe4;" id="face4"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #fed9a6;" id="face5"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #e5d8bd;" id="face6"></svg>
+                        </div>
+                        <br>
+                        <div class = "row d-inline justify-content-center text-center">
+                            <svg width="150" height="150" style="border: none; background-color: #fbb4ae;" id="pdiag1"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #b3cde3;" id="pdiag2"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #ccebc5;" id="pdiag3"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #decbe4;" id="pdiag4"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #fed9a6;" id="pdiag5"></svg>
+                            <svg width="150" height="150" style="border: none; background-color: #e5d8bd;" id="pdiag6"></svg>
                         </div>
                         
                         
                     </div>
                 </div>
             </form>
-
-        </div>
         
     
     </div>

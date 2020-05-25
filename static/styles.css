@@ -17,20 +17,6 @@ input[type=submit]{
     cursor: pointer;
 }
 
-nav {
-    align-self: left;
-    -webkit-transform-origin-x: 0;
-    -webkit-transform: scale(0.95);
-    -moz-transform: scale(0.95);
-    -ms-transform: scale(0.95);
-    transform: scale(0.95);
-    -webkit-transform-origin: 90% 0 0;
-    -moz-transform-origin: 90% 0 0;
-    -ms-transform-origin: 90% 0 0;
-    transform-origin: 90% 0 0;
-    transform-origin: top left;
-}
-
 div {
     -webkit-transform: scale(0.95);
     -moz-transform: scale(0.95);
