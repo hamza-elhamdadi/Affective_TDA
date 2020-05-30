@@ -59,7 +59,7 @@ def get_embedding_data():
             data.append(None)
 
     return json.dumps(data)
-    
+
 @app.route('/face', methods=['GET'])
 def get_face_data():
     index = request.args.get('emotion')
@@ -89,3 +89,25 @@ def get_face_data():
             data.append(None)
 
     return json.dumps(data)
+
+@app.route('/persistence', methods=['GET'])
+def get_persistence_diagram():
+    index = request.args.get('emotion')
+    frameNumbers = [request.args.get(slidevalues[i]) for i in range(len(slidevalues))]
+    frameNumber = frameNumbers[int(index)]
+
+    sections = [request.args.get(sec) for sec in subsections]
+    section_list = list(filter(lambda elem : True if elem != None else False, sections))
+    secs = '_'.join(section_list)
+
+    data = []
+    requests = [int(request.args.get(x)) for x in emotions]
+
+    for i in range(len(requests)):
+        if requests[i] == 1:
+            data.append(getData.get_persistence_diagram(section_list, 'F001', emotions[i], frameNumber))
+        else:
+            data.append(None)
+    
+    return json.dumps(data).replace('Infinity', '"Infinity"')
+

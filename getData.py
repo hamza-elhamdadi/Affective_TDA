@@ -54,6 +54,14 @@ def mapping_lambda(row):
     else:
         return [row[0], row[1], float(row[2])]
 
+def extend_frameNumber(frameNumber):
+    frame = str(frameNumber)
+    if len(frame) == 1:
+        frame = '00' + frame
+    elif len(frame) == 2:
+        frame = '0' + frame
+    
+    return frame
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
     sections = '_'.join(section_list)
@@ -82,11 +90,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID)
     return [{'x':i,'y':array[i]} for i in range(len(array))]
 
 def get_face_data(section_list, personData, emotion, frameNumber):
-    frame = str(frameNumber)
-    if len(frame) == 1:
-        frame = '00' + frame
-    elif len(frame) == 2:
-        frame = '0' + frame
+    frame = extend_frameNumber(frameNumber)
     file_path = f'../Data/{personData}/{emotion}/{frame}.bnd'
 
     with open(file_path, 'r') as file:
@@ -103,4 +107,31 @@ def get_face_data(section_list, personData, emotion, frameNumber):
         ret += data[pointRange[0]:pointRange[1]+1]
 
     return ret
+
+def get_persistence_diagram(section_list, personData, emotion, frameNumber):
+    frame = extend_frameNumber(frameNumber)
+    sections = '_'.join(section_list)
+    filepath = f'./Data/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+
+    h_0 = []
+    h_1 = []
+
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+
+        for line in lines:
+            coords = line.split(' ')
+            
+            coordObj = {
+                'x':float(coords[0]),
+                'y':float(coords[1])
+            }
+
+            if(float(coords[0]) == 0.0):
+                h_0.append(coordObj)
+            else:
+                h_1.append(coordObj)
+
+    return [h_0, h_1]
+
 

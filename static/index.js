@@ -20,6 +20,7 @@ var
     
     currentChartXAxis,currentChartYAxis, 
     currentFaceXAxis, currentFaceYAxis,
+    currentPDiagXAxis, currentPDiagYAxis,
 
     rangeUpperBound, 
     rangeLowerBound,
@@ -60,7 +61,14 @@ const
     ],
     //all dot colors used in linegraph
     dotColors = 
-    ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b"],
+    [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b"
+    ],
     //all line stroke colors used in linegraph
     strokeColors = dotColors.reverse(),
     //margins for SVGs
@@ -199,17 +207,20 @@ const d3Setup =
                 findExtents
                     (false)
                     (currentData)
-                
-            cWidth = chartWidth
-            cHeight = chartHeight
         }
-        else
+        else if(R.contains('#face',chartName))
         {
             xExtent = d3.extent(data.map(e => e.x))
             yExtent = d3.extent(data.map(e => e.y))
-
-            fWidth = chartWidth
-            fHeight = chartHeight
+        }
+        else
+        {
+            data = [].concat.apply([], data)
+            xExtent = d3.extent(data.map(e => e.x))
+            yExtent = xExtent/*d3.extent(data.map(e => {
+                if(e.y == 'Infinity') return 50
+                else return e.y
+            }))*/
         }
         
         let xAxis = 
@@ -232,10 +243,15 @@ const d3Setup =
             currentChartXAxis = xAxis
             currentChartYAxis = yAxis
         }
-        else
+        else if(R.contains('#face',chartName))
         {
             currentFaceXAxis = xAxis
             currentFaceYAxis = yAxis
+        }
+        else
+        {
+            currentPDiagXAxis = xAxis
+            currentPDiagYAxis = yAxis
         }
 
         return chartSvg
@@ -254,8 +270,15 @@ const printDot =
         .data(data)
         .enter()
         .append('circle')
-            .attr('cx', d=>xAxis(d.x))
-            .attr('cy', d=>yAxis(d.y))
+            .attr('cx', d=>{
+                return xAxis(d.x)
+            })
+            .attr('cy', d=>{
+                if(Number.isNaN(yAxis(d.y))) {
+                    return 50
+                }
+                return yAxis(d.y)
+            })
             .attr('r', radius)
             .style('fill', color)
 }
@@ -281,6 +304,30 @@ const printPath =
                 )
         )
         .style('stroke', strokeColors[i])
+        .attr('pointer-events', 'visibleStroke')
+        .on(
+            "mouseover", 
+            function(d) {
+                console.log(`moused over ${strokeColors[i]}`)
+                console.log(`changing to ${strokeColors[(i+1)%6]}`)
+
+                d3.select(this).style('stroke-width', 5)
+                }
+            )                  
+        .on(
+            "mouseout", 
+            function(d) {
+                console.log(`moused out of ${strokeColors[i]}`)
+                d3.select(this).style('stroke-width', 1)
+                }
+            )
+        .on(
+            'click',
+            function(d) {
+                $(`#${sliders[i]}`).val(currentChartXAxis.invert(d3.mouse(this)[0]))
+                reload()
+            }
+            )
 
 /**
  * prints a vertical line
@@ -301,7 +348,7 @@ const printVertLine =
  * TODO: fix
  */
 const printRect = 
-(svg, xAxis, yAxis, xVal, yVal1, yVal2) =>
+(svg, xAxis, yAxis, xVal, yVal1, yVal2, color) =>
     svg
     .append('rect')
         .attr('transform', translation)
@@ -310,7 +357,7 @@ const printRect =
         .attr('width', xAxis(0.1))
         .attr('height', yAxis(yVal2)-yAxis(yVal1))
         .attr('stroke', 'black')
-        .attr('fill', 'rgb(186, 236, 207)');
+        .attr('fill', `${color}`);
 
 /**
  * prints a horizontal line
@@ -509,6 +556,7 @@ const update_boxplot =
                             i-0.05,
                             upperQuartile,
                             lowerQuartile,
+                            dotColors[i]
                         )
                     
                     printHorizLine
@@ -577,7 +625,7 @@ const update_boxplot =
     }
 
 const update_faceData = 
-(jsonData, emotion, chartName, color) => 
+(jsonData, chartName, color) => 
     {
         $(chartName).empty()
 
@@ -591,6 +639,38 @@ const update_faceData =
                 jsonData,
                 2,
                 color
+            )
+    }
+
+const update_persistenceDiagram = 
+(jsonData, chartName, color1, color2) =>
+    {
+        $(chartName).empty()
+        
+        console.log('jsonData[0]: ')
+        console.log(jsonData[0])
+        console.log('jsonData[1]: ')
+        console.log(jsonData[1])
+
+        let chartSvg = d3Setup(chartName, jsonData)
+        printDot
+            (
+                chartSvg,
+                currentPDiagXAxis,
+                currentPDiagYAxis,
+                jsonData[0],
+                2.5,
+                color1
+            )
+        
+        printDot
+            (
+                chartSvg,
+                currentPDiagXAxis,
+                currentPDiagYAxis,
+                jsonData[1],
+                2.5,
+                color2
             )
     }
 
@@ -624,6 +704,7 @@ chartName =>
  */
 const slide = 
 i => 
+{
     getRequest
         (i)
         ('face')
@@ -635,16 +716,37 @@ i =>
                     $(`#face${i+1}`).empty()
                 else
                     update_faceData         
-                    ( 
-                        jsonData[i], 
-                        emotions[i],
-                        `#face${i+1}`,
-                        dotColors[i]
-                    )
+                        ( 
+                            jsonData[i], 
+                            `#face${i+1}`,
+                            dotColors[i]
+                        )
                 
                 update_chart('#chart')
             }
         )
+
+    getRequest
+        (i)
+        ('persistence')
+        (
+            (err,jsonData) => {
+                if(err) console.log('error fetching data')
+                
+                if(isNull(jsonData[i]))
+                    $(`#pdiag${i+1}`).empty()
+                else
+                    update_persistenceDiagram         
+                        ( 
+                            jsonData[i],
+                            `#pdiag${i+1}`,
+                            'orange',
+                            'darkblue'
+                        )
+            }
+        )
+}
+    
 
 //update linechart axes
 const changeChartAxes =
@@ -671,9 +773,6 @@ yExtent =>
 const confidence_interval = 
 () =>
     {
-        console.log('confidence interval toggled')
-        console.log(`Confidence Interval: ${getConfidenceInterval()}`)
-
         let confText = `${getConfidenceInterval()}% of data`
 
         $('#percentage').text(confText)
