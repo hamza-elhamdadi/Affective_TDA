@@ -15,8 +15,7 @@ key = {
 
 embeddings = {
     "mds":MDS(n_components=1,dissimilarity='precomputed', random_state=0),
-    "tsne":TSNE(n_components=1,metric='precomputed'),
-    "isomap":Isomap(n_components=1,metric='precomputed')
+    "tsne":TSNE(n_components=1,metric='precomputed')
 }
 
 actionUnitsKey = {                                                                                                                                              # dictionary mapping parts of face
@@ -75,7 +74,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID)
         csv_file = csv.reader(file, delimiter=',')
         next(csv_file)
         csv_formatted = map(lambda elem : mapping_lambda(elem), csv_file)
-        values = [[map_names(row[0]),map_names(row[1]),float(row[2])] for row in csv_formatted]
+        values = [[map_names(row[0]),map_names(row[1]),float(row[2]) if not isinstance(row[2], str) else row[2]] for row in csv_formatted]
 
     dissimilarities = dissMatFromHeraOut(values, length_of_file)
     embedding = embeddings[embeddingType]

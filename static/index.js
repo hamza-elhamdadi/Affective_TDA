@@ -1,7 +1,7 @@
 /********* variables *********/
 
 var 
-    svg, toggle = false,
+    svg,
     currentData, 
     
     currentFaceData = 
@@ -68,6 +68,15 @@ const
         "#d62728",
         "#9467bd",
         "#8c564b"
+    ],
+    boxplots = 
+    [
+        '#plot1',
+        '#plot2',
+        '#plot3',
+        '#plot4',
+        '#plot5',
+        '#plot6'
     ],
     //all line stroke colors used in linegraph
     strokeColors = dotColors.reverse(),
@@ -184,8 +193,7 @@ const d3Setup =
         let chartWidth = svgWidth - (margin.left + margin.right),
             chartHeight = svgHeight - (margin.top + margin.bottom)
 
-        if(R.equals(chartName,'#chart') 
-            && R.equals(getChartType(),'linechart'))
+        if(R.equals(chartName,'#chart'))
         {
             xExtent = 
                 findExtents
@@ -199,19 +207,18 @@ const d3Setup =
             cWidth = chartWidth
             cHeight = chartHeight
         }
-        else if(R.equals(chartName,'#chart') 
-                && R.equals(getChartType(),'boxplot'))
-        {
-            xExtent = [0,5]
-            yExtent = 
-                findExtents
-                    (false)
-                    (currentData)
-        }
         else if(R.contains('#face',chartName))
         {
             xExtent = d3.extent(data.map(e => e.x))
             yExtent = d3.extent(data.map(e => e.y))
+        }
+        else if(R.contains('#plot',chartName))
+        {
+            xExtent = [0,1]
+            yExtent = 
+                findExtents
+                    (false)
+                    (currentData)
         }
         else
         {
@@ -248,6 +255,13 @@ const d3Setup =
             currentFaceXAxis = xAxis
             currentFaceYAxis = yAxis
         }
+        else if(R.contains('#plot',chartName))
+        {
+            currentChartXExtent = xExtent
+            currentChartYExtent = yExtent
+            currentChartXAxis = xAxis
+            currentChartYAxis = yAxis
+        }
         else
         {
             currentPDiagXAxis = xAxis
@@ -274,12 +288,30 @@ const printDot =
                 return xAxis(d.x)
             })
             .attr('cy', d=>{
-                if(Number.isNaN(yAxis(d.y))) {
+                if(d.y == '-Infinity' || d.y == 'Infinity') {
                     return 50
                 }
                 return yAxis(d.y)
             })
             .attr('r', radius)
+            .style('fill', color)
+}
+
+/**
+ * print all dots from json data 
+ * with specifications
+ * 
+ */
+const printStar =
+(svg, xAxis, yAxis, data, radius, color='black') =>{
+    svg.append('g')
+        .attr('transform', translation)
+        .selectAll('dot')
+        .data(data)
+        .enter()
+        .append('path')
+            .attr("transform", d => `translate(${xAxis(d.x)},${yAxis(d.y)})`)
+            .attr('d', d3.symbol().type(d3.symbolStar).size(50))
             .style('fill', color)
 }
     
@@ -304,21 +336,18 @@ const printPath =
                 )
         )
         .style('stroke', strokeColors[i])
+        .style('stroke-width', 2)
         .attr('pointer-events', 'visibleStroke')
         .on(
             "mouseover", 
             function(d) {
-                console.log(`moused over ${strokeColors[i]}`)
-                console.log(`changing to ${strokeColors[(i+1)%6]}`)
-
                 d3.select(this).style('stroke-width', 5)
                 }
             )                  
         .on(
             "mouseout", 
             function(d) {
-                console.log(`moused out of ${strokeColors[i]}`)
-                d3.select(this).style('stroke-width', 1)
+                d3.select(this).style('stroke-width', 2)
                 }
             )
         .on(
@@ -354,7 +383,7 @@ const printRect =
         .attr('transform', translation)
         .attr('x', xAxis(xVal))
         .attr('y', yAxis(yVal1))
-        .attr('width', xAxis(0.1))
+        .attr('width', xAxis(0.33))
         .attr('height', yAxis(yVal2)-yAxis(yVal1))
         .attr('stroke', 'black')
         .attr('fill', `${color}`);
@@ -381,12 +410,6 @@ const getConfidenceInterval =
     $('#confInterval')
         .val()
 
-//gets the value of the chart type (can be linechart or boxplot)
-const getChartType = 
-() => 
-    $(`#graphType`)
-        .val()
-
 //checks if value is null
 const isNull =
     R.equals(null)
@@ -411,17 +434,6 @@ button =>
                 'disabled', 
                 disable
             )
-
-//toggles Box Plot Data Points
-const toggleData =
-() =>
-    {
-        if(getChartType() == 'boxplot')
-            {
-                toggle = !toggle
-                update_boxplot()
-            }
-    }
 
 /**
  * empties the svg for the chart 
@@ -509,14 +521,13 @@ const update_linechart =
 const update_boxplot = 
 () => 
     {
-        console.clear()
-        console.log('Data for Box_Plots')
-
-        emptyChart('#chart')
-
         R.forEach
         (
             i=>{
+                emptyChart(boxplots[i])
+
+                let chartSvg = d3Setup(boxplots[i], currentData[i])
+
                 if(!isNull(currentData[i]))
                 {
                     let data = 
@@ -528,8 +539,6 @@ const update_boxplot =
                                         currentData[i]
                                     )
                             )
-
-                    console.log(data)
                     
                     let upperQuartile = data.mean + 2*data.std_dev,
                         lowerQuartile = data.mean - 2*data.std_dev
@@ -539,21 +548,19 @@ const update_boxplot =
 
                     printVertLine
                         (
-                            svg,
+                            chartSvg,
                             currentChartXAxis,
                             currentChartYAxis,
                             [data.min, data.max],
-                            i
+                            0.5
                         )
-
-                    console.log(`${i}: ${upperQuartile-2*lowerQuartile}`)
 
                     printRect
                         (
-                            svg,
+                            chartSvg,
                             currentChartXAxis,
                             currentChartYAxis,
-                            i-0.05,
+                            0.33,
                             upperQuartile,
                             lowerQuartile,
                             dotColors[i]
@@ -561,61 +568,13 @@ const update_boxplot =
                     
                     printHorizLine
                         (
-                            svg,
+                            chartSvg,
                             currentChartXAxis,
                             currentChartYAxis,
-                            [i-0.05,i+0.05],
+                            [0.33,0.66],
                             data.mean
                             
                         )
-
-                    if(toggle)
-                    {
-                        printDot
-                            (
-                                svg,
-                                currentChartXAxis,
-                                currentChartYAxis,
-                                [{x:i,y:data.mean}],
-                                3
-                            )
-
-                        printDot
-                            (
-                                svg,
-                                currentChartXAxis,
-                                currentChartYAxis,
-                                [{x:i,y:data.min}],
-                                3
-                            )
-                        
-                        printDot
-                            (
-                                svg,
-                                currentChartXAxis,
-                                currentChartYAxis,
-                                [{x:i,y:data.max}],
-                                3
-                            )
-
-                        printDot
-                            (
-                                svg,
-                                currentChartXAxis,
-                                currentChartYAxis,
-                                [{x:i,y:upperQuartile}],
-                                3
-                            )
-
-                        printDot
-                            (
-                                svg,
-                                currentChartXAxis,
-                                currentChartYAxis,
-                                [{x:i,y:lowerQuartile}],
-                                3
-                            )
-                    }
                     
                 }
             },
@@ -643,16 +602,12 @@ const update_faceData =
     }
 
 const update_persistenceDiagram = 
-(jsonData, chartName, color1, color2) =>
+(jsonData, chartName, color) =>
     {
         $(chartName).empty()
-        
-        console.log('jsonData[0]: ')
-        console.log(jsonData[0])
-        console.log('jsonData[1]: ')
-        console.log(jsonData[1])
 
         let chartSvg = d3Setup(chartName, jsonData)
+        
         printDot
             (
                 chartSvg,
@@ -660,17 +615,17 @@ const update_persistenceDiagram =
                 currentPDiagYAxis,
                 jsonData[0],
                 2.5,
-                color1
+                color
             )
         
-        printDot
+        printStar
             (
                 chartSvg,
                 currentPDiagXAxis,
                 currentPDiagYAxis,
                 jsonData[1],
                 2.5,
-                color2
+                color
             )
     }
 
@@ -682,16 +637,8 @@ chartName =>
 
         svg = d3Setup(chartName)
 
-        if(R.equals(getChartType(), 'linechart')) 
-        {
-            update_linechart()
-            confidence_interval()
-        }
-        else 
-        {
-            update_boxplot()
-            confidence_interval()
-        }
+        update_linechart()
+        confidence_interval()
     }
 
 /**
@@ -740,8 +687,7 @@ i =>
                         ( 
                             jsonData[i],
                             `#pdiag${i+1}`,
-                            'orange',
-                            'darkblue'
+                            dotColors[i]
                         )
             }
         )
@@ -759,14 +705,7 @@ yExtent =>
                     [cHeight,0]
                 )
 
-        if(R.equals(getChartType(), 'linechart')) 
-        {
-            update_linechart()
-        }
-        else 
-        {
-            update_boxplot()
-        }
+        update_linechart()
     }
 
 // updates axes based on confidence interval
@@ -837,6 +776,7 @@ const reload =
         (
             jsonData => {
                 currentData = jsonData
+                update_boxplot()
                 update_chart('#chart')
 
                 R.forEach
@@ -877,5 +817,6 @@ async i =>
 }
 
 window.onload = function(){
+    $('#confInterval').val(98)
     reload()
 }
