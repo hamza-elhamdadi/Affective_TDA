@@ -11,6 +11,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.25.0/ramda.min.js"></script>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="static/geometry.js"></script>
+    <script type="text/javascript" src="static/calc.js"></script>
+    <script type="text/javascript" src="static/housekeeping.js"></script>
+    <script type="text/javascript" src="static/d3functions.js"></script>
+    <script type="text/javascript" src="static/update.js"></script>
     <script type="text/javascript" src="static/index.js"></script>
     
     <style>
@@ -70,7 +75,7 @@
                             <div class="col-2"></div>
                             <div class="col">
                                 <span style="display: flex">
-                                    <input type="range" min="0" max="100" value="100" class="slider" id="confInterval" name="confInterval" onchange="confidence_interval()">
+                                    <input type="range" min="85" max="100" value="100" class="slider" id="confInterval" name="confInterval" onchange="confidence_interval()">
                                 </span>
                             </div>
                         </div>
@@ -217,12 +222,12 @@
                         <hr>
                         <div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">Box Plots</h2></div>
                         <div class = "row d-inline justify-content-center text-center">
-                            <svg width="150" height="150" style="border: none;" id="plot1"></svg>
-                            <svg width="150" height="150" style="border: none;" id="plot2"></svg>
-                            <svg width="150" height="150" style="border: none;" id="plot3"></svg>
-                            <svg width="150" height="150" style="border: none;" id="plot4"></svg>
-                            <svg width="150" height="150" style="border: none;" id="plot5"></svg>
-                            <svg width="150" height="150" style="border: none;" id="plot6"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot1"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot2"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot3"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot4"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot5"></svg>
+                            <svg width="75" height="300" style="border: none;" id="plot6"></svg>
                         </div>
                         <hr>
                         <div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">3D Landmarks</h2></div>
@@ -244,6 +249,16 @@
                             <svg width="150" height="150" style="border: none;" id="pdiag5"></svg>
                             <svg width="150" height="150" style="border: none;" id="pdiag6"></svg>
                         </div>
+                        <hr>
+                        <!--<div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">Persistence Barcodes</h2></div>
+                        <div class = "row d-inline justify-content-center text-center">
+                            <svg width="150" height="300" style="border: none;" id="bar1"></svg>
+                            <svg width="150" height="300" style="border: none;" id="bar2"></svg>
+                            <svg width="150" height="300" style="border: none;" id="bar3"></svg>
+                            <svg width="150" height="300" style="border: none;" id="bar4"></svg>
+                            <svg width="150" height="300" style="border: none;" id="bar5"></svg>
+                            <svg width="150" height="300" style="border: none;" id="bar6"></svg>
+                        </div>-->
                         
                         
                     </div>
