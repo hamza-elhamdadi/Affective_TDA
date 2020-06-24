@@ -129,16 +129,17 @@ const update_persistenceDiagram =
 
         let chartSvg = d3Setup(chartName, jsonData, 20, -16),
             height = document.getElementById(chartName.substring(1)).getAttribute('height')
-        
-        printDot
+
+        printSymbol
             (
                 chartSvg,
                 currentPDiagXAxis,
                 currentPDiagYAxis,
                 jsonData[0],
-                2.5,
                 color,
-                "translate(22,0)"
+                d3.symbolDiamond,
+                0,
+                'translate(18,0)'
             )
 
         printDot
@@ -149,7 +150,7 @@ const update_persistenceDiagram =
                 jsonData[1],
                 1.5,
                 'none',
-                "translate(10,0)",
+                "translate(18,0)",
                 color
             )
 
@@ -168,8 +169,8 @@ const update_persistenceDiagram =
                 ]
             )
 
-        chartSvg.append('g').attr("transform", `translate(22, 130)`).call(d3.axisBottom().scale(currentPDiagXAxis))
-        chartSvg.append('g').attr("transform", `translate(20, 0)`).call(d3.axisLeft().scale(currentPDiagYAxis))
+        chartSvg.append('g').attr("transform", `translate(25, 120)`).call(d3.axisBottom().scale(currentPDiagXAxis))
+        chartSvg.append('g').attr("transform", `translate(25, 10)`).call(d3.axisLeft().scale(currentPDiagYAxis))
     }
 
 const update_persistenceBarcode =

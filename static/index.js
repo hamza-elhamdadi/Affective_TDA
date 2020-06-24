@@ -82,10 +82,10 @@ const
     //margins for SVGs
     margin = 
     {
-        left: 2, 
-        right: 2, 
-        top: 2, 
-        bottom: 2
+        left: 10, 
+        right: 15, 
+        top: 10, 
+        bottom: 15
     },
     translation = 'translate(' + margin.left + ',' + margin.top + ')'
 

@@ -38,7 +38,7 @@ const printSymbol =
         .data(data)
         .enter()
         .append('path')
-            .attr("transform", d => `translate(${xAxis(d.x)},${yAxis(d.y)})rotate(${rotate})`)
+            .attr("transform", d => `translate(${d.x},${d.y})rotate(${rotate})`)
             .attr('d', d3.symbol().type(symbol).size(20))
             .style('fill', color)
 }
@@ -104,7 +104,7 @@ const printDiagLine =
 (svg, xAxis, yAxis, x, y) =>
     svg
     .append('line')
-        .attr('transform', translation+"translate(20,-3)")
+        .attr('transform', translation+"translate(18,0)")
         .attr('stroke', 'black')
         .style("stroke-dasharray", ("3, 3"))
         .attr('x1', xAxis(x[0]))
@@ -164,65 +164,55 @@ const printPath =
             }
             )
 
-    let lastOut1 = false, lastOut2 = false
+    let upper = -8, lower = het-12
 
     for(let j = 1; j < currentData[i].length; j++)
     {
-        if((currentChartYAxis(currentData[i][j].y) < -15) != lastOut1)
+        if(crosses_bounds(currentData[i], currentChartXAxis, j, upper))
             {
-                let intersect = line_intersection
-                (
-                    {x:0,y:0},
-                    {x:wid,y:0},
-                    currentData[i][j-1],
-                    currentData[i][j]
-                )
+                let intersect = 
+                simple_intersection
+                    (
+                        upper,
+                        currentData[i],
+                        currentChartXAxis,
+                        j
+                    )
+
+                console.log(intersect)
                 
                 printSymbol
                     (
                         svg,
                         currentChartXAxis,
                         currentChartYAxis,
-                        [
-                            {
-                                x:intersect.x,
-                                y:currentChartYAxis.invert(0)
-                            }
-                        ],
+                        [intersect],
                         dotColors[i],
                         d3.symbolTriangle
                     )
-
-                lastOut1 = !lastOut1
             }
             
-        if((currentChartYAxis(currentData[i][j].y) > het) != lastOut2)
+        if(crosses_bounds(currentData[i], currentChartXAxis, j, lower))
             {
-                let intersect = line_intersection
-                (
-                    {x:0,y:het-5},
-                    {x:wid,y:het-5},
-                    currentData[i][j],
-                    currentData[i][j-1]
-                )
+                let intersect = 
+                simple_intersection
+                    (
+                        lower,
+                        currentData[i],
+                        currentChartXAxis,
+                        j
+                    )
                 
                 printSymbol
                     (
                         svg,
                         currentChartXAxis,
                         currentChartYAxis,
-                        [
-                            {
-                                x:intersect.x, 
-                                y:currentChartYAxis.invert(het-4)
-                            }
-                        ],
+                        [intersect],
                         dotColors[i],
                         d3.symbolTriangle,
                         180
                     )
-
-                lastOut2 = !lastOut2
             }
     }
 
