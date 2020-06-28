@@ -168,7 +168,7 @@ const printPath =
 
     for(let j = 1; j < currentData[i].length; j++)
     {
-        if(crosses_bounds(currentData[i], currentChartXAxis, j, upper))
+        if(crosses_bounds(currentData[i], currentChartYAxis, j, upper))
             {
                 let intersect = 
                 simple_intersection
@@ -176,6 +176,7 @@ const printPath =
                         upper,
                         currentData[i],
                         currentChartXAxis,
+                        currentChartYAxis,
                         j
                     )
 
@@ -192,7 +193,7 @@ const printPath =
                     )
             }
             
-        if(crosses_bounds(currentData[i], currentChartXAxis, j, lower))
+        if(crosses_bounds(currentData[i], currentChartYAxis, j, lower))
             {
                 let intersect = 
                 simple_intersection
@@ -200,8 +201,11 @@ const printPath =
                         lower,
                         currentData[i],
                         currentChartXAxis,
+                        currentChartYAxis,
                         j
                     )
+
+                console.log(intersect)
                 
                 printSymbol
                     (

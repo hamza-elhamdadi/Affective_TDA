@@ -16,19 +16,19 @@ const lerp =
     }
 
 const simple_intersection = 
-    (f, data, xAxis, i) => {
-        let numer = f - xAxis(data[i-1].x),
-            denom = xAxis(data[i].x)-xAxis(data[i-1].x)
+    (f, data, xAxis, yAxis, i) => {
+        let numer = f - yAxis(data[i-1].y),
+            denom = yAxis(data[i].y)-yAxis(data[i-1].y)
 
         let alpha = numer/denom
 
-        return [lerp(xAxis(data[i-1].x), xAxis(data[i].x), alpha), f]
+        return {x:lerp(xAxis(data[i-1].x), xAxis(data[i].x), alpha), y:f}
     }
 
 const crosses_bounds =
-    (data, xAxis, i, f) => {
-        let check1 = xAxis(data[i-1].x) > f && xAxis(data[i].x) < f,
-            check2 = xAxis(data[i-1].x) < f && xAxis(data[i].x) > f
+    (data, yAxis, i, f) => {
+        let check1 = yAxis(data[i-1].y) > f && yAxis(data[i].y) < f,
+            check2 = yAxis(data[i-1].y) < f && yAxis(data[i].y) > f
 
         return check1 || check2
     }
