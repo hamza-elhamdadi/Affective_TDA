@@ -6,7 +6,7 @@
 const printDot =
 (svg, xAxis, yAxis, data, radius, color='black',translate="", stroke='none') =>{
     svg.append('g')
-        .attr('transform', translation+translate)
+        .attr('transform', translate)
         .selectAll('dot')
         .data(data)
         .enter()
@@ -23,6 +23,18 @@ const printDot =
             .attr('r', radius)
             .style('fill', color)
             .style('stroke', stroke)
+            .on(
+                "mouseover", 
+                function(d) {
+                    d3.select(this).attr('r', d3.select(this).attr('r')*2)
+                    }
+                )                  
+            .on(
+                "mouseout", 
+                function(d) {
+                    d3.select(this).attr('r', d3.select(this).attr('r')/2)
+                    }
+                )
 }
 
 /**
@@ -31,9 +43,9 @@ const printDot =
  * 
  */
 const printSymbol =
-(svg, xAxis, yAxis, data, color='black', symbol=d3.symbolStar, rotate=0, translate="") =>{
+(svg, data, color='black', symbol=d3.symbolStar, rotate=0, translate="") =>{
     svg.append('g')
-        .attr('transform', translation+translate)
+        .attr('transform', translate)
         .selectAll('dot')
         .data(data)
         .enter()
@@ -41,6 +53,18 @@ const printSymbol =
             .attr("transform", d => `translate(${d.x},${d.y})rotate(${rotate})`)
             .attr('d', d3.symbol().type(symbol).size(20))
             .style('fill', color)
+            .on(
+                "mouseover", 
+                function(d) {
+                    d3.select(this).attr('d', d3.symbol().type(symbol).size(60))
+                    }
+                )                  
+            .on(
+                "mouseout", 
+                function(d) {
+                    d3.select(this).attr('d', d3.symbol().type(symbol).size(20))
+                    }
+                )
 }
 
 /**
@@ -104,7 +128,7 @@ const printDiagLine =
 (svg, xAxis, yAxis, x, y) =>
     svg
     .append('line')
-        .attr('transform', translation+"translate(18,0)")
+        .attr('transform', "translate(25,15)")
         .attr('stroke', 'black')
         .style("stroke-dasharray", ("3, 3"))
         .attr('x1', xAxis(x[0]))
@@ -154,10 +178,10 @@ const printPath =
         .on(
             'click',
             function(d) {
-                //console.log(d3.mouse(this)[1])
+                /*console.log(d3.mouse(this)[1])
                 console.log(currentChartXAxis(d3.mouse(this)[1]))
                 console.log(document.getElementById("chart").getAttribute('height'))
-                //console.log(currentChartXAxis.invert(d3.mouse(this)[1]))
+                console.log(currentChartXAxis.invert(d3.mouse(this)[1]))*/
 
                 $(`#${sliders[i]}`).val(currentChartXAxis.invert(d3.mouse(this)[0]))
                 reload()
@@ -179,17 +203,15 @@ const printPath =
                         currentChartYAxis,
                         j
                     )
-
-                console.log(intersect)
                 
                 printSymbol
                     (
                         svg,
-                        currentChartXAxis,
-                        currentChartYAxis,
                         [intersect],
                         dotColors[i],
-                        d3.symbolTriangle
+                        d3.symbolTriangle,
+                        0,
+                        translation
                     )
             }
             
@@ -204,18 +226,15 @@ const printPath =
                         currentChartYAxis,
                         j
                     )
-
-                console.log(intersect)
                 
                 printSymbol
                     (
                         svg,
-                        currentChartXAxis,
-                        currentChartYAxis,
                         [intersect],
                         dotColors[i],
                         d3.symbolTriangle,
-                        180
+                        180,
+                        translation
                     )
             }
     }

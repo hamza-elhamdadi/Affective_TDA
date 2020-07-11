@@ -36,14 +36,12 @@
             </ul>
           </div>
     </nav>
-    <div class = "page d-flex" style="padding-left: 15px;">
+    <div style="padding-left: 15px; white-space: nowrap;">
             <form id = "settings">
-                <div class="row d-inline-flex justify-content-center text-center">
-                    <div id="options" class = "col-3 text-center" style="background-color: rgb(224, 224, 224);">
+                <div class="row justify-content-center text-center">
+                    <div id="options" class = "col-3 text-center" style="background-color: rgb(224, 224, 224); max-width: 300px;">
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center"><h2 >Settings</h2></div>
-                        <br>
-                        <br>
                         <br>
                         <div class="row d-flex justify-content-center text-center">
                             <h2 class="title">Dimension Reduction </h2>
@@ -55,7 +53,6 @@
                                 </select>
                         </div>
                         <br>
-                        <br>
                         <div class="row d-flex justify-content-center text-center">
                             <h1 class="title">Topological Distance</h1>
                         </div>
@@ -66,10 +63,8 @@
                                 </select>
                         </div>
                         <br>
-                        <br>
-                        <br>
                         <div class="row d-flex justify-content-center text-center">
-                            <h1 class="title">Confidence Interval</h1>
+                            <h1 class="title">Vertical Scale</h1>
                         </div>
                         <div class="row">
                             <div class="col-2"></div>
@@ -83,8 +78,6 @@
                             <h2 class="title" id="percentage">100% of data</h2>
                         </div>
                         <br>
-                        <br>
-                        <br>
                         <div class="row d-flex justify-content-center text-center">
                             <h2 class="title">Emotions </h2>
                             
@@ -97,62 +90,62 @@
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Angry" id="Angry" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Angry" id="AngryHidden" value=0>
-                                                <label for="Angry" style="color: #8c564b; font-weight: 400;">Angry</label>
+                                                <label for="Angry" style="color: #8c564b; font-weight: 400;" id="labels">Anger</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Disgust" id="Disgust" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Disgust" id="DisgustHidden" value=0>
-                                                <label for="Disgust" style="color: #9467bd; font-weight: 400;">Disgust</label>
+                                                <label for="Disgust" style="color: #9467bd; font-weight: 400;" id="labels">Disgust</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Fear" id="Fear" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Fear" id="FearHidden" value=0>
-                                                <label for="Fear" style="color: #d62728; font-weight: 400;">Fear</label>      
+                                                <label for="Fear" style="color: #d62728; font-weight: 400;" id="labels">Fear</label>      
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Happy" id="Happy" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Happy" id="HappyHidden" value=0>
-                                                <label for="Happy" style="color: #2ca02c; font-weight: 400;">Happy</label>
+                                                <label for="Happy" style="color: #2ca02c; font-weight: 400;" id="labels">Happiness</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Sad" id="Sad" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Sad" id="SadHidden" value=0>
-                                                <label for="Sad" style="color: #ff7f0e;  font-weight: 400;">Sad</label>
+                                                <label for="Sad" style="color: #ff7f0e;  font-weight: 400;" id="labels">Sadness</label>
                                             </div>
                                         </div>
                                         <div class="row" id="check">
                                             <div class="checkbox">
                                                 <input type="checkbox" name="Surprise" id="Surprise" value=1 onchange="reload()" checked>
                                                 <input type="hidden" name="Surprise" id="SurpriseHidden" value=0>
-                                                <label for="Surprise" style="color: #1f77b4;font-weight: 200;">Surprise</label>
+                                                <label for="Surprise" style="color: #1f77b4;font-weight: 200;" id="labels">Surprise</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(0)">Play</button>
                                         </div>
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(1)">Play</button>
                                         </div>
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(2)">Play</button>
                                         </div>
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(3)">Play</button>
                                         </div>
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(4)">Play</button>
                                         </div>
-                                        <div id="button" class="row">
+                                        <div id="button" class="row" style="padding-bottom: 8px">
                                             <button type="button" class="btn btn-secondary" onclick="play(5)">Play</button>
                                         </div>
                                     </div>
@@ -179,55 +172,59 @@
                                 </div>
                             </div>
                         </div>
-                        <br>
                         <div class="row d-flex justify-content-center text-center">
                             <h2 class="title">Face Subsections </h2>
                         </div>
                         <div class="row  d-inline justify-content-center text-center">
                             <div class="checkbox">
                                 <input type="checkbox" name="leftEye" id="leftEye" value="leftEye" onchange="reload()" checked>
-                                <label for="leftEye">Left Eye</label>
+                                <label for="leftEye" id="labels">Left Eye</label>
                                 <input type="hidden" name="leftEyeHidden" id="leftEyeHidden" value="null">
                                 <input type="checkbox" name="rightEye" id="rightEye" value="rightEye" onchange="reload()" checked>
-                                <label for="rightEye">Right Eye</label>
+                                <label for="rightEye" id="labels">Right Eye</label>
                                 <input type="hidden" name="rightEyeHidden" id="rightEyeHidden" value="null">
                             </div>
                             <div class="checkbox">
                                 <input type="checkbox" name="leftEyebrow" id="leftEyebrow" value="leftEyebrow" onchange="reload()" checked>
-                                <label for="leftEyebrow">Left Eyebrow</label>
+                                <label for="leftEyebrow" id="labels">Left Eyebrow</label>
                                 <input type="hidden" name="leftEyebrowHidden" id="leftEyebrowHidden" value="null">
                                 <input type="checkbox" name="rightEyebrow" id="rightEyebrow" value="rightEyebrow" onchange="reload()" checked>
-                                <label for="rightEyebrow">Right Eyebrow</label>
+                                <label for="rightEyebrow" id="labels">Right Eyebrow</label>
                                 <input type="hidden" name="rightEyebrowHidden" id="rightEyebrowHidden" value="null">
                             </div>
                             <div class="checkbox">
                                 <input type="checkbox" name="nose" id="nose" value="nose" onchange="reload()" checked>
-                                <label for="nose">Nose</label>
+                                <label for="nose" id="labels">Nose</label>
                                 <input type="hidden" name="noseHidden" id="noseHidden" value="null">
                                 <input type="checkbox" name="mouth" id="mouth" value="mouth" onchange="reload()" checked>
-                                <label for="mouth">Mouth</label>
+                                <label for="mouth" id="labels">Mouth</label>
                                 <input type="hidden" name="mouthHidden" id="mouthHidden" value="null">
                                 <input type="checkbox" name="jawline" id="jawline" value="jawline" onchange="reload()" checked>
-                                <label for="jawline">Jawline</label>
+                                <label for="jawline" id="labels">Jawline</label>
                             </div>
                             <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
                         </div>
                     </div>
-                    <div class = "col-9">
+                    <div class = "col-9" style="max-width: 1250px;">
                         <br>
-                        <div class = 'row d-flex justify-content-center text-center'><h2 style="text-align: center;">Embedding Graph</h2></div>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <svg width="1000" height="400" style="border: none;" id="chart"></svg>
+                        <div class = 'row d-flex justify-content-center text-center'>
+                            
                         </div>
-                        <hr>
-                        <div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">Box Plots</h2></div>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <svg width="75" height="300" style="border: none;" id="plot1"></svg>
-                            <svg width="75" height="300" style="border: none;" id="plot2"></svg>
-                            <svg width="75" height="300" style="border: none;" id="plot3"></svg>
-                            <svg width="75" height="300" style="border: none;" id="plot4"></svg>
-                            <svg width="75" height="300" style="border: none;" id="plot5"></svg>
-                            <svg width="75" height="300" style="border: none;" id="plot6"></svg>
+                        <div class = "row d-flex justify-content-center text-center">
+                            <span>
+                                <h2 style="text-align: center;">Embedding Graph</h2>
+                                <svg width="1000" height="325" style="border: none;" id="chart"></svg>
+                            </span>
+                            <span>
+                                <h2 style="text-align: center;"> Box Plots</h2>
+                                <svg width="35" height="325" style="border: none;" id="plot1"></svg>
+                                <svg width="35" height="325" style="border: none;" id="plot2"></svg>
+                                <svg width="35" height="325" style="border: none;" id="plot3"></svg>
+                                <svg width="35" height="325" style="border: none;" id="plot4"></svg>
+                                <svg width="35" height="325" style="border: none;" id="plot5"></svg>
+                                <svg width="35" height="325" style="border: none;" id="plot6"></svg>
+                            </span>
+                            
                         </div>
                         <hr>
                         <div class = "row d-flex justify-content-center text-center"><h2 style="text-align: center;">3D Landmarks</h2></div>

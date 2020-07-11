@@ -82,14 +82,14 @@ data =>
  * perform setup calculations for d3 svg
  */
 const d3Setup = 
-(chartName, data=null, extraX=0, extraY=0) =>
+(chartName, data=null, setup=true) =>
     {
         let xExtent, yExtent
 
         let chartSvg = d3.select(chartName)
 
-        let svgWidth = +chartSvg.attr('width')+extraX,
-            svgHeight = +chartSvg.attr('height')+extraY
+        let svgWidth = +chartSvg.attr('width'),
+            svgHeight = +chartSvg.attr('height')
 
         let chartWidth = svgWidth - (margin.left + margin.right),
             chartHeight = svgHeight - (margin.top + margin.bottom)
@@ -107,11 +107,45 @@ const d3Setup =
 
             cWidth = chartWidth
             cHeight = chartHeight
+
+            let xAxis = 
+                    findAxis
+                        (
+                            xExtent,
+                            [0,chartWidth]
+                        ),
+                yAxis =
+                    findAxis
+                        (
+                            yExtent,
+                            [chartHeight,0]
+                        )
+
+            currentChartXExtent = xExtent
+            currentChartYExtent = yExtent
+            currentChartXAxis = xAxis
+            currentChartYAxis = yAxis
         }
         else if(R.contains('#face',chartName))
         {
             xExtent = d3.extent(data.map(e => e.x))
             yExtent = d3.extent(data.map(e => e.y))
+
+            let xAxis = 
+                    findAxis
+                        (
+                            xExtent,
+                            [0,chartWidth]
+                        ),
+                yAxis =
+                    findAxis
+                        (
+                            yExtent,
+                            [chartHeight,0]
+                        )
+
+            currentFaceXAxis = xAxis
+            currentFaceYAxis = yAxis
         }
         else if(R.contains('#plot',chartName))
         {
@@ -120,48 +154,45 @@ const d3Setup =
                 findExtents
                     (false)
                     (currentData)
+
+            let xAxis = 
+                    findAxis
+                        (
+                            xExtent,
+                            [0,chartWidth]
+                        ),
+                yAxis =
+                    findAxis
+                        (
+                            yExtent,
+                            [chartHeight,0]
+                        )
+
+            currentPlotXExtent = xExtent
+            if(setup) currentPlotYExtent = yExtent
+            currentPlotXAxis = xAxis
+            if(setup) currentPlotYAxis = yAxis
         }
-        else
+        else if(R.contains('#pdiag', chartName))
         {
             data = [].concat.apply([], data)
-            xExtent = d3.extent(data.map(e => e.x))
+            //xMax = d3.max(data.map(e => e.x))
+            xExtent = [0,60]
             yExtent = xExtent
-        }
-        
-        let xAxis = 
-                findAxis
-                    (
-                        xExtent,
-                        [0,chartWidth]
-                    ),
-            yAxis =
-                findAxis
-                    (
-                        yExtent,
-                        [chartHeight,0]
-                    )
 
-        if(R.equals(chartName,'#chart'))
-        {
-            currentChartXExtent = xExtent
-            currentChartYExtent = yExtent
-            currentChartXAxis = xAxis
-            currentChartYAxis = yAxis
-        }
-        else if(R.contains('#face',chartName))
-        {
-            currentFaceXAxis = xAxis
-            currentFaceYAxis = yAxis
-        }
-        else if(R.contains('#plot',chartName))
-        {
-            currentChartXExtent = xExtent
-            currentChartYExtent = yExtent
-            currentChartXAxis = xAxis
-            currentChartYAxis = yAxis
-        }
-        else
-        {
+            let xAxis = 
+                    findAxis
+                        (
+                            xExtent,
+                            [0,115]
+                        ),
+                yAxis =
+                    findAxis
+                        (
+                            yExtent,
+                            [115,0]
+                        )
+                    
             currentPDiagXAxis = xAxis
             currentPDiagYAxis = yAxis
         }

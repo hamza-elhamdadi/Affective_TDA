@@ -16,9 +16,11 @@ var svg,
     cWidth, cWidth,
     fWidth, fHeight,
     currentChartXExtent, currentChartYExtent,
+    currentPlotXExtent, currentPlotYExtent,
     
     currentChartXAxis,currentChartYAxis, 
     currentFaceXAxis, currentFaceYAxis,
+    currentPlotXAxis, currentPlotYAxis,
     currentPDiagXAxis, currentPDiagYAxis,
 
     rangeUpperBound, 
@@ -162,8 +164,16 @@ const changeChartAxes =
                     yExtent,
                     [cHeight,0]
                 )
+        
+        currentPlotYAxis = 
+            findAxis
+                (
+                    yExtent,
+                    [cHeight,0]
+                )
 
         update_linechart()
+        update_boxplot(false)
     }
 
 // updates axes based on confidence interval
@@ -228,6 +238,8 @@ const reload =
     checks(emotions)
     checks(subsections)
 
+    toggleSVG()
+
     getRequest
         (null)
         ('embedding')
@@ -248,6 +260,6 @@ const reload =
 }
 
 window.onload = function(){
-    $('#confInterval').val(98)
+    $('#embeddingType').val('tsne')
     reload()
 }

@@ -68,6 +68,33 @@ button =>
                 disable
             )
 
+const toggleSVG = 
+() =>
+    {
+        for(let i = 0; i < emotions.length; i++)
+            {
+                if(isChecked(emotions[i]))
+                {
+                    document.getElementById(`plot${i+1}`)
+                            .setAttribute('display', 'inline') 
+                    document.getElementById(`face${i+1}`)
+                            .setAttribute('display', 'inline')
+                    document.getElementById(`pdiag${i+1}`)
+                            .setAttribute('display', 'inline')
+                }
+                else
+                {
+                    document.getElementById(`plot${i+1}`)
+                            .setAttribute('display', 'none') 
+                    document.getElementById(`face${i+1}`)
+                            .setAttribute('display', 'none')
+                    document.getElementById(`pdiag${i+1}`)
+                            .setAttribute('display', 'none')
+                }
+            }
+    }
+    
+
 /**
  * empties the svg for the chart 
  * with chartname stored in "chart"

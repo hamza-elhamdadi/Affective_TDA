@@ -26,7 +26,8 @@ const update_linechart =
                         currentChartYAxis,
                         [calcDotCoordinates(i)],
                         5,
-                        dotColors[i]
+                        dotColors[i],
+                        translation
                     )
             }
         },
@@ -38,14 +39,14 @@ const update_linechart =
  * Shows the boxplots for the selected emotions. 
  */
 const update_boxplot = 
-() => 
+(setup=true) => 
     {
         R.forEach
         (
             i=>{
                 emptyChart(boxplots[i])
 
-                let chartSvg = d3Setup(boxplots[i], currentData[i])
+                let chartSvg = d3Setup(boxplots[i], currentData[i], setup)
 
                 if(!isNull(currentData[i]))
                 {
@@ -68,8 +69,8 @@ const update_boxplot =
                     printVertLine
                         (
                             chartSvg,
-                            currentChartXAxis,
-                            currentChartYAxis,
+                            currentPlotXAxis,
+                            currentPlotYAxis,
                             [data.min, data.max],
                             0.5
                         )
@@ -77,11 +78,11 @@ const update_boxplot =
                     printRect
                         (
                             chartSvg,
-                            currentChartXAxis,
-                            currentChartYAxis,
-                            0.33,
-                            0.33,
-                            0.66,
+                            currentPlotXAxis,
+                            currentPlotYAxis,
+                            -0.5,
+                            -0.5,
+                            1.5,
                             upperQuartile,
                             lowerQuartile,
                             dotColors[i]
@@ -90,9 +91,9 @@ const update_boxplot =
                     printHorizLine
                         (
                             chartSvg,
-                            currentChartXAxis,
-                            currentChartYAxis,
-                            [0.33,0.66],
+                            currentPlotXAxis,
+                            currentPlotYAxis,
+                            [-0.5,1.5],
                             data.mean
                             
                         )
@@ -118,7 +119,8 @@ const update_faceData =
                 currentFaceYAxis,
                 jsonData,
                 2,
-                color
+                color,
+                translation
             )
     }
 
@@ -133,13 +135,11 @@ const update_persistenceDiagram =
         printSymbol
             (
                 chartSvg,
-                currentPDiagXAxis,
-                currentPDiagYAxis,
-                jsonData[0],
+                jsonData[0].map(d=>{return {x:currentPDiagXAxis(d.x),y:currentPDiagYAxis(d.y)}}),
                 color,
                 d3.symbolDiamond,
                 0,
-                'translate(18,0)'
+                `translate(28,8)`
             )
 
         printDot
@@ -148,9 +148,9 @@ const update_persistenceDiagram =
                 currentPDiagXAxis,
                 currentPDiagYAxis,
                 jsonData[1],
-                1.5,
-                'none',
-                "translate(18,0)",
+                2,
+                'white',
+                `translate(23,13)`,
                 color
             )
 
@@ -169,11 +169,11 @@ const update_persistenceDiagram =
                 ]
             )
 
-        chartSvg.append('g').attr("transform", `translate(25, 120)`).call(d3.axisBottom().scale(currentPDiagXAxis))
-        chartSvg.append('g').attr("transform", `translate(25, 10)`).call(d3.axisLeft().scale(currentPDiagYAxis))
+        chartSvg.append('g').attr("transform", `translate(25, 130)`).call(d3.axisBottom().scale(currentPDiagXAxis).ticks(5))
+        chartSvg.append('g').attr("transform", `translate(25, 15)`).call(d3.axisLeft().scale(currentPDiagYAxis).ticks(5))
     }
 
-const update_persistenceBarcode =
+/*const update_persistenceBarcode =
 (jsonData, chartName, color) =>
     {
         $(chartName).empty()
@@ -231,7 +231,7 @@ const update_persistenceBarcode =
                     },
                 R.range(0,jsonData[1].length)
             )
-    }
+    }*/
 
 
 const update_chart = 
