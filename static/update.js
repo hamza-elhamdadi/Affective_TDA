@@ -177,22 +177,17 @@ const update_persistenceDiagram =
 (jsonData, chartName, color) =>
     {
         $(chartName).empty()
-
         let chartSvg = d3Setup(chartName, jsonData)
-
         R.forEach
             (
-
                 i =>
                     {
                         let yVal2
-
                         if(jsonData[0][i].y == 'Infinity')
                             {
                                 yVal2 = 50
                             }
                         else yVal2 = jsonData[0][i].y
-
                         printRect
                             (
                                 chartSvg,
