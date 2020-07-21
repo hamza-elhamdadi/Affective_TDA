@@ -40,7 +40,7 @@ def get_embedding_data():
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
-    fileNameStart = f'cache/F001/{dMetric}_{emType}_{secs}_'
+    fileNameStart = f'../cache/metric/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
@@ -70,7 +70,7 @@ def get_face_data():
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
-    fileNameStart = f'cache/F001/FaceData/{frameNumber}_{secs}_'
+    fileNameStart = f'../cache/metric/F001/FaceData/{frameNumber}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]

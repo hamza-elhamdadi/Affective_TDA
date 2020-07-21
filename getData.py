@@ -64,7 +64,7 @@ def extend_frameNumber(frameNumber):
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
     sections = '_'.join(section_list)
-    filepath = f'Data/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
+    filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
 
     if not path.exists(filepath):
         print(filepath)
@@ -110,7 +110,7 @@ def get_face_data(section_list, personData, emotion, frameNumber):
 def get_persistence_diagram(section_list, personData, emotion, frameNumber):
     frame = extend_frameNumber(frameNumber)
     sections = '_'.join(section_list)
-    filepath = f'./Data/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+    filepath = f'../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
 
     h_0 = []
     h_1 = []

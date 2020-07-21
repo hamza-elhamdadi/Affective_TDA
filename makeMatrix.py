@@ -48,11 +48,8 @@ def build(filename, section_list, emotion, personID, dataDestination):
 
     frameMatchObject = framePattern.search(filename)                                                                                                            # find the framenumber in the filename
     frameNumber = filename[frameMatchObject.start():frameMatchObject.end()-1]                                                                                   # cut it out of the filename
-
-    if len(section_list) == 0:                                                                                                                                  # if no sections
-        filepath = dataDestination + '/' + personID + '/persistence/persistence_diagram_' + emotion + '_' + frameNumber + '.txt'                                # filepath is not within the subsections directory
-    else:                                                                                                                                                       # else
-        filepath = dataDestination + '/' + personID + '/subsections/persistence/persistence_diagram_' + sections + '_' + emotion + '_' + frameNumber + '.txt'   # filepath is within subsections directory
+                                                                                                                                                # else
+    filepath = dataDestination + '/' + personID + '/subsections/persistence/persistence_diagram_' + sections + '_' + emotion + '_' + frameNumber + '.txt'   # filepath is within subsections directory
 
     pFile = open(filepath, 'w')                                                                                                                                 # open the file
 
@@ -60,7 +57,7 @@ def build(filename, section_list, emotion, personID, dataDestination):
         pFile.write(str(feature[0]) + ' ' + str(feature[1]) + '\n')
 
 dataSource = '../Data'                                                                                                                                          # directory containing person data
-dataDestination = 'Data'                                                                                                                                        # directory where we will save data 
+dataDestination = '../outputData/metric'                                                                                                                                        # directory where we will save data 
 person = 'F001'                                                                                                                                                 # id for the person
 
 ret = []

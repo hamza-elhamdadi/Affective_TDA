@@ -79,7 +79,6 @@ def non_met_distance(x, y, x_k, y_k):
 # sort the rows metric dissimilarity matrix by row
 
 def sort_metric(mat, sorted_matrix):
-
     for i in range(0, len(mat[0])):
         sorted_row = np.sort(mat[i])
         sorted_matrix.append(sorted_row)
