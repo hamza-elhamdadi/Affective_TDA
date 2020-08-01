@@ -57,7 +57,7 @@ def build(filename, section_list, emotion, personID, dataDestination):
         pFile.write(str(feature[0]) + ' ' + str(feature[1]) + '\n')
 
 dataSource = '../Data'                                                                                                                                          # directory containing person data
-dataDestination = '../outputData/metric'                                                                                                                                        # directory where we will save data 
+dataDestination = '../../outputData/metric'                                                                                                                                        # directory where we will save data 
 person = 'F001'                                                                                                                                                 # id for the person
 
 ret = []

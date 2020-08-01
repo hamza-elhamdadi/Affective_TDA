@@ -33,7 +33,7 @@ def preprocess():
 
 @app.route('/clear_cache', methods=['GET'])
 def clear_cache():
-    sp.call(['bash','clear_tsne.sh'])
+    sp.call(['bash','bashScripts/clear_tsne.sh'])
     return json.dumps('Pre-Computed t-SNE Data Cleared')
 
 @app.route('/embedding', methods=['GET'])
@@ -47,7 +47,7 @@ def get_embedding_data():
 
     nm = request.args.get('nonMetric')
 
-    fileNameStart = f'../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
+    fileNameStart = f'../../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
@@ -79,7 +79,7 @@ def get_face_data():
 
     nm = request.args.get('nonMetric')
 
-    fileNameStart = f'../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
+    fileNameStart = f'../../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]

@@ -117,7 +117,7 @@ def build(f, s, dD, e):
 
 if __name__ == '__main__':
     dS = '../Data'
-    dD = '../outputData/nonmetric/F001'
+    dD = '../../outputData/nonmetric/F001'
 
     files = nmf.getFileNames(dS, '.bnd')
 

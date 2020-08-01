@@ -65,10 +65,10 @@ def extend_frameNumber(frameNumber):
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric):
     sections = '_'.join(section_list)
     if nonMetric == 'metric':
-        filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
+        filepath = f'../../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
     else:
         sections = sections.replace('mouth', 'innermouth_outermouth')
-        filepath = f'../outputData/nonmetric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv'
+        filepath = f'../../outputData/nonmetric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv'
 
     with open(filepath, 'r') as file:
         csv_file = csv.reader(file, delimiter=',')
@@ -90,7 +90,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID,
 
 def get_face_data(section_list, personData, emotion, frameNumber):
     frame = extend_frameNumber(frameNumber)
-    file_path = f'../Data/{personData}/{emotion}/{frame}.bnd'
+    file_path = f'../../Data/{personData}/{emotion}/{frame}.bnd'
 
     with open(file_path, 'r') as file:
         data = file.readlines()
@@ -115,7 +115,7 @@ def get_persistence_diagram(section_list, personData, emotion, frameNumber, nonM
     h_1 = []
 
     if nonMetric == 'metric':
-        filepath = f'../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+        filepath = f'../../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
 
         with open(filepath, 'r') as file:
             lines = file.readlines()
@@ -134,8 +134,8 @@ def get_persistence_diagram(section_list, personData, emotion, frameNumber, nonM
                     h_1.append(coordObj)
     else:
         sections = sections.replace('mouth', 'innermouth_outermouth')
-        filepathH0 = f'../outputData/nonmetric/F001/subsections/persistence/h0/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
-        filepathH1 = f'../outputData/nonmetric/F001/subsections/persistence/h1/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+        filepathH0 = f'../../outputData/nonmetric/F001/subsections/persistence/h0/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+        filepathH1 = f'../../outputData/nonmetric/F001/subsections/persistence/h1/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
 
         with open(filepathH0, 'r') as file:
             lines = file.readlines()

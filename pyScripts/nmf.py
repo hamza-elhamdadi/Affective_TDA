@@ -38,13 +38,12 @@ def rand_vals(start, end, num_dp):
 # get frame number from file path string
 
 def get_frame_number(string):
-    if pat1:
-        val = pattern3.search(string)
-        if val == None:
-            return None
-        start = val.start()
-        end = val.end()
-        substring = string[start+1:end-1]
+    val = pattern3.search(string)
+    if val == None:
+        return None
+    start = val.start()
+    end = val.end()
+    substring = string[start+1:end-1]
 
     return substring.split('_')
 
