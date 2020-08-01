@@ -1,7 +1,7 @@
 import nmf, os
 
-h0Dir = '../../outputData/nonmetric/F001/subsections/persistence/h0/'
-h1Dir = '../../outputData/nonmetric/F001/subsections/persistence/h1/'
+h0Dir = '../outputData/nonmetric/F001/subsections/persistence/h0/'
+h1Dir = '../outputData/nonmetric/F001/subsections/persistence/h1/'
 
 directories = os.listdir(h0Dir)
 

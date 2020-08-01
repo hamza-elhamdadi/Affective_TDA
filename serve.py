@@ -47,7 +47,7 @@ def get_embedding_data():
 
     nm = request.args.get('nonMetric')
 
-    fileNameStart = f'../../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
+    fileNameStart = f'../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
@@ -79,7 +79,7 @@ def get_face_data():
 
     nm = request.args.get('nonMetric')
 
-    fileNameStart = f'../../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
+    fileNameStart = f'../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
