@@ -1,4 +1,4 @@
-import getData, json, webbrowser, csv
+import getData, json, webbrowser, csv, subprocess as sp
 from os import path
 
 from flask import Flask, request, render_template, send_from_directory, send_file
@@ -31,6 +31,11 @@ def page_notfound(error):
 def preprocess():
     return []
 
+@app.route('/clear_cache', methods=['GET'])
+def clear_cache():
+    sp.call(['bash','clear_tsne.sh'])
+    return json.dumps('Pre-Computed t-SNE Data Cleared')
+
 @app.route('/embedding', methods=['GET'])
 def get_embedding_data():
     emType = request.args.get('embeddingType')
@@ -40,7 +45,9 @@ def get_embedding_data():
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
-    fileNameStart = f'../cache/metric/F001/{dMetric}_{emType}_{secs}_'
+    nm = request.args.get('nonMetric')
+
+    fileNameStart = f'../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
@@ -52,7 +59,7 @@ def get_embedding_data():
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
             else:
-                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i]))
+                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric')))
                 with open(emotionFile, 'w') as file:
                     file.write(json.dumps(data[-1]))
         else:
@@ -70,7 +77,9 @@ def get_face_data():
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
-    fileNameStart = f'../cache/metric/F001/FaceData/{frameNumber}_{secs}_'
+    nm = request.args.get('nonMetric')
+
+    fileNameStart = f'../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
@@ -98,14 +107,13 @@ def get_persistence_diagram():
 
     sections = [request.args.get(sec) for sec in subsections]
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
-    secs = '_'.join(section_list)
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
 
     for i in range(len(requests)):
         if requests[i] == 1:
-            data.append(getData.get_persistence_diagram(section_list, 'F001', emotions[i], frameNumber))
+            data.append(getData.get_persistence_diagram(section_list, 'F001', emotions[i], frameNumber, request.args.get('nonMetric')))
         else:
             data.append(None)
     

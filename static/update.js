@@ -150,7 +150,7 @@ const update_persistenceDiagram =
                 jsonData[1],
                 2,
                 'white',
-                `translate(23,13)`,
+                `translate(28,11)`,
                 color
             )
 

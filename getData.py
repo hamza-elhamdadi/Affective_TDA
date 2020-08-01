@@ -1,6 +1,6 @@
 from sklearn.manifold import MDS, TSNE, Isomap
 from os import path
-import hera, csv, json, numpy as np
+import csv, json, numpy as np
 
 length_of_file = 684
 
@@ -62,13 +62,13 @@ def extend_frameNumber(frameNumber):
     
     return frame
 
-def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID):
+def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric):
     sections = '_'.join(section_list)
-    filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
-
-    if not path.exists(filepath):
-        print(filepath)
-        hera.hera(section_list)
+    if nonMetric == 'metric':
+        filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
+    else:
+        sections = sections.replace('mouth', 'innermouth_outermouth')
+        filepath = f'../outputData/nonmetric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv'
 
     with open(filepath, 'r') as file:
         csv_file = csv.reader(file, delimiter=',')
@@ -107,30 +107,58 @@ def get_face_data(section_list, personData, emotion, frameNumber):
 
     return ret
 
-def get_persistence_diagram(section_list, personData, emotion, frameNumber):
+def get_persistence_diagram(section_list, personData, emotion, frameNumber, nonMetric):
     frame = extend_frameNumber(frameNumber)
     sections = '_'.join(section_list)
-    filepath = f'../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
 
     h_0 = []
     h_1 = []
 
-    with open(filepath, 'r') as file:
-        lines = file.readlines()
+    if nonMetric == 'metric':
+        filepath = f'../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
 
-        for line in lines:
-            coords = line.split(' ')
-            
-            coordObj = {
-                'x':float(coords[0]),
-                'y':float(coords[1])
-            }
+        with open(filepath, 'r') as file:
+            lines = file.readlines()
 
-            if(float(coords[0]) == 0.0):
+            for line in lines:
+                coords = line.split(' ')
+                
+                coordObj = {
+                    'x':float(coords[0]),
+                    'y':float(coords[1])
+                }
+
+                if(float(coords[0]) == 0.0):
+                    h_0.append(coordObj)
+                else:
+                    h_1.append(coordObj)
+    else:
+        sections = sections.replace('mouth', 'innermouth_outermouth')
+        filepathH0 = f'../outputData/nonmetric/F001/subsections/persistence/h0/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+        filepathH1 = f'../outputData/nonmetric/F001/subsections/persistence/h1/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
+
+        with open(filepathH0, 'r') as file:
+            lines = file.readlines()
+
+            for line in lines:
+                coords = line.split(' ')
+                coordObj = {
+                    'x':float(coords[0]),
+                    'y':float(coords[1])
+                }
                 h_0.append(coordObj)
-            else:
-                h_1.append(coordObj)
 
+        with open(filepathH1, 'r') as file:
+            lines = file.readlines()
+
+            for line in lines:
+                coords = line.split(' ')
+                coordObj = {
+                    'x':float(coords[0]),
+                    'y':float(coords[1])
+                }
+                h_1.append(coordObj)
+ 
     return [h_0, h_1]
 
 

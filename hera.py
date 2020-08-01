@@ -1,77 +1,58 @@
-from os import path
-import re, os, nmf, time
+import os, nmf, multiprocessing as mp
 
-hera_key = {
-    'bottleneck':'./hera/bottleneck/bottleneck_dist', 
-    'wasserstein':'./hera/wasserstein/wasserstein_dist'
-}
+def hera(f1, f2, oB, oW):
+    b0 = os.popen('../hera/bottleneck/bottleneck_dist persistence_diagram_ {}'.format(f1)).read().split('\n')[:-1]
+    b1 = os.popen('../hera/bottleneck/bottleneck_dist persistence_diagram_ {}'.format(f2)).read().split('\n')[:-1]
 
-def snip(string, begin, end):
-    return string[string.find(begin)+len(begin):string.find(end)]
+    b0 = list(map(lambda l: l.split(','), b0))
+    b1 = list(map(lambda l: l.split(','), b1))
 
-# boost package: sudo apt-get install libboost-all-dev
+    b = []
+    for j in range(len(b0)):
+        p = b0[j][0]
+        q = b0[j][1]
+        r = str( sum( [ float(b0[j][2]), float(b1[j][2]) ] ) )
+        b.append(','.join([p, q, r]))
 
-"""
-format for inputs:
-    {
-        first: [h0 filepath, h1 filepath] or [filepath], <- type list of strings
-        second: [h0 filepath, h1 filepath] or [filepath] <- type list of strings
-    }
+    w0 = os.popen('../hera/wasserstein/wasserstein_dist persistence_diagram_ {}'.format(f1)).read().split('\n')[:-1]
+    w1 = os.popen('../hera/wasserstein/wasserstein_dist persistence_diagram_ {}'.format(f2)).read().split('\n')[:-1]
 
-format for outputs:
-    {
-        bottleneck: filepath, <- type string
-        wasserstein: filepath <- type string
-    }
+    w0 = list(map(lambda l: l.split(','), w0))
+    w1 = list(map(lambda l: l.split(','), w1))
 
-format for dists:
-    {
-        bottleneck: filepath <- type string,
-        wasserstein: filepath <- type string
-    }
-"""
+    w = []
+    for j in range(len(w0)):
+        p = w0[j][0]
+        q = w0[j][1]
+        r = str(sum([float(w0[j][2]), float(w1[j][2])]))
+        w.append(','.join([p, q, r]))
 
-def hera(inputs, outputs, dists):
-    f = inputs.get('first')
-    s = inputs.get('second')
-    b = dists.get('bottleneck')
-    w = dists.get('wasserstein')
-    p = 'persistence_diagram_'
-    d = '.'
+    with open(oB, 'w') as file:
+        file.write('\n'.join(b))
+    
+    with open(oW, 'w') as file:
+        file.write('\n'.join(w))
 
-    streams = {
-        'bottleneck': os.popen('{} {} {}'.format(b, f, s))
-        'wasserstein': os.popen('{} {} {}'.format(w, f, s))
-    }
+if __name__ == '__main__':
+    filepath1 = '../outputData/nonmetric/F001/subsections/persistence/h0/'
+    filepath2 = '../outputData/nonmetric/F001/subsections/persistence/h1/'
 
-    indices = '{},{}'.format(snip(f, p, d), snip(s, p, d))
+    files1 = []
+    files2 = []
 
-    for met in list(streams.keys()):
-        with open(outputs.get(met), 'a') as csv.file:
-            csv_file.write('{},{}\n'.format(indices, streams.get(met).read()[:-1]))
+    for f in os.listdir(filepath1):
+        if f.endswith('.txt'):
+            files1.append(f'{filepath1}{f}')
 
+    for f in os.listdir(filepath2):
+        if f.endswith('.txt'):
+            files2.append(f'{filepath2}{f}')
 
-dataSource = '../outputData/metric/F001/subsections/persistence/'
-sources = list(map(lambda f : dataSource + f, os.listdir(dataSource)))
-filesList = [nmf.getFileNames(d, '.txt') for d in sources]
+    dirs = list(map(lambda l: l[:l.find('_fileList')], map(lambda m: m.split('/')[-1], files1)))
 
-#outputs = [
-    #'../outputData/metric/' + personID + '/' + path + 'bottleneck/' + subsection + 'bottleneck_dissimilarities.csv', 
-    # '../outputData/metric/' + personID + '/' + path + 'wasserstein/' + subsection + 'wasserstein_dissimilarities.csv'
-#]
+    outFilesB = ['../outputData/nonmetric/F001/subsections/dissimilarities/bottleneck/{}.csv'.format(d) for d in dirs]
+    outFilesW = ['../outputData/nonmetric/F001/subsections/dissimilarities/wasserstein/{}.csv'.format(d) for d in dirs]
 
-#dists = [
-    #'./hera/bottleneck/bottleneck_dist ', 
-    #'./hera/wasserstein/wasserstein_dist '
-#]
-
-"""if __name__ == '__main__':
-    dataSource = '../outputData/metric/F001/subsections/persistence/'
-    sources = list(map(lambda f : dataSource + f, os.listdir(dataSource)))
-    filesList = [nmf.getFileNames(d, '.txt') for d in sources]
-
-    for filelist in filesList:
-        for i in range(len(filelist)):
-            for j in range(i+1, len(filelist)):
-                hera(filelist[i],filelist[j], 'F001', 'subsections/dissimilarities/', filelist[i].split('/')[-2] + '_')"""
-
+    for i in range(len(files1)):
+        hera(files1[i], files2[i], outFilesB[i], outFilesW[i])
+        print(i)

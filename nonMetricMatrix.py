@@ -79,8 +79,8 @@ def build(f, s, dD, e):
 
     sects = '_'.join(s)
     outputDissimilarity = f'{dD}/subsections/dissimilarities/matrix_{sects}_{e}_{num}.txt'
-    outputPersistence1 = f'{dD}/subsections/persistence/h0/persistence_diagram_{sects}_{e}_{num}.txt'
-    outputPersistence2 = f'{dD}/subsections/persistence/h1/persistence_diagram_{sects}_{e}_{num}.txt'
+    outputPersistence1 = f'{dD}/subsections/persistence/h0/{sects}/persistence_diagram_{sects}_{e}_{num}.txt'
+    outputPersistence2 = f'{dD}/subsections/persistence/h1/{sects}/persistence_diagram_{sects}_{e}_{num}.txt'
 
     getDissMatrix(f, actionUnitsKey, s, False)
 
