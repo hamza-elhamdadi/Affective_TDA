@@ -33,13 +33,14 @@ def preprocess():
 
 @app.route('/clear_cache', methods=['GET'])
 def clear_cache():
-    sp.call(['bash','bashScripts/clear_tsne.sh'])
+    sp.call(['bash','clear_tsne.sh'])
     return json.dumps('Pre-Computed t-SNE Data Cleared')
 
 @app.route('/embedding', methods=['GET'])
 def get_embedding_data():
     emType = request.args.get('embeddingType')
     dMetric = request.args.get('differenceMetric')
+    perp = request.args.get('perplexity')
     sections = [request.args.get(sec) for sec in subsections]
 
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
@@ -59,7 +60,7 @@ def get_embedding_data():
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
             else:
-                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric')))
+                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric'), perp))
                 with open(emotionFile, 'w') as file:
                     file.write(json.dumps(data[-1]))
         else:

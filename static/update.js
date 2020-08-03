@@ -15,16 +15,21 @@ const update_linechart =
                 printPath
                 (
                     svg,
-                    i
+                    i,
+                    currentChartXAxis,
+                    currentChartYAxis,
+                    ''
                 )
 
+                let coords = calcDotCoordinates(i)
+                //console.log(currentChartXAxis(coords.x))
     
                 printDot
                     (
                         svg,
                         currentChartXAxis,
                         currentChartYAxis,
-                        [calcDotCoordinates(i)],
+                        [coords],
                         5,
                         dotColors[i],
                         translation
@@ -237,5 +242,5 @@ const update_chart =
         svg = d3Setup(chartName)
 
         update_linechart()
-        confidence_interval()
+        //confidence_interval()
     }

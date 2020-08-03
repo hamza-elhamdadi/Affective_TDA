@@ -1,4 +1,4 @@
-from sklearn.manifold import MDS, TSNE, Isomap
+from sklearn.manifold import MDS, TSNE
 from os import path
 import csv, json, numpy as np
 
@@ -17,6 +17,12 @@ embeddings = {
     "mds":MDS(n_components=1,dissimilarity='precomputed', random_state=0),
     "tsne":TSNE(n_components=1,metric='precomputed')
 }
+
+def embed(etype, perp):
+    if etype == 'mds':
+        return MDS(n_components=1,dissimilarity='precomputed', random_state=0)
+    else:
+        return TSNE(n_components=1,metric='precomputed', perplexity=perp)
 
 actionUnitsKey = {                                                                                                                                              # dictionary mapping parts of face
     "leftEye": (0,7),                                                                                                                                           # to a subset of the Action Units list
@@ -62,7 +68,7 @@ def extend_frameNumber(frameNumber):
     
     return frame
 
-def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric):
+def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric, perplexity):
     sections = '_'.join(section_list)
     if nonMetric == 'metric':
         filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv'
@@ -77,7 +83,7 @@ def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID,
         values = [[map_names(row[0]),map_names(row[1]),float(row[2]) if not isinstance(row[2], str) else row[2]] for row in csv_formatted]
 
     dissimilarities = dissMatFromHeraOut(values, length_of_file)
-    embedding = embeddings[embeddingType]
+    embedding = embed(embeddingType, perplexity)
 
     data = embedding.fit_transform(np.asmatrix(dissimilarities))
 

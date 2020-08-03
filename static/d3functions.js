@@ -140,7 +140,7 @@ const printDiagLine =
  * print path on the chart svg for the emotion[i]
  */
 const printPath =
-(svg, i) => {
+(svg, i, xScale, yScale) => {
 
     let wid = document.getElementById("chart").getAttribute('width'),
         het = document.getElementById("chart").getAttribute('height')
@@ -153,11 +153,11 @@ const printPath =
             d3.line()
                 .x
                 (
-                    d=>currentChartXAxis(d.x)
+                    d=>xScale(d.x)
                 )
                 .y
                 (
-                    d=>currentChartYAxis(d.y)
+                    d=>yScale(d.y)
                 )
         )
         .style('stroke', strokeColors[i])
@@ -178,12 +178,10 @@ const printPath =
         .on(
             'click',
             function(d) {
-                /*console.log(d3.mouse(this)[1])
-                console.log(currentChartXAxis(d3.mouse(this)[1]))
-                console.log(document.getElementById("chart").getAttribute('height'))
-                console.log(currentChartXAxis.invert(d3.mouse(this)[1]))*/
+                console.log(`d3.mouse(this)[0]: ${d3.mouse(this)[0]}`)
+                console.log(`currentChartXAxis.invert(d3.mouse(this)[0]) ${xScale.invert(d3.mouse(this)[0])}`)
 
-                $(`#${sliders[i]}`).val(currentChartXAxis.invert(d3.mouse(this)[0]))
+                $(`#${sliders[i]}`).val(xScale.invert(d3.mouse(this)[0]))
                 reload()
             }
             )

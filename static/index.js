@@ -263,6 +263,7 @@ const clear_cache =
 () => 
 {
     d3.json('clear_cache', d=>{alert(d)})
+    reload()
 }
 
 window.onload = function(){
