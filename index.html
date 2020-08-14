@@ -17,10 +17,10 @@
     <script type="text/javascript" src="static/d3functions.js"></script>
     <script type="text/javascript" src="static/update.js"></script>
     <script type="text/javascript" src="static/index.js"></script>
-    
-    <style>
-        
-    </style>
+    <script type="text/javascript" src="static/Blob.js"></script>
+	<script type="text/javascript" src="static/canvas-toBlob.js"></script>
+	<script type="text/javascript" src="static/FileSaver.min.js"></script>
+	<script type="text/javascript" src="static/saveSVG.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding-left: 30px;">
@@ -88,14 +88,17 @@
                             <h2 class="title" id="percentage">100% of data</h2>
                         </div>-->
                         <div class="row d-inline-flex justify-content-center text-center">
-                            <div class="col-6">
-                                <h2 class="subtitleLeft">Perplexity</h1>
-                            </div>
-                            <div class="col-6">
-                                <span style="display: flex" class="down">
-                                    <input type="range" min="3" max="50" value="3" class="slider" id="perplexity" name="perplexity" onchange=""><!--clear_cache()">-->
-                                </span>
-                            </div>
+                            <span style="display: flex" class="down">
+                                <h2 class="subtitleLeft" >Perplexity</h1>
+                                <input type="number" min="1" max="100" value="30" style="padding-top: 0;" id="perplexity" name="perplexity" onchange="clear_cache()">
+                            </span>
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center">
+                            <span style="display: flex" class="down">
+                                <h2 class="subtitleLeft" >Dimension</h1>
+                                <input type="number" min="1" max="2" value="1" id="dimension" name="dimension" onchange="reload()">
+                            </span>
                         </div>
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center">
@@ -223,6 +226,12 @@
                             </div>
                             <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
                         </div>
+                        <br>
+                        <div class="input-group" id="seed">
+                            <!--<span class="input-group-addon" style="font-size: 18; padding-left: 10px; padding-top: 4px; padding-right: 20px;">t-SNE Seed</span>-->
+                            <input id="tsneSeed" type="text" class="form-control" placeholder="t-SNE Seed" name="tsneSeed">
+                            <span style="width: 25%"><button type="button" id='updateSeed' class="btn btn-outline-secondary" onclick="">Update</button></span>
+                        </div>
                     </div>
                     <div class = "col-9" style="max-width: 1250px;">
                         <br>
@@ -232,7 +241,7 @@
                         <div class = "row d-flex justify-content-center text-center">
                             <span>
                                 <h2 style="text-align: center;">Embedding Graph</h2>
-                                <svg width="1000" height="325" style="border: none;" id="chart"></svg>
+                                <svg width="1000" height="325" style="border: none;" id="chart" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
                             </span>
                             <span>
                                 <h2 style="text-align: center;"> Box Plots</h2>
@@ -281,7 +290,7 @@
                         </div>-->
                         
                         <div class="row d-inline justify-content-center text-center">
-                            <button type="button" class="btn btn-outline-danger" onclick="clear_cache()">Clear Pre-Computed t-SNE Data</button>
+                            <button type="button" id='save' class="btn btn-outline-secondary" onclick="save_image()">Save Embedding Graph SVG</button>
                         </div>
                     </div>
                 </div>

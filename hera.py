@@ -1,58 +1,98 @@
 import os, multiprocessing as mp
+from random import randrange
+import time
 
-def hera(f1, f2, oB, oW):
-    b0 = os.popen('../hera/bottleneck/bottleneck_dist persistence_diagram_ {}'.format(f1)).read().split('\n')[:-1]
-    b1 = os.popen('../hera/bottleneck/bottleneck_dist persistence_diagram_ {}'.format(f2)).read().split('\n')[:-1]
+dim = 666
+numCombs = {
+        'm': 127,
+        'nm': 255
+    }
 
-    b0 = list(map(lambda l: l.split(','), b0))
-    b1 = list(map(lambda l: l.split(','), b1))
+def hera(args):
+    hb = '../hera/bottleneck/bottleneck_dist'
+    hw = '../hera/wasserstein/wasserstein_dist'
 
-    b = []
-    for j in range(len(b0)):
-        p = b0[j][0]
-        q = b0[j][1]
-        r = str( sum( [ float(b0[j][2]), float(b1[j][2]) ] ) )
-        b.append(','.join([p, q, r]))
+    f1 = args.get('f1')
+    f2 = args.get('f2')
+    t = args.get('time')
 
-    w0 = os.popen('../hera/wasserstein/wasserstein_dist persistence_diagram_ {}'.format(f1)).read().split('\n')[:-1]
-    w1 = os.popen('../hera/wasserstein/wasserstein_dist persistence_diagram_ {}'.format(f2)).read().split('\n')[:-1]
+    if f1 and f2:
+        b0 = os.popen('{} {}'.format(hb, f1)).read().split('\n')[:-1]
+        b1 = os.popen('{} {}'.format(hb, f2)).read().split('\n')[:-1]
 
-    w0 = list(map(lambda l: l.split(','), w0))
-    w1 = list(map(lambda l: l.split(','), w1))
+        b0 = list(map(lambda l: l.split(' ')[:-1], b0))
+        b1 = list(map(lambda l: l.split(' ')[:-1], b1))
 
-    w = []
-    for j in range(len(w0)):
-        p = w0[j][0]
-        q = w0[j][1]
-        r = str(sum([float(w0[j][2]), float(w1[j][2])]))
-        w.append(','.join([p, q, r]))
+        for j in range(dim):
+            for k in range(dim):
+                b0[j][k] = str(max(float(b0[j][k]), float(b1[j][k])))
+            b0[j] = ' '.join(b0[j])  
 
-    with open(oB, 'w') as file:
-        file.write('\n'.join(b))
+        w0 = os.popen('{} {}'.format(hw, f1)).read().split('\n')[:-1]
+        w1 = os.popen('{} {}'.format(hw, f2)).read().split('\n')[:-1]
+
+        w0 = list(map(lambda l: l.split(' ')[:-1], w0))
+        w1 = list(map(lambda l: l.split(' ')[:-1], w1))
+
+        for j in range(dim):
+            for k in range(dim):
+                w0[j][k] = str(sum([float(w0[j][k]), float(w1[j][k])]))
+            w0[j] = ' '.join(w0[j])
+
+        with open(args.get('oB'), 'w') as file:
+            file.write('\n'.join(b0))
+        
+        with open(args.get('oW'), 'w') as file:
+            file.write('\n'.join(w0))
+    elif f1:
+        b = os.popen('{} {}'.format(hb, f1)).read()
+
+        w = os.popen('{} {}'.format(hw, f1)).read()
+
+        with open(args.get('oB'), 'w') as file:
+            file.write(b)
     
-    with open(oW, 'w') as file:
-        file.write('\n'.join(w))
+        with open(args.get('oW'), 'w') as file:
+            file.write(w)
+    else:
+        print('invalid args')
 
 if __name__ == '__main__':
-    filepath1 = '../outputData/nonmetric/F001/subsections/persistence/h0/'
-    filepath2 = '../outputData/nonmetric/F001/subsections/persistence/h1/'
+    metFilepath = '../outputData/metric/F001/subsections/metadata/'
+
+    metFiles = []
+
+    for f in os.listdir(metFilepath):
+        metFiles.append(f'{metFilepath}{f}')
+
+    mdirs = list(map(lambda l: l[:l.find('_fileList')], map(lambda m: m.split('/')[-1], metFiles)))
+
+    moutFilesB = ['../outputData/metric/F001/subsections/dissimilarities/bottleneck/{}.csv'.format(d) for d in mdirs]
+    moutFilesW = ['../outputData/metric/F001/subsections/dissimilarities/wasserstein/{}.csv'.format(d) for d in mdirs]
+
+    ########################################################################################################################
+
+    filepath1 = '../outputData/nonmetric/F001/subsections/metadata/h0/'
+    filepath2 = '../outputData/nonmetric/F001/subsections/metadata/h1/'
 
     files1 = []
     files2 = []
 
     for f in os.listdir(filepath1):
-        if f.endswith('.txt'):
-            files1.append(f'{filepath1}{f}')
+        files1.append(f'{filepath1}{f}')
 
     for f in os.listdir(filepath2):
-        if f.endswith('.txt'):
-            files2.append(f'{filepath2}{f}')
+        files2.append(f'{filepath2}{f}')
 
-    dirs = list(map(lambda l: l[:l.find('_fileList')], map(lambda m: m.split('/')[-1], files1)))
+    nmdirs = list(map(lambda l: l[:l.find('_fileList')], map(lambda m: m.split('/')[-1], files1)))
 
-    outFilesB = ['../outputData/nonmetric/F001/subsections/dissimilarities/bottleneck/{}.csv'.format(d) for d in dirs]
-    outFilesW = ['../outputData/nonmetric/F001/subsections/dissimilarities/wasserstein/{}.csv'.format(d) for d in dirs]
+    nmoutFilesB = ['../outputData/nonmetric/F001/subsections/dissimilarities/bottleneck/{}.csv'.format(d) for d in nmdirs]
+    nmoutFilesW = ['../outputData/nonmetric/F001/subsections/dissimilarities/wasserstein/{}.csv'.format(d) for d in nmdirs]
 
-    for i in range(len(files1)):
-        hera(files1[i], files2[i], outFilesB[i], outFilesW[i])
-        print(i)
+    for i in range(numCombs['nm']):
+        hera({'f1': files1[i], 'f2': files2[i], 'oB': nmoutFilesB[i], 'oW': nmoutFilesW[i]})
+        print(f'nonmetric {i}')
+
+    for i in range(25, numCombs['m']):
+        hera({'f1': metFiles[i], 'oB': moutFilesB[i], 'oW': moutFilesW[i]})
+        print(f'metric {i}')

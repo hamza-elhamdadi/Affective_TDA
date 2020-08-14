@@ -1,79 +1,62 @@
 from ripser import ripser
-import nmf, math, numpy as np, os, re, itertools
-
-actionUnitsKey = {                                                                                                                                              # dictionary mapping parts of face
-    "leftEye": (0,7),                                                                                                                                           # to a subset of the Action Units list
-    "rightEye": (8,15),                                                                                 
-    "leftEyebrow": (16,25),
-    "rightEyebrow": (26,35),
-    "nose": (36,47),
-    "mouth": (48,67),
-    "jawline": (68,82)
-}
-
-framePattern = re.compile(r"\d{3}\.")
+from scipy.spatial import distance
+import nmf, math, numpy as np, os, itertools
 
 def min_max(subsection):
-    if subsection in actionUnitsKey.keys():                                                                                                                     # check if the subsection is valid
-        return actionUnitsKey[subsection]                                                                                                                       # return the value for the subsection key
-    else:                                                                                                                                                       # if it's invalid
-        return None                                                                                                                                             # return None
+    return {
+        "leftEye": (0,8),
+        "rightEye": (8,16),                                                                                 
+        "leftEyebrow": (16,26),
+        "rightEyebrow": (26,36),
+        "nose": (36,48),
+        "mouth": (48,68),
+        "jawline": (68,83)
+    }.get(subsection)
 
-def calcDissimilarity(filename, section_list, containsHeader):
-    lines = open(filename, 'r').readlines()                                                                                                                     # read the lines in the input file into a list
-
-    if containsHeader:                                                                                                                                          # if the file has a csv header line
-        lines = lines[1:]                                                                                                                                       # remove it from the list
+def calcDissimilarity(filename, section_list):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
     
-    temp = [[float(line.split(' ')[1]), float(line.split(' ')[2]), float(line.split(' ')[3])] for line in lines]                                                # create a list of x,y,z coordinates (float type)
+    temp = list(map(lambda line: list(map(lambda l: float(l), line.split(' ')[1:])), lines))
 
-    if len(section_list) == 0:                                                                                                                                  # check is list is empty   
-        data = temp                                                                                                                                             # if it is set data to the list of x,y,z coordinates
-    else:                                                                                                                                                       # otherwise
-        extent = [min_max(subsection) for subsection in section_list]                                                                                           # create a list of the extents of each subsection in the section list
-        data = [[float(line.split(' ')[1]), float(line.split(' ')[2]), float(line.split(' ')[3])] for e in extent for line in lines[ e[0] : e[1] ]]             # set data to the subset of the temp list containing all of the points
-                                                                                                                                                                # that are part of the subsections in section_list
+    extent = [min_max(subsection) for subsection in section_list]
+    data = [t for e in extent for t in temp[e[0]:e[1]]]
+             
+    mat = [[distance.euclidean(d, e) for d in data] for e in data]          
 
-    mat = [[nmf.distance(data[i], data[j], 3) for j in range(len(data))] for i in range(len(data))]                                                             # create a matrix where mat[i][j] - dist(data[i], data[j])
-
-    return mat
+    return np.asarray(mat)
 
 
-def build(filename, section_list, emotion, personID, dataDestination):
-    sections = '_'.join(section_list)                                                                                                                           # join all of the sections in the section list with '_'
-    mat = calcDissimilarity(filename, section_list, False)                                                                                                      # generate mat using calcDissimilarity 
+def build(filename, section_list, dataDestination):
+    diagrams = [e for d in ripser(calcDissimilarity(filename, section_list), distance_matrix=True)['dgms'] for e in d]
 
-    diagrams = ripser(np.asarray(mat), distance_matrix=True)['dgms']                                                                                            # generate persistence diagram for the matrix mat
-    diagrams = diagrams[0].tolist() + diagrams[1].tolist()                                                                                                      # merge h0 and h1 into one list
+    filepath = '{}/subsections/persistence/{}/persistence_diagram_{}_{}_{}.txt'.format(
+        dataDestination, 
+        '_'.join(section_list),
+        '_'.join(section_list), 
+        filename.split('/')[-2], 
+        filename.split('/')[-1].split('.')[0]
+    )
 
-    frameMatchObject = framePattern.search(filename)                                                                                                            # find the framenumber in the filename
-    frameNumber = filename[frameMatchObject.start():frameMatchObject.end()-1]                                                                                   # cut it out of the filename
-                                                                                                                                                # else
-    filepath = dataDestination + '/' + personID + '/subsections/persistence/persistence_diagram_' + sections + '_' + emotion + '_' + frameNumber + '.txt'   # filepath is within subsections directory
-
-    pFile = open(filepath, 'w')                                                                                                                                 # open the file
-
-    for feature in diagrams:                                                                                                                                    # save diagrams in the file
-        pFile.write(str(feature[0]) + ' ' + str(feature[1]) + '\n')
-
-dataSource = '../Data'                                                                                                                                          # directory containing person data
-dataDestination = '../outputData/metric'                                                                                                                                        # directory where we will save data 
-person = 'F001'                                                                                                                                                 # id for the person
-
-ret = []
-files = nmf.getFileNames(dataSource, '.bnd')                                                                                                                    # strings containing the filenames in Data/F001
-subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']                                                                # all of the useful subsections of the face
-emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise']                                                                                             # emotions in dataset
-
-for i in range(1,len(subsections)+1):
-    ret += itertools.combinations(subsections, i)
-
-ret = map(lambda l : list(l),ret)
+    with open(filepath, 'w') as file:
+        for feature in diagrams:
+            file.write(' '.join(list(map(lambda l: str(l), feature))))
+            file.write('\n')
 
 if __name__ == '__main__':
+    dS = '../Data'
+    dD = '../outputData/metric/F001'
+
+    files = nmf.getFileNames(dS, '.bnd')
+
+    subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']
+
+    ret = []
+    for i in range(1,len(subsections)+1):
+        ret += itertools.combinations(subsections, i)
+    ret = list(map(lambda l : list(l),ret))
+
     for filename in files:
         print(filename)
         for section_list in ret:
-            print(section_list)
-            for emotion in emotions:
-                build(filename, section_list, emotion, person, dataDestination)
+            build(filename, section_list, dD)

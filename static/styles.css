@@ -109,8 +109,10 @@ div input[type=range]::-moz-range-thumb {
 .subtitleLeft {
     float: left; 
     font-weight: 600;
+    padding-top: 5px;
     padding-left: 20px;
-    font-size: 150%; 
+    padding-right: 10px;
+    font-size: 130%; 
     text-align: left;
 }
 
@@ -126,5 +128,10 @@ div input[type=range]::-moz-range-thumb {
 }
 
 .down {
-    padding-top: 5px
+    padding-top: 5px;
+    padding-bottom: 10px
 }   
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1;
+}

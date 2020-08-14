@@ -1,33 +1,35 @@
 from ripser import ripser
 import math, nmf, geom, numpy as np, os, re, itertools
 
-actionUnitsKey = { 
-    "leftEye": (0,7), 
-    "rightEye": (8,15),                                                                                 
-    "leftEyebrow": (16,25),
-    "rightEyebrow": (26,35),
-    "nose": (36,47),
-    "innermouth": (48,59),
-    "outermouth": (60,67),
-    "jawline": (68,82)
-}
+def min_max(subsection):
+    return {
+        "leftEye": (0,8),
+        "rightEye": (8,16),                                                                                 
+        "leftEyebrow": (16,26),
+        "rightEyebrow": (26,36),
+        "nose": (36,48),
+        "innermouth": (48,60),
+        "outermouth": (60,68),
+        "jawline": (68,83)
+    }.get(subsection)
 
 # map every element in array to float of itself
 def floatify(arr):
     return list(map(lambda e: float(e), arr))
 
 # get data from a file
-def getData(filename, key, sects, containsHeader):
-    lines = open(filename, 'r').readlines()
+def getData(filename, sects):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
 
     temp = [
         floatify(line.split(' ')[1:]) 
-        for line in (lines[1:] if containsHeader else lines)
+        for line in lines
     ]
 
-    extents = [{'section':s, 'indices':key.get(s)} for s in sects]
+    extents = [{'section':s, 'indices':min_max(s)} for s in sects]
 
-    return [{'section':e['section'], 'datapoints':temp[e['indices'][0]:e['indices'][1]+1]} for e in extents]
+    return [{'section':e['section'], 'datapoints':temp[e['indices'][0]:e['indices'][1]]} for e in extents]
 
 # make array nonmetric
 def nonmetrify(metric_data):
@@ -52,8 +54,8 @@ def nonmetrify(metric_data):
     return nonmetric_data
 
 # creates the nonmetric dissimilarity matrix for the data at filename
-def getDissMatrix(filename, key, sects, containsHeader):
-    metric_data = getData(filename, key, sects, containsHeader)
+def getDissMatrix(filename, sects):
+    metric_data = getData(filename, sects)
 
     nonmetric_data = nonmetrify(metric_data)
 
@@ -71,24 +73,17 @@ def getDissMatrix(filename, key, sects, containsHeader):
     return mat
 
 
-def build(f, s, dD, e):
+def build(f, s, dD):
+    e = f.split('/')[-2]
     r = re.compile(r"\d{3}\.")
 
-    obj = r.search(f)
-    num = f[obj.start():obj.end()-1]
+    num = f.split('/')[-1].split('.')[0]
 
     sects = '_'.join(s)
-    outputDissimilarity = f'{dD}/subsections/dissimilarities/matrix_{sects}_{e}_{num}.txt'
     outputPersistence1 = f'{dD}/subsections/persistence/h0/{sects}/persistence_diagram_{sects}_{e}_{num}.txt'
     outputPersistence2 = f'{dD}/subsections/persistence/h1/{sects}/persistence_diagram_{sects}_{e}_{num}.txt'
 
-    getDissMatrix(f, actionUnitsKey, s, False)
-
-    mat = getDissMatrix(f, actionUnitsKey, s, False)
-
-    with open(outputDissimilarity, 'w') as file:
-        for m in mat:
-            file.write(f'{m}\n')
+    mat = getDissMatrix(f, s)
 
     d = ripser(np.asarray(mat), distance_matrix=True)['dgms']
     d1 = d[0].tolist()
@@ -121,8 +116,7 @@ if __name__ == '__main__':
 
     files = nmf.getFileNames(dS, '.bnd')
 
-    subsections = list(actionUnitsKey.keys())
-    emotions = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise'] 
+    subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'innermouth', 'outermouth', 'jawline']
     
     ret = []
     for i in range(1,len(subsections)+1):
@@ -132,5 +126,4 @@ if __name__ == '__main__':
     for filename in files:
         print(filename)
         for section_list in ret:
-            for emotion in emotions:
-                build(filename, section_list, dD, emotion)
+            build(filename, section_list, dD)

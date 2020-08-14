@@ -178,8 +178,28 @@ const printPath =
         .on(
             'click',
             function(d) {
-                console.log(`d3.mouse(this)[0]: ${d3.mouse(this)[0]}`)
-                console.log(`currentChartXAxis.invert(d3.mouse(this)[0]) ${xScale.invert(d3.mouse(this)[0])}`)
+                //console.log(`d3.mouse(this)[0]: ${d3.mouse(this)[0]}`)
+                //console.log(`currentChartXAxis.invert(d3.mouse(this)[0]) ${xScale.invert(d3.mouse(this)[0])}`)
+
+                /*let coords = {
+                    x: xScale.invert(d3.select(this)[0]),
+                    y: xScale.invert(d3.select(this)[1])
+                }
+
+                console.log(currentData[i])
+
+                let closest = Math.pow(10, 1000)
+                let index = -1
+
+                for(let j = 0; j < currentData[i].length; j++)
+                {
+                    let dist = euclideanDistance2D(currentData[i][j], coords)
+                    if(dist < closest)
+                    {
+                        closest = dist
+                        index = j
+                    }
+                }*/
 
                 $(`#${sliders[i]}`).val(xScale.invert(d3.mouse(this)[0]))
                 reload()

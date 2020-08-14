@@ -238,6 +238,19 @@ const reload =
     checks(emotions)
     checks(subsections)
 
+    if($('#embeddingType').val() == 'tsne')
+    {
+        document.getElementById('seed').style.display = 'flex'
+        document.getElementById('tsneSeed').style.display = 'flex'
+        document.getElementById('updateSeed').style.display = 'flex'
+    }
+    else
+    {
+        document.getElementById('seed').style.display = 'none'
+        document.getElementById('tsneSeed').style.display = 'none'
+        document.getElementById('updateSeed').style.display = 'none'
+    }
+
     toggleSVG()
 
     getRequest
@@ -262,8 +275,53 @@ const reload =
 const clear_cache = 
 () => 
 {
-    d3.json('clear_cache', d=>{alert(d)})
+    d3.json(`clear_cache?${$('#settings').serialize()}`, d=>{console.log(d)})
     reload()
+}
+
+const save_image = 
+() =>
+{
+    let filename = `${$('#differenceMetric').val()}_${$('#embeddingType').val()}_${$('#nonMetric').val()}`
+    
+    for(s of subsections){
+        if (document.getElementById(s).checked){
+            filename = filename + '_' + s
+        }
+    }
+
+    let egraph = filename, 
+        boxplots = {}, 
+        landmarks = {}, 
+        persistenceDiagrams = {},
+        numbers = {
+            Angry: 1,
+            Disgust: 2,
+            Fear: 3,
+            Happy: 4,
+            Sad: 5,
+            Surprise: 6
+        }
+
+    for(e of emotions){
+        if (document.getElementById(e).checked){
+            egraph = egraph + '_' + e
+            boxplots[e] = filename + '_' + e + '_boxplot'
+            landmarks[e] = filename + '_' + e + '_landmarks'
+            persistenceDiagrams[e] = filename + '_' + e + '_persistence_diagram'
+        }
+    }
+    egraph = egraph + '_embedding_graph'
+    
+    saveSVGImage(d3.select(`#chart`), `${egraph}.png`)
+
+    /*for(k of Object.keys(boxplots))
+    {
+        saveSVGImage(d3.select(`#plot${numbers[k]}`), `${boxplots[k]}.png`)
+        saveSVGImage(d3.select(`#face${numbers[k]}`), `${landmarks[k]}.png`)
+        saveSVGImage(d3.select(`#pdiag${numbers[k]}`), `${persistenceDiagrams[k]}.png`)
+    }*/
+
 }
 
 window.onload = function(){

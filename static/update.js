@@ -6,6 +6,11 @@ const update_linechart =
 () =>
 {
     emptyChart('#chart')
+    
+    svg.append("rect")
+        .attr("width", '100%')
+        .attr("height", '100%')
+        .attr("fill", "white");
 
     R.forEach
     (
@@ -52,6 +57,11 @@ const update_boxplot =
                 emptyChart(boxplots[i])
 
                 let chartSvg = d3Setup(boxplots[i], currentData[i], setup)
+
+                chartSvg.append("rect")
+                        .attr("width", '100%')
+                        .attr("height", '100%')
+                        .attr("fill", "white");
 
                 if(!isNull(currentData[i]))
                 {
@@ -117,6 +127,11 @@ const update_faceData =
 
         let chartSvg = d3Setup(chartName, jsonData)
 
+        chartSvg.append("rect")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .attr("fill", "white");
+
         printDot
             (
                 chartSvg,
@@ -136,6 +151,11 @@ const update_persistenceDiagram =
 
         let chartSvg = d3Setup(chartName, jsonData, 20, -16),
             height = document.getElementById(chartName.substring(1)).getAttribute('height')
+
+        chartSvg.append("rect")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .attr("fill", "white");
 
         printSymbol
             (

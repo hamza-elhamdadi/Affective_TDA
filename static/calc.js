@@ -1,25 +1,29 @@
 /**
+ * finds the extents of the input svg
+ * the extent is 0 to the max length of the datasets
+ */
+const findTimeExtents = 
+R.compose(
+    d3.extent,
+    R.flip(R.append)([0]),
+    R.reduce(R.max, -Infinity),
+    R.map(R.length)
+)
+
+/**
  * finds the extents of the input svg for the axis
  * if the axis is x, the extent is 0 to the max length of the datasets
  * if the axis is not x, it is y, 
  * and the extent is the minimum to maximum values of all the datasets
  */
-const findExtents = 
-x => 
-    x ? 
-        R.compose(
-            d3.extent,
-            R.flip(R.append)([0]),
-            R.reduce(R.max, -Infinity),
-            R.map(R.length)
-        )
-      : 
-        R.compose(
-            d3.extent,
-            R.map(d=>d.y),
-            R.reduce(R.concat,[]),
-            R.filter(d=>d!=null)
-        )
+const findDataExtents =
+func =>
+R.compose(
+    d3.extent,
+    R.map(func),
+    R.reduce(R.concat,[]),
+    R.filter(d=>d!=null)
+)
 
 /**
  * returns the axis for the domain and range
@@ -38,11 +42,24 @@ const calcDotCoordinates =
 i => 
     {
         let xVal = $(`#${sliders[i]}`).val()
-        
-        return {
-            x: xVal,
-            y: currentData[i][xVal].y
+        let ret
+
+        if($('#dimension').val() == 1)
+        {
+            ret = {
+                x: xVal,
+                y: currentData[i][xVal].y
+            }
         }
+        else
+        {
+            ret = {
+                x: currentData[i][xVal].x,
+                y: currentData[i][xVal].y
+            }
+        }
+        
+        return ret
     }
 
 /**
@@ -78,6 +95,15 @@ data =>
         }
     }
 
+const euclideanDistance2D = 
+(point1, point2) =>
+{
+    let a = point2.x - point1.x,
+        b = point2.y - point1.y
+
+    return Math.sqrt(a*a + b*b)
+}
+
 /**
  * perform setup calculations for d3 svg
  */
@@ -96,13 +122,20 @@ const d3Setup =
 
         if(R.equals(chartName,'#chart'))
         {
-            xExtent = 
-                findExtents
-                    (true)
-                    (currentData)
+            if($('#dimension').val() == 1)
+            {
+                xExtent = findTimeExtents(currentData)
+            }
+            else{
+                xExtent = 
+                    findDataExtents
+                        (d=>d.x)
+                        (currentData)
+            }
+            
             yExtent = 
-                findExtents
-                    (false)
+                findDataExtents
+                    (d=>d.y)
                     (currentData)
 
             cWidth = chartWidth
@@ -151,9 +184,7 @@ const d3Setup =
         {
             xExtent = [0,1]
             yExtent = 
-                findExtents
-                    (false)
-                    (currentData)
+                findDataExtents(d=>d.y)(currentData)
 
             let xAxis = 
                     findAxis

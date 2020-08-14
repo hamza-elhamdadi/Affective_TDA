@@ -1,5 +1,6 @@
 import getData, json, webbrowser, csv, subprocess as sp
 from os import path
+import os
 
 from flask import Flask, request, render_template, send_from_directory, send_file
 
@@ -33,7 +34,19 @@ def preprocess():
 
 @app.route('/clear_cache', methods=['GET'])
 def clear_cache():
-    sp.call(['bash','clear_tsne.sh'])
+    eType = request.args.get('embeddingType')
+    diff = request.args.get('differenceMetric')
+    nm = request.args.get('nonMetric')
+    dim = request.args.get('dimension')
+    arguments = list(filter(lambda l: l != None, [request.args.get(sec) for sec in subsections]))
+    sections = '_'.join(arguments)
+    requests = [int(request.args.get(x)) for x in emotions]
+    filenameStart = f'../cache/{nm}/F001/{diff}_{eType}_{sections}_'
+
+    for i in range(len(requests)):
+        if requests[i] == 1:
+            #os.remove(f'{filenameStart}{emotions[i]}.json')
+            os.remove(f'{filenameStart}{emotions[i]}_{dim}D.json')
     return json.dumps('Pre-Computed t-SNE Data Cleared')
 
 @app.route('/embedding', methods=['GET'])
@@ -42,6 +55,7 @@ def get_embedding_data():
     dMetric = request.args.get('differenceMetric')
     perp = request.args.get('perplexity')
     sections = [request.args.get(sec) for sec in subsections]
+    dim = int(request.args.get('dimension'))
 
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
@@ -55,12 +69,13 @@ def get_embedding_data():
         
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = f'{fileNameStart}{emotions[i]}.json'
+            #emotionFile = f'{fileNameStart}{emotions[i]}.json'
+            emotionFile = f'{fileNameStart}{emotions[i]}_{dim}D.json' #<- replace emotionFile with this to allow 1 and 2 dimensional comparison
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
             else:
-                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric'), perp))
+                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric'), perp, dim, False))
                 with open(emotionFile, 'w') as file:
                     file.write(json.dumps(data[-1]))
         else:
