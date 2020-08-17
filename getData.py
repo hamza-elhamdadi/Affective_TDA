@@ -63,25 +63,24 @@ def mapping_lambda(row):
     return row
 
 def extend_frameNumber(frameNumber):    
-    return "{0:0=3d}".format(frameNumber)
+    return "{0:0=3d}".format(int(frameNumber))
 
 def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric, perplexity, dimension, retDiss):
     sections = '_'.join(section_list)
-    filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}_{differenceMetric}_dissimilarities.csv' if nonMetric == 'metric' else '../outputData/nonmetric/F001/subsections/dissimilarities/{}/{}.csv'.format(differenceMetric, sections.replace('mouth', 'innermouth_outermouth'))
+    filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv' if nonMetric == 'metric' else '../outputData/nonmetric/F001/subsections/dissimilarities/{}/{}.csv'.format(differenceMetric, sections.replace('mouth', 'innermouth_outermouth'))
 
     with open(filepath, 'r') as file:
-        csv_file = csv.reader(file, delimiter=',')
-    
-    values = list(map(lambda elem : mapping_lambda(elem), csv_file))
-    dissimilarities = dissMatFromHeraOut(values, length_of_file)
+        lines = file.readlines()
+
+    dissimilarities = list(map(lambda elem : list(map(lambda l: float(l), elem.split(' ')[:-1] if nonMetric == 'metric' else elem.split(' '))), lines))
 
     if retDiss:
         return dissimilarities
 
     embedding = embed(embeddingType, dimension, int(perplexity))
 
-    with open(f'../cache/{nonMetric}/F001/trustworthiness/{differenceMetric}_{embeddingType}_{sections}_{emotionID}_{dimension}D.json', 'w') as file:
-        file.write(getTrustworthiness(dissimilarities, embedding))
+    #with open(f'../cache/{nonMetric}/F001/trustworthiness/{differenceMetric}_{embeddingType}_{sections}_{emotionID}_{dimension}D.json', 'w') as file:
+    #    file.write(getTrustworthiness(dissimilarities, embedding))
 
     data = embedding.fit_transform(np.asmatrix(dissimilarities))[key[emotionID][0]:key[emotionID][1]]
 

@@ -103,7 +103,6 @@ const slide =
 (i) => 
 {
     getRequest
-        (i)
         ('face')
         (
             jsonData => {
@@ -124,7 +123,6 @@ const slide =
         )
 
     getRequest
-        (i)
         ('persistence')
         (
             (err,jsonData) => {
@@ -254,7 +252,6 @@ const reload =
     toggleSVG()
 
     getRequest
-        (null)
         ('embedding')
         (
             jsonData => {

@@ -14,14 +14,13 @@ const sleep =
  * takes in the route to GET from
  * the function func to handle the response
  */
-const getRequest = 
-extra =>
-    route => 
-        func => 
-            d3.json(
-                `${route}?${$('#settings').serialize()}&emotion=${extra}`,
-                func
-            )
+const getRequest =
+route => 
+    func => 
+        d3.json(
+            `${route}?${$('#settings').serialize()}`,
+            func
+        )
 
 /**
  * handles current checked options

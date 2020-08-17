@@ -89,10 +89,10 @@ if __name__ == '__main__':
     nmoutFilesB = ['../outputData/nonmetric/F001/subsections/dissimilarities/bottleneck/{}.csv'.format(d) for d in nmdirs]
     nmoutFilesW = ['../outputData/nonmetric/F001/subsections/dissimilarities/wasserstein/{}.csv'.format(d) for d in nmdirs]
 
-    for i in range(numCombs['nm']):
-        hera({'f1': files1[i], 'f2': files2[i], 'oB': nmoutFilesB[i], 'oW': nmoutFilesW[i]})
-        print(f'nonmetric {i}')
-
-    for i in range(25, numCombs['m']):
+    for i in range(numCombs['m']):
         hera({'f1': metFiles[i], 'oB': moutFilesB[i], 'oW': moutFilesW[i]})
         print(f'metric {i}')
+"""
+    for i in range(numCombs['nm']):
+        hera({'f1': files1[i], 'f2': files2[i], 'oB': nmoutFilesB[i], 'oW': nmoutFilesW[i]})
+        print(f'nonmetric {i}')"""

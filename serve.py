@@ -85,9 +85,7 @@ def get_embedding_data():
 
 @app.route('/face', methods=['GET'])
 def get_face_data():
-    index = request.args.get('emotion')
     frameNumbers = [request.args.get(slidevalues[i]) for i in range(len(slidevalues))]
-    frameNumber = frameNumbers[int(index)]
 
     sections = [request.args.get(sec) for sec in subsections]
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
@@ -95,19 +93,19 @@ def get_face_data():
 
     nm = request.args.get('nonMetric')
 
-    fileNameStart = f'../cache/{nm}/F001/FaceData/{frameNumber}_{secs}_'
+    fileNameStart = f'../cache/{nm}/F001/FaceData/'
 
     data = []
     requests = [int(request.args.get(x)) for x in emotions]
 
     for i in range(len(requests)):
         if requests[i] == 1:
-            emotionFile = f'{fileNameStart}{emotions[i]}.json'
+            emotionFile = f'{fileNameStart}{frameNumbers[i]}_{secs}_{emotions[i]}.json'
             if path.exists(emotionFile):
                 with open(emotionFile, 'r') as file:
                     data.append(json.load(file))
             else:
-                data.append(getData.get_face_data(section_list, 'F001', emotions[i], frameNumber))
+                data.append(getData.get_face_data(section_list, 'F001', emotions[i], frameNumbers[i]))
                 with open(emotionFile, 'w') as file:
                     file.write(json.dumps(data[-1]))
         else:
@@ -117,9 +115,7 @@ def get_face_data():
 
 @app.route('/persistence', methods=['GET'])
 def get_persistence_diagram():
-    index = request.args.get('emotion')
     frameNumbers = [request.args.get(slidevalues[i]) for i in range(len(slidevalues))]
-    frameNumber = frameNumbers[int(index)]
 
     sections = [request.args.get(sec) for sec in subsections]
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
@@ -129,7 +125,7 @@ def get_persistence_diagram():
 
     for i in range(len(requests)):
         if requests[i] == 1:
-            data.append(getData.get_persistence_diagram(section_list, 'F001', emotions[i], frameNumber, request.args.get('nonMetric')))
+            data.append(getData.get_persistence_diagram(section_list, 'F001', emotions[i], frameNumbers[i], request.args.get('nonMetric')))
         else:
             data.append(None)
     
