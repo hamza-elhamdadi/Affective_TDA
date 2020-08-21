@@ -43,6 +43,9 @@ const update_linechart =
         },
         R.range(0,currentData.length)
     )
+
+    //svg.append('g').attr("transform", `translate(25, 305)`).call(d3.axisBottom().scale(currentChartXAxis).ticks(2))
+    //svg.append('g').attr("transform", `translate(25, 15)`).call(d3.axisLeft().scale(currentChartYAxis).ticks(2))
 }
                 
 /**
@@ -125,7 +128,7 @@ const update_faceData =
     {
         $(chartName).empty()
 
-        let chartSvg = d3Setup(chartName, jsonData)
+        let chartSvg = d3Setup(chartName, jsonData, null, full())
 
         chartSvg.append("rect")
                 .attr("width", '100%')

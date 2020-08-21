@@ -56,30 +56,32 @@ def get_embedding_data():
     perp = request.args.get('perplexity')
     sections = [request.args.get(sec) for sec in subsections]
     dim = int(request.args.get('dimension'))
-
+    nm = request.args.get('nonMetric')
     section_list = list(filter(lambda elem : True if elem != None else False, sections))
     secs = '_'.join(section_list)
 
-    nm = request.args.get('nonMetric')
-
-    fileNameStart = f'../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
+    emotionFile = f'../cache/{nm}/F001/{dMetric}_{emType}_{secs}_'
 
     data = []
+    currEmotions = []
     requests = [int(request.args.get(x)) for x in emotions]
-        
+
     for i in range(len(requests)):
         if requests[i] == 1:
-            #emotionFile = f'{fileNameStart}{emotions[i]}.json'
-            emotionFile = f'{fileNameStart}{emotions[i]}_{dim}D.json' #<- replace emotionFile with this to allow 1 and 2 dimensional comparison
-            if path.exists(emotionFile):
-                with open(emotionFile, 'r') as file:
-                    data.append(json.load(file))
-            else:
-                data.append(getData.get_embedding_data(section_list, dMetric, emType, emotions[i], request.args.get('nonMetric'), perp, dim, False))
-                with open(emotionFile, 'w') as file:
-                    file.write(json.dumps(data[-1]))
+            currEmotions.append(emotions[i])
+            emotionFile = f'{emotionFile}{emotions[i]}_'
         else:
-            data.append(None)
+            currEmotions.append(None)
+
+    emotionFile = f'{emotionFile}{dim}D.json'
+
+    if not path.exists(emotionFile):
+        data = getData.get_embedding_data(section_list, dMetric, emType, currEmotions, request.args.get('nonMetric'), perp, dim, False)
+        with open(emotionFile, 'w') as file:
+            file.write(json.dumps(data))
+    else:
+        with open(emotionFile, 'r') as file:
+            data = json.load(file)
 
     return json.dumps(data)
 
@@ -131,3 +133,4 @@ def get_persistence_diagram():
     
     return json.dumps(data).replace('Infinity', '"Infinity"')
 
+app.run(host='0.0.0.0', port=5000)

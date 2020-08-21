@@ -7,15 +7,13 @@ import csv, json, numpy as np
 def getTrustworthiness(original, embedding):
     return trustworthiness(X=original, X_embedded=embedding, metric="precomputed")
 
-length_of_file = 670
-
 key = {
-    "Angry": (0,112),
-    "Disgust": (112,220),
-    "Fear": (220,331),
-    "Happy": (331,442),
-    "Sad": (442,556),
-    "Surprise": (556,length_of_file)
+    "Angry": (0,112, 112),
+    "Disgust": (112,220, 220-112),
+    "Fear": (220,331, 331-220),
+    "Happy": (331,442, 442-331),
+    "Sad": (442,556, 556-442),
+    "Surprise": (556,666, 666-556)
 }
 
 actionUnitsKey = {
@@ -65,31 +63,57 @@ def mapping_lambda(row):
 def extend_frameNumber(frameNumber):    
     return "{0:0=3d}".format(int(frameNumber))
 
-def get_embedding_data(section_list, differenceMetric, embeddingType, emotionID, nonMetric, perplexity, dimension, retDiss):
+def get_embedding_data(section_list, differenceMetric, embeddingType, emotionIDs, nonMetric, perplexity, dimension, retDiss):
+    indices = []
     sections = '_'.join(section_list)
     filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv' if nonMetric == 'metric' else '../outputData/nonmetric/F001/subsections/dissimilarities/{}/{}.csv'.format(differenceMetric, sections.replace('mouth', 'innermouth_outermouth'))
 
     with open(filepath, 'r') as file:
         lines = file.readlines()
 
-    dissimilarities = list(map(lambda elem : list(map(lambda l: float(l), elem.split(' ')[:-1] if nonMetric == 'metric' else elem.split(' '))), lines))
+    dissBefore = list(map(lambda elem : list(map(lambda l: float(l), elem.split(' ')[:-1] if nonMetric == 'metric' else elem.split(' '))), lines))
+
+    for e in emotionIDs:
+        if e:
+            indices += range(key[e][0],key[e][1])
+
+    dissimilarities = []
+
+    for i in range(len(dissBefore)):
+        line = []
+        for j in range(len(dissBefore)):
+            if i in indices and j in indices:
+                line.append(dissBefore[i][j])
+        if line != []:
+            dissimilarities.append(line)
 
     if retDiss:
         return dissimilarities
 
     embedding = embed(embeddingType, dimension, int(perplexity))
 
+    embData = embedding.fit_transform(np.asmatrix(dissimilarities))
+
     #with open(f'../cache/{nonMetric}/F001/trustworthiness/{differenceMetric}_{embeddingType}_{sections}_{emotionID}_{dimension}D.json', 'w') as file:
     #    file.write(getTrustworthiness(dissimilarities, embedding))
+    
+    data = []
+    first = True
+    last = 0
+    for i in range(len(emotionIDs)):
+        if emotionIDs[i]:
+            a = last
+            b = last + key[valid[i]][2]
+            first = False
+            last = b
+            if dimension == 1:
+                array = list(map(lambda e : float(e[0]), embData[a:b]))
+                data.append([{'x': j, 'y': array[j]} for j in range(len(array))])
+            else:
+                array = list(map(lambda e : list(map(lambda l: float(l), e)), embData[a:b]))
+                data.append(list(map(lambda l: {'x':l[0], 'y':l[1]}, array)))
 
-    data = embedding.fit_transform(np.asmatrix(dissimilarities))[key[emotionID][0]:key[emotionID][1]]
-
-    if dimension == 1:
-        array = list(map(lambda e : float(e[0]), data))
-        return [{'x': i, 'y': array[i]} for i in range(len(array))]
-    else:
-        array = list(map(lambda e : list(map(lambda l: float(l), e)), data))
-        return list(map(lambda l: {'x':l[0], 'y':l[1]}, array))
+    return data
 
 def get_face_data(section_list, personData, emotion, frameNumber):
     frame = extend_frameNumber(frameNumber)

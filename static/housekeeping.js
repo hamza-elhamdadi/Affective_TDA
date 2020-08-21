@@ -9,6 +9,16 @@ const sleep =
                 setTimeout(resolve, ms)
         )
 
+const full =
+() =>
+{
+    let setup = true
+    for(sec of subsections){
+        if(document.getElementById(sec).checked == false) setup = false
+    }
+    return setup
+}
+
 /**
  * makes a GET request and handles the response 
  * takes in the route to GET from

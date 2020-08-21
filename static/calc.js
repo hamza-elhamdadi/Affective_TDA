@@ -108,7 +108,7 @@ const euclideanDistance2D =
  * perform setup calculations for d3 svg
  */
 const d3Setup = 
-(chartName, data=null, setup=true) =>
+(chartName, data=null, setup=true, full_face=false) =>
     {
         let xExtent, yExtent
 
@@ -159,7 +159,7 @@ const d3Setup =
             currentChartXAxis = xAxis
             currentChartYAxis = yAxis
         }
-        else if(R.contains('#face',chartName))
+        else if(R.contains('#face',chartName) && full_face)
         {
             xExtent = d3.extent(data.map(e => e.x))
             yExtent = d3.extent(data.map(e => e.y))
