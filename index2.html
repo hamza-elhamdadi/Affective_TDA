@@ -1,0 +1,371 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="static/styles2.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+      
+    <script src="https://d3js.org/d3.v4.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.25.0/ramda.min.js"></script>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="static/geometry.js"></script>
+    <script type="text/javascript" src="static/calc.js"></script>
+    <script type="text/javascript" src="static/housekeeping.js"></script>
+    <script type="text/javascript" src="static/d3functions.js"></script>
+    <script type="text/javascript" src="static/update.js"></script>
+    <script type="text/javascript" src="static/index.js"></script>
+    <script type="text/javascript" src="static/Blob.js"></script>
+	<script type="text/javascript" src="static/canvas-toBlob.js"></script>
+	<script type="text/javascript" src="static/FileSaver.min.js"></script>
+	<script type="text/javascript" src="static/saveSVG.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding-left: 30px;">
+        <a class="navbar-brand" href="">Affective TDA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="index.html"></a>
+              </li>
+            </ul>
+          </div>
+    </nav>
+    <div class="row" style="height: 650px;">
+        <div id="class1" class="col-3 justify-content-center">
+            <div class="row justify-content-center"><h2 id="title1">Male</h2></div>
+            <div class="row justify-content-center text-center">
+                <div class="col-3 justify-content-center text-center" id="column_1">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class1_column_1" value='M001' type="radio" onclick="setSubsections('leftEye=leftEye&rightEye=rightEye&leftEyebrow=leftEyebrow&rightEyebrow=rightEyebrow&nose=nose&mouth=mouth&jawline=jawline', 1)" checked>
+                        <img src="static/image3.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart0_0_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_1_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_2_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_3_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_4_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_5_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_2">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class1_column_2" value='M001' onclick="setSubsections('leftEye=leftEye&rightEye=rightEye&nose=nose', 2)" type="radio">
+                        <img src="static/image0.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart0_0_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_1_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_2_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_3_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_4_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_5_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_3">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class1_column_3" value='M001' onclick="setSubsections('nose=nose&mouth=mouth', 3)" type="radio">
+                        <img src="static/image1.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart0_0_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_1_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_2_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_3_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_4_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_5_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_4">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class1_column_4" value='M001' onclick="setSubsections('leftEyebrow=leftEyebrow&rightEyebrow=rightEyebrow&nose=nose', 4)" type="radio">
+                        <img src="static/image2.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart0_0_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_1_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_2_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_3_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_4_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart0_5_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 justify-content-center">
+            <div class="row justify-content-center"><h2 id="title2">Female</h2></div>
+            <div class="row justify-content-center text-center">
+                <div class="col-3 justify-content-center text-center" id="column_5">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class2_column_1" value='F001' onclick="setSubsections('leftEye=leftEye&rightEye=rightEye&leftEyebrow=leftEyebrow&rightEyebrow=rightEyebrow&nose=nose&mouth=mouth&jawline=jawline', 5)" type="radio">
+                        <img src="static/image3.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart1_0_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_1_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_2_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_3_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_4_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_5_0" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_6">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class2_column_2" value='F001' onclick="setSubsections('leftEye=leftEye&rightEye=rightEye&nose=nose', 6)" type="radio">
+                        <img src="static/image0.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart1_0_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_1_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_2_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_3_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_4_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_5_1" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_7">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class2_column_3" value='F001' onclick="setSubsections('nose=nose&mouth=mouth', 7)" type="radio">
+                        <img src="static/image1.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart1_0_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_1_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_2_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_3_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_4_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_5_2" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+                <div class="col-3 justify-content-center text-center" id="column_8">
+                    <label>
+                        <input class="image form-check-input" name="selection" id="class2_column_4" value='F001' onclick="setSubsections('leftEyebrow=leftEyebrow&rightEyebrow=rightEyebrow&nose=nose', 8)" type="radio">
+                        <img src="static/image2.png" width=50 height=60>
+                    </label>
+                    <svg id = "chart1_0_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_1_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_2_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_3_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_4_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                    <svg id = "chart1_5_3" height="110" width="100">
+                        <circle cx="65" cy="55" r="40" fill="pink" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div id="class3" class = "col-6">
+            <div class="row justify-content-center"><h2>Embedding Graph</h2></div>
+            <form id="sliders">
+                <!-- Main Embedding Graph -->
+                <svg id = "chart1" height="500" width="1100">
+                    <circle cx="400" cy="250" r="200" fill="pink" />
+                </svg>
+                <!-- Faces with Sliders -->
+                <div id="slide" class='row justify-content-center'>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #8c564b">Anger</h4>
+                        <svg id = "face1" height="120" width="120"></svg>
+                        <input name="slideValue1" id="frameSlider1" type="range" min="0" max="109" value="0" class="slider anger" onchange="slide(0)">
+                        <h6 id="value1">0</h6>
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #9467bd">Disgust</h4>
+                        <svg id = "face2" height="120" width="120"></svg>
+                        <input name="slideValue2" id="frameSlider2" type="range" min="0" max="107" value="0" class="slider disgust" onchange="slide(1)">
+                        <h6 id="value2">0</h6>
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #d62728">Fear</h4>
+                        <svg id = "face3" height="120" width="120"></svg>
+                        <input name="slideValue3" id="frameSlider3" type="range" min="0" max="110" value="0" class="slider fear" onchange="slide(2)">
+                        <h6 id="value3">0</h6>
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #2ca02c">Happiness</h4>
+                        <svg id = "face4" height="120" width="120"></svg>
+                        <input name="slideValue4" id="frameSlider4" type="range" min="0" max="110" value="0" class="slider happiness" onchange="slide(3)">
+                        <h6 id="value4">0</h6>
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #ff7f0e">Sadness</h4>
+                        <svg id = "face5" height="120" width="120"></svg>
+                        <input name="slideValue5" id="frameSlider5" type="range" min="0" max="113" value="0" class="slider sadness" onchange="slide(4)">
+                        <h6 id="value5">0</h6>
+                    </div>
+                    <div class="col-2 justify-content-center">
+                        <h4 style="color: #1f77b4">Surprise</h4>
+                        <svg id = "face6" height="120" width="120"></svg>
+                        <input name="slideValue6" id="frameSlider6" type="range" min="0" max="109" value="0" class="slider surprise" onchange="slide(5)">
+                        <h6 id="value6">0</h6>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center text-center" style="height: 40px;">
+        <!--Buttons to change classes -- Bottom Left-->
+        <div class="col-6 justify-content-center text-center">
+            <span><button type="button" class="btn btn-outline-secondary" onclick="setClasses('personData')">Male v Female</button></span>
+            <span><button type="button" class="btn btn-outline-secondary" onclick="setClasses('differenceMetric')">Bottleneck v Wasserstein</button></span>
+            <span><button type="button" class="btn btn-outline-secondary" onclick="setClasses('nonMetric')">Metric v Nonmetric</button></span>
+            <span><button type="button" class="btn btn-outline-secondary" onclick="setClasses('embeddingType')">MDS v TSNE</button></span>
+            <span><button type="button" class="btn btn-outline-secondary" onclick="setClasses('reld')">Relative Distance</button></span>
+        </div>
+        <div class="col-6 justify-content-center text-center">
+            <form id="settings">
+                <div class="btn-group float-center" data-toggle="buttons" id="option1" style="padding: 0">
+                    <label>&ordm;</label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="differenceMetric" value="bottleneck" onclick="reload()" checked> Bottleneck
+                    </label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="differenceMetric" value="wasserstein" onclick="reload()"> Wasserstein
+                    </label>
+                </div>
+                <div class="btn-group float-center" data-toggle="buttons" id="option2">
+                    <label>&ordm;</label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="personData" value="M001" onclick="reload()" checked> Male
+                    </label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="personData" value="F001" onclick="reload()"> Female
+                    </label>
+                </div>
+                <div class="btn-group float-center" data-toggle="buttons" id="option3">
+                    <label>&ordm;</label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="embeddingType" value="mds" onclick="document.getElementById('option5').style.visibility = 'hidden'; reload()" checked> MDS
+                    </label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="embeddingType" value="tsne" onclick="document.getElementById('option5').style.visibility = 'hidden'; reload()"> t-SNE
+                    </label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="embeddingType" value="reld" onclick="document.getElementById('option5').style.visibility = 'visible'; reload()"> Relative Distance
+                    </label>
+                </div>
+                <div class="btn-group float-center" data-toggle="buttons" id="option4">
+                    <label>&ordm;</label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="nonMetric" value="metric" onclick="reload()" checked> Metric
+                    </label>
+                    <label class="btn btn-outline-secondary">
+                      <input type="radio" name="nonMetric" value="nonmetric" onclick="reload()"> Nonmetric
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center text-center" style="height: 10px;">
+        <div class="col-6">
+            <div class="row d-inline justify-content-center text-center">
+                <button type="button" id='save' class="btn btn-outline-secondary" onclick="save_image()">Save Embedding Graph SVG</button>
+            </div>
+        </div>
+        
+        
+        <div class="col-6" id="option5">
+            <label for="focalEmotion">Focal Emotion</label>
+            <select class="form-control" id="focalEmotion" name="focalEmotion" onchange="reload()">
+                <option value=0>Anger</option>
+                <option value=1>Disgust</option>
+                <option value=2>Fear</option>
+                <option value=3>Happiness</option>
+                <option value=4>Sadness</option>
+                <option value=5>Surprise</option>
+            </select>
+        </div>
+            
+        </div>
+    </div>
+    
+</body>

@@ -1,0 +1,87 @@
+body {
+    font-family: 'Oswald', sans-serif !important;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(189, 189, 189);
+    border-radius: 25px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(167, 167, 167);
+    border-radius: 25px;
+}
+
+div input.slider.anger{
+    background: #8c564b;
+}
+
+div input.slider.anger::-webkit-slider-thumb {
+    background: black;
+}
+
+div input.slider.disgust{
+    background: #9467bd;
+}
+
+div input.slider.disgust::-webkit-slider-thumb {
+    background: black;
+}
+
+div input.slider.fear{
+    background: #d62728;
+}
+
+div input.slider.fear::-webkit-slider-thumb {
+    background:black;
+}
+
+div input.slider.happiness{
+    background: #2ca02c;
+}
+
+div input.slider.happiness::-webkit-slider-thumb {
+    background: black;
+}
+
+div input.slider.sadness{
+    background: #ff7f0e;
+}
+
+div input.slider.sadness::-webkit-slider-thumb {
+    background: black;
+}
+
+div input.slider.surprise{
+    background: #1f77b4;
+}
+
+div input.slider.surprise::-webkit-slider-thumb {
+    background: black;
+}
+
+.row {
+    padding: 0px 20px 0px 20px;
+}
+
+.image[type=radio] { 
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* IMAGE STYLES */
+  .image[type=radio] + img {
+    cursor: pointer;
+  }
