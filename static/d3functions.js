@@ -68,60 +68,6 @@ const printSymbol =
 }
 
 /**
- * prints a vertical line
- */
-const printVertLine = 
-(svg, xAxis, yAxis, y, i) =>
-    svg
-    .append('line')
-        .attr('transform', translation)
-        .attr('stroke', 'black')
-        .attr('x1',xAxis(i))
-        .attr('x2',xAxis(i))
-        .attr('y1',yAxis(y[0]))
-        .attr('y2',yAxis(y[1]))
-
-/**
- * prints a rectangle
- */
-const printRect = 
-(svg, xAxis, yAxis, xStart, xVal1, xVal2, yVal1, yVal2, color, stroke='black') =>
-{
-    let x = xAxis(xStart),
-        y = yAxis(yVal1),
-        w = xAxis(xVal2)-xAxis(xVal1),
-        h = yAxis(yVal2)-yAxis(yVal1)
-
-    if(w == 'Infinity') w = 50
-
-    svg.append('rect')
-        .attr('transform', translation)
-        .attr('x', x)
-        .attr('y', y)
-        .attr('width', w)
-        .attr('height', h)
-        .attr('stroke', 'black')
-        .attr('fill', `${color}`)
-        .attr('stroke', stroke);
-}
-    
-
-
-/**
- * prints a horizontal line
- */
-const printHorizLine = 
-(svg, xAxis, yAxis, x, i) =>
-    svg
-    .append('line')
-        .attr('transform', translation)
-        .attr('stroke', 'black')
-        .attr('x1',xAxis(x[0]))
-        .attr('x2',xAxis(x[1]))
-        .attr('y1',yAxis(i))
-        .attr('y2',yAxis(i))
-
-/**
  * prints a horizontal line
  */
 const printDiagLine = 
@@ -140,14 +86,86 @@ const printDiagLine =
  * print path on the chart svg for the emotion[i]
  */
 const printPath =
-(svg, i, xScale, yScale) => {
+(svg, data, i, xScale, yScale, showAxes=true) => {
+    let wid = document.getElementById(`chart1`).getAttribute('width'),
+        het = document.getElementById(`chart1`).getAttribute('height')
 
-    let wid = document.getElementById("chart").getAttribute('width'),
-        het = document.getElementById("chart").getAttribute('height')
+    let t
+    if(showAxes) t = path_translation
+    else t = translation
 
-    svg.append('path')
-        .attr('transform', translation)
-        .datum(currentData[i])
+    if(!visible){
+        svg.append('g')
+            .attr('transform', t)
+            .selectAll('dot')
+            .data(data[i])
+            .enter()
+            .append('circle')
+                .attr('cx', d=>{
+                    return xScale(d.x)
+                })
+                .attr('cy', d=>{
+                    if(d.y == '-Infinity' || d.y == 'Infinity') {
+                        return 50
+                    }
+                    return yScale(d.y)
+                })
+                .attr('r', 6)
+                .style('fill', strokeColors[i])
+                .style('stroke', strokeColors[i])
+                .on(
+                    "mouseover", 
+                    function(d) {
+                        d3.select(this).attr('r', d3.select(this).attr('r')*2)
+                        }
+                    )                  
+                .on(
+                    "mouseout", 
+                    function(d) {
+                        d3.select(this).attr('r', d3.select(this).attr('r')/2)
+                        }
+                    )  
+                    .on(
+                        'click',
+                        function(d) {
+                            if(dim == 1)
+                                $(`#${sliders[i]}`).val(xScale.invert(d3.mouse(this)[0]))
+                            else
+                            {
+                                let coords = {
+                                    x: xScale.invert(d3.mouse(this)[0]),
+                                    y: yScale.invert(d3.mouse(this)[1])
+                                }
+                
+                                let closest = Math.pow(10, 1000)
+                                let index = -1
+                
+                                for(let j = 0; j < data[i].length; j++)
+                                {
+                                    if(data[i][j] != null){
+                                        let dist = euclideanDistance2D(data[i][j], coords)
+                                        if(dist < closest)
+                                        {
+                                            closest = dist
+                                            index = j
+                                        }
+                                    }
+                                    
+                                }
+                                $(`#${sliders[i]}`).val(index)
+                            }
+                            //console.log(`d3.mouse(this)[0]: ${d3.mouse(this)[0]}`)
+                            //console.log(`currentChartXAxis.invert(d3.mouse(this)[0]) ${xScale.invert(d3.mouse(this)[0])}`)
+            
+                            /**/
+            
+                            
+                            reload()
+                        })
+    } else {
+        svg.append('path')
+        .attr('transform', t)
+        .datum(data[i])
         .attr('class', 'input_line')
         .attr('d',
             d3.line()
@@ -160,6 +178,7 @@ const printPath =
                     d=>yScale(d.y)
                 )
         )
+        .style('display', currentDisplay)
         .style('stroke', strokeColors[i])
         .style('stroke-width', 2)
         .attr('pointer-events', 'visibleStroke')
@@ -178,47 +197,62 @@ const printPath =
         .on(
             'click',
             function(d) {
+                if(dim == 1)
+                    $(`#${sliders[i]}`).val(xScale.invert(d3.mouse(this)[0]))
+                else
+                {
+                    let coords = {
+                        x: xScale.invert(d3.mouse(this)[0]),
+                        y: yScale.invert(d3.mouse(this)[1])
+                    }
+    
+                    let closest = Math.pow(10, 1000)
+                    let index = -1
+    
+                    for(let j = 0; j < data[i].length; j++)
+                    {
+                        if(data[i][j] != null){
+                            let dist = euclideanDistance2D(data[i][j], coords)
+                            if(dist < closest)
+                            {
+                                closest = dist
+                                index = j
+                            }
+                        }
+                        
+                    }
+                    $(`#${sliders[i]}`).val(index)
+                }
                 //console.log(`d3.mouse(this)[0]: ${d3.mouse(this)[0]}`)
                 //console.log(`currentChartXAxis.invert(d3.mouse(this)[0]) ${xScale.invert(d3.mouse(this)[0])}`)
 
-                /*let coords = {
-                    x: xScale.invert(d3.select(this)[0]),
-                    y: xScale.invert(d3.select(this)[1])
-                }
+                /**/
 
-                console.log(currentData[i])
-
-                let closest = Math.pow(10, 1000)
-                let index = -1
-
-                for(let j = 0; j < currentData[i].length; j++)
-                {
-                    let dist = euclideanDistance2D(currentData[i][j], coords)
-                    if(dist < closest)
-                    {
-                        closest = dist
-                        index = j
-                    }
-                }*/
-
-                $(`#${sliders[i]}`).val(xScale.invert(d3.mouse(this)[0]))
+                
                 reload()
             }
             )
+    }
+
+    if(showAxes)
+    {
+        svg.append('g').style("font", "1rem times").attr('transform', 'translate(36,480)').call(d3.axisBottom().scale(xScale));
+        svg.append('g').style("font", "1rem times").attr('transform', 'translate(36,5)').call(d3.axisLeft().scale(yScale));
+    }
 
     let upper = -8, lower = het-12
 
-    for(let j = 1; j < currentData[i].length; j++)
+    for(let j = 1; j < data[i].length; j++)
     {
-        if(crosses_bounds(currentData[i], currentChartYAxis, j, upper))
+        if(crosses_bounds(data[i], yScale, j, upper))
             {
                 let intersect = 
                 simple_intersection
                     (
                         upper,
-                        currentData[i],
-                        currentChartXAxis,
-                        currentChartYAxis,
+                        data[i],
+                        xScale,
+                        yScale,
                         j
                     )
                 
@@ -229,19 +263,19 @@ const printPath =
                         dotColors[i],
                         d3.symbolTriangle,
                         0,
-                        translation
+                        t
                     )
             }
             
-        if(crosses_bounds(currentData[i], currentChartYAxis, j, lower))
+        if(crosses_bounds(data[i], yScale, j, lower))
             {
                 let intersect = 
                 simple_intersection
                     (
                         lower,
-                        currentData[i],
-                        currentChartXAxis,
-                        currentChartYAxis,
+                        data[i],
+                        xScale,
+                        yScale,
                         j
                     )
                 
@@ -252,7 +286,7 @@ const printPath =
                         dotColors[i],
                         d3.symbolTriangle,
                         180,
-                        translation
+                        t
                     )
             }
     }

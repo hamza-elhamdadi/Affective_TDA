@@ -44,13 +44,38 @@
                         <div class="row d-inline-flex justify-content-center text-center"><h2 >Settings</h2></div>
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center">
+                            <h2 class="subtitleTop">Person </h2>
+                        </div>
+                        <div class="row d-inline justify-content-center text-center">
+                                <select class = "form-control" id="personData" name="personData" onchange="reload()">
+                                    <option value="F001">Female 1</option>
+                                    <option value="M001">Male 1</option>
+                                </select>
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center">
                             <h2 class="subtitleTop">Dimension Reduction </h2>
                         </div>
                         <div class="row d-inline justify-content-center text-center">
                                 <select class = "form-control" id="embeddingType" name="embeddingType" onchange="reload()">
-                                    <option value="mds">MDS</option>
                                     <option value="tsne">TSNE</option>
+                                    <option value="mds">MDS</option>
+                                    <option value="reld">Relative Distance</option>
                                 </select>
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center" id="foc">
+                            <h2 class="subtitleTop" id="focalTitle">Focal Emotion </h2>
+                        </div>
+                        <div class="row d-inline justify-content-center text-center" id="focal">
+                            <select class="form-control" id="focalEmotion" name="focalEmotion" onchange="reload()">
+                                <option value="0">Anger</option>
+                                <option value="1">Disgust</option>
+                                <option value="2">Fear</option>
+                                <option value="3">Happiness</option>
+                                <option value="4">Sadness</option>
+                                <option value="5">Surprise</option>
+                            </select>
                         </div>
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center">
@@ -64,30 +89,36 @@
                         </div>
                         <br>
                         <div class="row d-inline-flex justify-content-center text-center">
-                            <h1 class="subtitleTop">Metric or Nonmetric?</h1>
+                            <h1 class="subtitleTop">Additional Considerations</h1>
                         </div>
                         <div class="row d-inline justify-content-center text-center">
                                 <select class="form-control" id="nonMetric" name="nonMetric" onchange="reload()">
                                     <option value="metric">Metric</option>
                                     <option value="nonmetric">Nonmetric</option>
+                                    <!--<option value="geometry">Geometry</option>-->
                                 </select>
                         </div>
                         <br>
-                        <!--<div class="row d-inline-flex justify-content-center text-center">
-                            <h1 class="title">Vertical Scale</h1>
+                        <div class="row d-inline-flex justify-content-center text-center" id="foc">
+                            <h2 class="subtitleTop" id="spearmanRank1">Rank: </h2>
                         </div>
-                        <div class="row">
-                            <div class="col-2"></div>
-                            <div class="col">
-                                <span style="display: flex">
-                                    <input type="range" min="85" max="100" value="100" class="slider" id="confInterval" name="confInterval" onchange="confidence_interval()">
-                                </span>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center" id="foc">
+                            <h2 class="subtitleTop" id="spearmanRank2">Rank: </h2>
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center" id="foc">
+                            <h2 class="subtitleTop" id="spearmanRank3">Rank: </h2>
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center" id="perp">
+                            <div class="checkbox">
+                                <input type="checkbox" id="twoD" onchange="reload()">
+                                <label for="twoD" id="labels">2D Only</label>
                             </div>
                         </div>
-                        <div class="row d-inline-flex justify-content-center text-center">
-                            <h2 class="title" id="percentage">100% of data</h2>
-                        </div>-->
-                        <div class="row d-inline-flex justify-content-center text-center">
+                        <br>
+                        <div class="row d-inline-flex justify-content-center text-center" id="perp">
                             <span style="display: flex" class="down">
                                 <h2 class="subtitleLeft" >Perplexity</h1>
                                 <input type="number" min="1" max="100" value="30" style="padding-top: 0;" id="perplexity" name="perplexity" onchange="clear_cache()">
@@ -194,8 +225,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row d-inline-flex justify-content-center text-center">
-                            <h1 class="subtitleTop">Face Subsections </h2>
+                        <div class="row d-inline-flex justify-content-left text-left">
+                            <h1 class="subtitleTop">Face Subsections 1</h2>
                         </div>
                         <div class="row  d-inline justify-content-center text-center">
                             <div class="checkbox">
@@ -227,67 +258,188 @@
                             <input type="hidden" name="jawlineHidden" id="jawlineHidden" value="null">
                         </div>
                         <br>
+                        <div class="row d-inline-flex justify-content-left text-left">
+                            <h1 class="subtitleTop">Face Subsections 2</h2>
+                        </div>
+                        <div class="row  d-inline justify-content-center text-center">
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEye2" id="leftEye2" value="leftEye" onchange="reload()" checked>
+                                <label for="leftEye2" id="labels">Left Eye</label>
+                                <input type="hidden" name="leftEyeHidden2" id="leftEyeHidden2" value="null">
+                                <input type="checkbox" name="rightEye2" id="rightEye2" value="rightEye" onchange="reload()" checked>
+                                <label for="rightEye2" id="labels">Right Eye</label>
+                                <input type="hidden" name="rightEyeHidden2" id="rightEyeHidden2" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEyebrow2" id="leftEyebrow2" value="leftEyebrow" onchange="reload()" checked>
+                                <label for="leftEyebrow2" id="labels">Left Eyebrow</label>
+                                <input type="hidden" name="leftEyebrowHidden2" id="leftEyebrowHidden2" value="null">
+                                <input type="checkbox" name="rightEyebrow2" id="rightEyebrow2" value="rightEyebrow" onchange="reload()" checked>
+                                <label for="rightEyebrow2" id="labels">Right Eyebrow</label>
+                                <input type="hidden" name="rightEyebrowHidden2" id="rightEyebrowHidden2" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="nose2" id="nose2" value="nose" onchange="reload()" checked>
+                                <label for="nose2" id="labels">Nose</label>
+                                <input type="hidden" name="noseHidden2" id="noseHidden2" value="null">
+                                <input type="checkbox" name="mouth2" id="mouth2" value="mouth" onchange="reload()" checked>
+                                <label for="mouth2" id="labels">Mouth</label>
+                                <input type="hidden" name="mouthHidden2" id="mouthHidden2" value="null">
+                                <input type="checkbox" name="jawline2" id="jawline2" value="jawline" onchange="reload()" checked>
+                                <label for="jawline2" id="labels">Jawline</label>
+                            </div>
+                            <input type="hidden" name="jawlineHidden2" id="jawlineHidden2" value="null">
+                        </div>
+                        <br>
+                        <div class="row d-inline-flex justify-content-left text-left">
+                            <h1 class="subtitleTop">Face Subsections 3</h2>
+                        </div>
+                        <div class="row  d-inline justify-content-center text-center">
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEye3" id="leftEye3" value="leftEye" onchange="reload()" checked>
+                                <label for="leftEye3" id="labels">Left Eye</label>
+                                <input type="hidden" name="leftEyeHidden3" id="leftEyeHidden3" value="null">
+                                <input type="checkbox" name="rightEye3" id="rightEye3" value="rightEye" onchange="reload()" checked>
+                                <label for="rightEye3" id="labels">Right Eye</label>
+                                <input type="hidden" name="rightEyeHidden3" id="rightEyeHidden3" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="leftEyebrow3" id="leftEyebrow3" value="leftEyebrow" onchange="reload()" checked>
+                                <label for="leftEyebrow3" id="labels">Left Eyebrow</label>
+                                <input type="hidden" name="leftEyebrowHidden3" id="leftEyebrowHidden3" value="null">
+                                <input type="checkbox" name="rightEyebrow3" id="rightEyebrow3" value="rightEyebrow" onchange="reload()" checked>
+                                <label for="rightEyebrow3" id="labels">Right Eyebrow</label>
+                                <input type="hidden" name="rightEyebrowHidden3" id="rightEyebrowHidden3" value="null">
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" name="nose3" id="nose3" value="nose" onchange="reload()" checked>
+                                <label for="nose3" id="labels">Nose</label>
+                                <input type="hidden" name="noseHidden3" id="noseHidden3" value="null">
+                                <input type="checkbox" name="mouth3" id="mouth3" value="mouth" onchange="reload()" checked>
+                                <label for="mouth3" id="labels">Mouth</label>
+                                <input type="hidden" name="mouthHidden3" id="mouthHidden3" value="null">
+                                <input type="checkbox" name="jawline3" id="jawline3" value="jawline" onchange="reload()" checked>
+                                <label for="jawline3" id="labels">Jawline</label>
+                            </div>
+                            <input type="hidden" name="jawlineHidden3" id="jawlineHidden3" value="null">
+                        </div>
+                        <br>
                         <div class="input-group" id="seed">
-                            <!--<span class="input-group-addon" style="font-size: 18; padding-left: 10px; padding-top: 4px; padding-right: 20px;">t-SNE Seed</span>-->
                             <input id="tsneSeed" type="text" class="form-control" placeholder="t-SNE Seed" name="tsneSeed">
                             <span style="width: 25%"><button type="button" id='updateSeed' class="btn btn-outline-secondary" onclick="">Update</button></span>
                         </div>
                     </div>
                     <div class = "col-9" style="max-width: 1250px;">
                         <br>
+                        <div class="tab">
+                            <input type="button" class="tablinks" onclick="openTab(event, 'tab1')">Selection 1</button>
+                            <input type="button" class="tablinks" onclick="openTab(event, 'tab2')">Selection 2</button>
+                            <input type="button" class="tablinks" onclick="openTab(event, 'tab3')">Selection 3</button>
+                          </div>
                         <div class = 'row d-inline-flex justify-content-center text-center'>
                             
                         </div>
-                        <div class = "row d-flex justify-content-center text-center">
-                            <span>
-                                <h2 style="text-align: center;">Embedding Graph</h2>
-                                <svg width="1000" height="325" style="border: none;" id="chart" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
-                            </span>
-                            <span>
-                                <h2 style="text-align: center;"> Box Plots</h2>
-                                <svg width="35" height="325" style="border: none;" id="plot1"></svg>
-                                <svg width="35" height="325" style="border: none;" id="plot2"></svg>
-                                <svg width="35" height="325" style="border: none;" id="plot3"></svg>
-                                <svg width="35" height="325" style="border: none;" id="plot4"></svg>
-                                <svg width="35" height="325" style="border: none;" id="plot5"></svg>
-                                <svg width="35" height="325" style="border: none;" id="plot6"></svg>
-                            </span>
-                            
+                        <div id="tab1" class="tabcontent" style="display: inline;">
+                            <div class = "row d-flex justify-content-center text-center">
+                                <span>
+                                    <h2 style="text-align: center;">Embedding Graph</h2>
+                                    <svg width="1000" height="325" style="border: none;" id="chart1" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
+                                </span>                                
+                            </div>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">Persistence Diagrams</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="pdiag1"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag2"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag3"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag4"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag5"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag6"></svg>
+                            </div>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">3D Landmarks</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="face1"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face2"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face3"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face4"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face5"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face6"></svg>
+                            </div>
+                            <hr>
                         </div>
-                        <hr>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <h2 style="text-align: center;">3D Landmarks</h2>
+                        <div id="tab2" class="tabcontent" style="display: none;">
+                            <div class = "row d-flex justify-content-center text-center">
+                                <span>
+                                    <h2 style="text-align: center;">Embedding Graph</h2>
+                                    <svg width="1000" height="325" style="border: none;" id="chart2" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
+                                </span>
+                                
+                            </div>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">Persistence Diagrams</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="pdiag7"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag8"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag9"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag10"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag11"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag12"></svg>
+                            </div>
+                            <br>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">3D Landmarks</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="face7"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face8"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face9"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face10"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face11"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face12"></svg>
+                            </div>
+                            <hr>
                         </div>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <svg width="150" height="150" style="border: none;" id="face1"></svg>
-                            <svg width="150" height="150" style="border: none;" id="face2"></svg>
-                            <svg width="150" height="150" style="border: none;" id="face3"></svg>
-                            <svg width="150" height="150" style="border: none;" id="face4"></svg>
-                            <svg width="150" height="150" style="border: none;" id="face5"></svg>
-                            <svg width="150" height="150" style="border: none;" id="face6"></svg>
+                        <div id="tab3" class="tabcontent" style="display: none;">
+                            <div class = "row d-flex justify-content-center text-center">
+                                <span>
+                                    <h2 style="text-align: center;">Embedding Graph</h2>
+                                    <svg width="1000" height="325" style="border: none;" id="chart3" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
+                                </span>                                
+                            </div>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">Persistence Diagrams</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="pdiag13"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag14"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag15"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag16"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag17"></svg>
+                                <svg width="150" height="150" style="border: none;" id="pdiag18"></svg>
+                            </div>
+                            <hr>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <h2 style="text-align: center;">3D Landmarks</h2>
+                            </div>
+                            <div class = "row d-inline justify-content-center text-center">
+                                <svg width="150" height="150" style="border: none;" id="face13"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face14"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face15"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face16"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face17"></svg>
+                                <svg width="150" height="150" style="border: none;" id="face18"></svg>
+                            </div>
+                            <hr>
                         </div>
-                        <hr>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <h2 style="text-align: center;">Persistence Diagrams</h2>
-                        </div>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <svg width="150" height="150" style="border: none;" id="pdiag1"></svg>
-                            <svg width="150" height="150" style="border: none;" id="pdiag2"></svg>
-                            <svg width="150" height="150" style="border: none;" id="pdiag3"></svg>
-                            <svg width="150" height="150" style="border: none;" id="pdiag4"></svg>
-                            <svg width="150" height="150" style="border: none;" id="pdiag5"></svg>
-                            <svg width="150" height="150" style="border: none;" id="pdiag6"></svg>
-                        </div>
-                        <hr>
-                        <!--<div class = "row d-inline-flex justify-content-center text-center"><h2 style="text-align: center;">Persistence Barcodes</h2></div>
-                        <div class = "row d-inline justify-content-center text-center">
-                            <svg width="150" height="300" style="border: none;" id="bar1"></svg>
-                            <svg width="150" height="300" style="border: none;" id="bar2"></svg>
-                            <svg width="150" height="300" style="border: none;" id="bar3"></svg>
-                            <svg width="150" height="300" style="border: none;" id="bar4"></svg>
-                            <svg width="150" height="300" style="border: none;" id="bar5"></svg>
-                            <svg width="150" height="300" style="border: none;" id="bar6"></svg>
-                        </div>-->
                         
                         <div class="row d-inline justify-content-center text-center">
                             <button type="button" id='save' class="btn btn-outline-secondary" onclick="save_image()">Save Embedding Graph SVG</button>

@@ -1,19 +1,21 @@
-from sklearn.manifold import MDS, TSNE, trustworthiness
-from matplotlib import pyplot as plt
-from scipy.spatial import distance
-from os import path
-import csv, json, numpy as np
+import numpy as np, housekeeping
 
-def getTrustworthiness(original, embedding):
-    return trustworthiness(X=original, X_embedded=embedding, metric="precomputed")
+F001_key = {
+    "Angry": (0,112, 112, 0),
+    "Disgust": (112,220, 220-112, 1),
+    "Fear": (220,331, 331-220, 2),
+    "Happy": (331,442, 442-331, 3),
+    "Sad": (442,556, 556-442, 4),
+    "Surprise": (556,666, 666-556, 5)
+}
 
-key = {
-    "Angry": (0,112, 112),
-    "Disgust": (112,220, 220-112),
-    "Fear": (220,331, 331-220),
-    "Happy": (331,442, 442-331),
-    "Sad": (442,556, 556-442),
-    "Surprise": (556,666, 666-556)
+M001_key = {
+    "Angry": (0,111, 111, 0),
+    "Disgust": (111,223, 223-111, 1),
+    "Fear": (223,333, 333-223, 2),
+    "Happy": (333,443, 443-333, 3),
+    "Sad": (443,556, 556-443, 4),
+    "Surprise": (556,667, 667-556, 5)
 }
 
 actionUnitsKey = {
@@ -26,166 +28,103 @@ actionUnitsKey = {
     "jawline": (68,82)
 }
 
+selections = ['selection_1', 'selection_2', 'selection_3']
 valid = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise']
 
-def shepardsDiagram(matrix, embedding, dimension, picName):
-    m = matrix.flatten()
-    emb = list(enumerate(embedding.flatten())) if dimension == 1 else embedding
+"""
+specs = {
+    person_data:                *ex: F001*
+    section_list:               *ex: ['leftEye']*
+    difference_metric:          *bottleneck OR wasserstein*
+    embedding_type:             *mds, tsne, or reld*
+    emotions:                   *list of selected emotions*
+    focal_emotion:              *ex: Anger*
+    frame_indices:              *list of slider indices*
+    non_metric:                 *metric OR nonmetric*
+    perplexity:                 *ex: 30*
+    dimension:                  *1 OR 2*
+    return_dissimilarity:       *True OR False*
+    is_two_dimensional:         *True OR False*
+    selection:                  *ex: selection_1*
+}
+"""
+def get_embedding_data(specs):
+    specs['data_type'] = 'dissimilarity'
+    filepath = housekeeping.build_filepath(specs)
 
-    d = [distance.euclidean(d,e) for d in emb for e in emb]
+    indices = housekeeping.get_emotion_indices(
+        specs.get('emotions'), 
+        F001_key if specs.get('person_data') == 'F001' else M001_key
+    )
 
-    plt.scatter(m, d)
-    plt.savefig(picName)
+    print(indices)
 
-def embed(etype, dimension, perp):
-    return {
-        'mds': MDS(n_components=dimension,dissimilarity='precomputed', random_state=0),
-        'tsne': TSNE(n_components=dimension,metric='precomputed', perplexity=perp, random_state=None)
-    }.get(etype)
+    dissimilarities = housekeeping.filter_data(
+        housekeeping.read_matrix_file(
+            filepath, 
+            specs.get('non_metric')
+        ), 
+        indices
+    )
 
-def dissMatFromHeraOut(lines, dim):
-    dissimilarity = np.zeros(shape=(dim,dim))
-    for vals in lines:
-        dissimilarity[vals[0]][vals[1]] = vals[2]
-        dissimilarity[vals[1]][vals[0]] = vals[2]
-    return dissimilarity
+    print(len(dissimilarities))
 
-def map_names(string):
-    vals = string.split('_')
-    return key[vals[-2]][0] + int(vals[-1])
-
-def mapping_lambda(row):
-    row[0] = map_names(row[0])
-    row[1] = map_names(row[1])
-    row[2] = float(row[2])
-    return row
-
-def extend_frameNumber(frameNumber):    
-    return "{0:0=3d}".format(int(frameNumber))
-
-def get_embedding_data(section_list, differenceMetric, embeddingType, emotionIDs, nonMetric, perplexity, dimension, retDiss):
-    indices = []
-    sections = '_'.join(section_list)
-    filepath = f'../outputData/metric/F001/subsections/dissimilarities/{differenceMetric}/{sections}.csv' if nonMetric == 'metric' else '../outputData/nonmetric/F001/subsections/dissimilarities/{}/{}.csv'.format(differenceMetric, sections.replace('mouth', 'innermouth_outermouth'))
-
-    with open(filepath, 'r') as file:
-        lines = file.readlines()
-
-    dissBefore = list(map(lambda elem : list(map(lambda l: float(l), elem.split(' ')[:-1] if nonMetric == 'metric' else elem.split(' '))), lines))
-
-    for e in emotionIDs:
-        if e:
-            indices += range(key[e][0],key[e][1])
-
-    dissimilarities = []
-
-    for i in range(len(dissBefore)):
-        line = []
-        for j in range(len(dissBefore)):
-            if i in indices and j in indices:
-                line.append(dissBefore[i][j])
-        if line != []:
-            dissimilarities.append(line)
-
-    if retDiss:
+    if specs.get('return_dissimilarity'):
         return dissimilarities
+        
+    embedding_data = housekeeping.embed(
+        {
+            'perplexity': int(specs.get('perplexity')),
+            'key': F001_key if specs.get('person_data') == 'F001' else M001_key,
+            'focal_emotion': specs.get('focal_emotion'),
+            'frame_indices': specs.get('frame_indices'),
+            'embedding_type': specs.get('embedding_type'),
+            'dimension': 1 if specs.get('embedding_type') == 'reld' else 2,
+            'emotions': specs.get('emotions'),
+            'dissimilarities': dissimilarities
+        }
+    )
 
-    embedding = embed(embeddingType, dimension, int(perplexity))
+    if specs.get('embedding_type') != 'reld':
+        embedding_data = embedding_data.fit_transform(np.asmatrix(dissimilarities))
 
-    embData = embedding.fit_transform(np.asmatrix(dissimilarities))
+    return housekeeping.prepare_data(
+        specs.get('emotions'), 
+        specs.get('embedding_type'), 
+        embedding_data, 1 if specs.get('embedding_type') == 'reld' else 2, 
+        F001_key if specs.get('person_data') == 'F001' else M001_key
+    )
 
-    #with open(f'../cache/{nonMetric}/F001/trustworthiness/{differenceMetric}_{embeddingType}_{sections}_{emotionID}_{dimension}D.json', 'w') as file:
-    #    file.write(getTrustworthiness(dissimilarities, embedding))
-    
-    data = []
-    first = True
-    last = 0
-    for i in range(len(emotionIDs)):
-        if emotionIDs[i]:
-            a = last
-            b = last + key[valid[i]][2]
-            first = False
-            last = b
-            if dimension == 1:
-                array = list(map(lambda e : float(e[0]), embData[a:b]))
-                data.append([{'x': j, 'y': array[j]} for j in range(len(array))])
-            else:
-                array = list(map(lambda e : list(map(lambda l: float(l), e)), embData[a:b]))
-                data.append(list(map(lambda l: {'x':l[0], 'y':l[1]}, array)))
+def get_face_data(person_data, emotion, frame_index):
+    filepath = housekeeping.build_filepath(
+        {
+            'person_data': person_data,
+            'emotion': emotion,
+            'frame_index': frame_index,
+            'data_type': 'face'
+        }
+    )
+    with open(filepath, 'r') as file:
+        data = [line[:-1].split(' ')[1:-1] for line in file.readlines()]
+        data = [{"x":float(pair[0]), "y":float(pair[1])} for pair in data]
 
     return data
 
-def get_face_data(section_list, personData, emotion, frameNumber):
-    frame = extend_frameNumber(frameNumber)
-    file_path = f'../Data/{personData}/{emotion}/{frame}.bnd'
-
-    with open(file_path, 'r') as file:
-        data = file.readlines()
-        data = list(map(lambda line : line[:-1].split(' '), data))
-        data = list(map(lambda li : li[1:-1], data))
-        data = list(map(lambda li : list(map(lambda e : float(e), li)), data))
-        data = list(map(lambda pair : {"x":pair[0], "y":pair[1]}, data))
-
-    ret = []
-
-    for subsection in section_list:
-        pointRange = actionUnitsKey.get(subsection)
-        ret += data[pointRange[0]:pointRange[1]+1]
-
-    return ret
-
-def get_persistence_diagram(section_list, personData, emotion, frameNumber, nonMetric):
-    frame = extend_frameNumber(frameNumber)
-    sections = '_'.join(section_list)
-
-    h_0 = []
-    h_1 = []
-
-    if nonMetric == 'metric':
-        filepath = f'../outputData/metric/F001/subsections/persistence/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
-
-        with open(filepath, 'r') as file:
-            lines = file.readlines()
-
-            for line in lines:
-                coords = line.split(' ')
-                
-                coordObj = {
-                    'x':float(coords[0]),
-                    'y':float(coords[1])
-                }
-
-                if(float(coords[0]) == 0.0):
-                    h_0.append(coordObj)
-                else:
-                    h_1.append(coordObj)
-    else:
-        sections = sections.replace('mouth', 'innermouth_outermouth')
-        filepathH0 = f'../outputData/nonmetric/F001/subsections/persistence/h0/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
-        filepathH1 = f'../outputData/nonmetric/F001/subsections/persistence/h1/{sections}/persistence_diagram_{sections}_{emotion}_{frame}.txt'
-
-        with open(filepathH0, 'r') as file:
-            lines = file.readlines()
-
-            for line in lines:
-                coords = line.split(' ')
-                coordObj = {
-                    'x':float(coords[0]),
-                    'y':float(coords[1])
-                }
-                h_0.append(coordObj)
-
-        with open(filepathH1, 'r') as file:
-            lines = file.readlines()
-
-            for line in lines:
-                coords = line.split(' ')
-                coordObj = {
-                    'x':float(coords[0]),
-                    'y':float(coords[1])
-                }
-                h_1.append(coordObj)
- 
-    return [h_0, h_1]
-
-
+def get_persistence_diagram(section_list, person_data, emotion, frameNumber, nonMetric, twoD):
+    filepaths = housekeeping.build_filepath(
+        {
+            'section_list': section_list,
+            'person_data': person_data,
+            'emotion': emotion,
+            'frame_index': frameNumber,
+            'is_two_dimensional': twoD,
+            'non_metric': nonMetric,
+            'data_type': 'persistence'
+        }
+    )
+    return {
+        'selection_1':housekeeping.read_persistence_file(filepaths['selection_1']),
+        'selection_2':housekeeping.read_persistence_file(filepaths['selection_2']),
+        'selection_3':housekeeping.read_persistence_file(filepaths['selection_3'])
+    }
+    

@@ -16,6 +16,18 @@ R.compose(
  * if the axis is not x, it is y, 
  * and the extent is the minimum to maximum values of all the datasets
  */
+const findDataExtentsAdjusted =
+func =>
+R.compose(
+    d3.extent,
+    R.slice(1,Infinity),
+    R.sort((a,b) => a-b),
+    R.map(func),
+    R.reduce(R.concat,[]),
+    R.filter(d=>d!=null)
+)
+
+
 const findDataExtents =
 func =>
 R.compose(
@@ -39,23 +51,27 @@ const findAxis =
  * corresponding to the particular slider[i]
  */
 const calcDotCoordinates =
-i => 
+(index, data) => 
     {
-        let xVal = $(`#${sliders[i]}`).val()
+        let xVal = $(`#${sliders[index]}`).val()
         let ret
 
-        if($('#dimension').val() == 1)
+        //console.log(xVal)
+        //console.log(data)    
+        //console.log(data[index][xVal])
+
+        if(dim == 1)
         {
             ret = {
                 x: xVal,
-                y: currentData[i][xVal].y
+                y: data[index][xVal].y
             }
         }
         else
         {
             ret = {
-                x: currentData[i][xVal].x,
-                y: currentData[i][xVal].y
+                x: data[index][xVal].x,
+                y: data[index][xVal].y
             }
         }
         
@@ -108,7 +124,7 @@ const euclideanDistance2D =
  * perform setup calculations for d3 svg
  */
 const d3Setup = 
-(chartName, data=null, setup=true, full_face=false) =>
+(chartName, data=null, setup=true, full_face=false, showaxes=true) =>
     {
         let xExtent, yExtent
 
@@ -120,26 +136,39 @@ const d3Setup =
         let chartWidth = svgWidth - (margin.left + margin.right),
             chartHeight = svgHeight - (margin.top + margin.bottom)
 
-        if(R.equals(chartName,'#chart'))
+        if(R.contains('#chart',chartName))
         {
-            if($('#dimension').val() == 1)
-            {
+            if(dim == 1)
                 xExtent = findTimeExtents(currentData)
-            }
             else{
                 xExtent = 
                     findDataExtents
                         (d=>d.x)
                         (currentData)
             }
+
+            for(d of document.getElementsByName('embeddingType'))
+            {
+                if(d.checked == true) eType = d.value
+            }
             
-            yExtent = 
-                findDataExtents
-                    (d=>d.y)
-                    (currentData)
+            if(eType == 'reld' || classes == 'reld')
+                yExtent = 
+                    findDataExtentsAdjusted
+                        (d=>d.y)
+                        (currentData)
+            else
+                yExtent = 
+                    findDataExtents
+                        (d=>d.y)
+                        (currentData)
 
             cWidth = chartWidth
             cHeight = chartHeight
+
+            if(showaxes){
+                chartWidth = chartWidth-36
+            }
 
             let xAxis = 
                     findAxis
@@ -177,6 +206,8 @@ const d3Setup =
                             [chartHeight,0]
                         )
 
+            //console.log(`${chartName}: xScale - ${xExtent}, yScale - ${yExtent}`)
+
             currentFaceXAxis = xAxis
             currentFaceYAxis = yAxis
         }
@@ -208,7 +239,7 @@ const d3Setup =
         {
             data = [].concat.apply([], data)
             //xMax = d3.max(data.map(e => e.x))
-            xExtent = [0,60]
+            xExtent = [0,5]
             yExtent = xExtent
 
             let xAxis = 
@@ -226,6 +257,28 @@ const d3Setup =
                     
             currentPDiagXAxis = xAxis
             currentPDiagYAxis = yAxis
+        }
+        else
+        {
+            xExtent = d3.extent(data.map(e => e.x))
+            yExtent = d3.extent(data.map(e => e.y))
+
+            let xAxis =
+                    findAxis
+                    (
+                        xExtent,
+                        [0,365]
+                    ),
+                yAxis =
+                    findAxis
+                    (
+                        yExtent,
+                        [365,0]
+                    )
+
+            currentShepardXAxis = xAxis
+            currentShepardYAxis = yAxis
+
         }
 
         return chartSvg

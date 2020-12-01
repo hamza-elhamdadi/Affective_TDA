@@ -1,5 +1,6 @@
 from ripser import ripser
 from scipy.spatial import distance
+import time
 import nmf, math, numpy as np, os, itertools
 
 def min_max(subsection):
@@ -17,20 +18,31 @@ def calcDissimilarity(filename, section_list):
     with open(filename, 'r') as file:
         lines = file.readlines()
     
+    norm = distance.euclidean(
+        [float(l) for l in lines[36].split(' ')[1:]],
+        [float(l) for l in lines[47].split(' ')[1:]]
+    )
     temp = list(map(lambda line: list(map(lambda l: float(l), line.split(' ')[1:])), lines))
 
     extent = [min_max(subsection) for subsection in section_list]
     data = [t for e in extent for t in temp[e[0]:e[1]]]
-             
-    mat = [[distance.euclidean(d, e) for d in data] for e in data]          
+
+    mat = [[distance.euclidean(d[:-1], e[:-1])/norm for d in data] for e in data]          
 
     return np.asarray(mat)
 
 
 def build(filename, section_list, dataDestination):
-    diagrams = [e for d in ripser(calcDissimilarity(filename, section_list), distance_matrix=True)['dgms'] for e in d]
+    diagrams = ripser(calcDissimilarity(filename, section_list), distance_matrix=True)['dgms']
 
-    filepath = '{}/subsections/persistence/{}/persistence_diagram_{}_{}_{}.txt'.format(
+    filepathH0 = '{}/persistence/h0/{}/persistence_diagram_{}_{}_{}.txt'.format(
+        dataDestination, 
+        '_'.join(section_list),
+        '_'.join(section_list), 
+        filename.split('/')[-2], 
+        filename.split('/')[-1].split('.')[0]
+    )
+    filepathH1 = '{}/persistence/h1/{}/persistence_diagram_{}_{}_{}.txt'.format(
         dataDestination, 
         '_'.join(section_list),
         '_'.join(section_list), 
@@ -38,25 +50,38 @@ def build(filename, section_list, dataDestination):
         filename.split('/')[-1].split('.')[0]
     )
 
-    with open(filepath, 'w') as file:
-        for feature in diagrams:
-            file.write(' '.join(list(map(lambda l: str(l), feature))))
+    with open(filepathH0, 'w') as file:
+        for feature in diagrams[0]:
+            file.write(' '.join([str(f) for f in feature]))
+            file.write('\n')
+
+    with open(filepathH1, 'w') as file:
+        for feature in diagrams[1]:
+            file.write(' '.join([str(f) for f in feature]))
             file.write('\n')
 
 if __name__ == '__main__':
-    dS = '../Data'
-    dD = '../outputData/metric/F001'
+    start = time.time()
+    dS = '../Data/M001'
+    dD = '../performanceData/metric/M001'
 
     files = nmf.getFileNames(dS, '.bnd')
 
     subsections = ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline']
 
-    ret = []
-    for i in range(1,len(subsections)+1):
-        ret += itertools.combinations(subsections, i)
-    ret = list(map(lambda l : list(l),ret))
+    ret = [
+        ['leftEye', 'rightEye', 'leftEyebrow', 'rightEyebrow', 'nose', 'mouth', 'jawline'],
+        ['leftEye', 'rightEye', 'nose'],
+        ['nose', 'mouth'],
+        ['leftEyebrow', 'rightEyebrow', 'nose'],
+    ]
+    #ret = []
+    #for i in range(1,len(subsections)+1):
+    #    ret += itertools.combinations(subsections, i)
+    #ret = list(map(lambda l : list(l),ret))
 
     for filename in files:
-        print(filename)
         for section_list in ret:
             build(filename, section_list, dD)
+
+    print("--- %s seconds ---" % (time.time() - start))
