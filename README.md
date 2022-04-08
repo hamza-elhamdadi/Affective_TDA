@@ -5,4 +5,5 @@ Please ensure that you have a folder named __Data__ in the directory ahead of th
 # To Run
 
 export FLASK_APP=serve.py
+
 flask run
